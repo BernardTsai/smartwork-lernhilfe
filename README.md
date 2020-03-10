@@ -10,17 +10,33 @@ Installation
 - Linux Rechner mit Zugang zum Internet
 - bash installiert
 - git installiert
-- python installiert
+- node installiert
 
 **Schritte:**
 - **Program klonen**:   
 
-  git clone https://github.com/BernardTsai/smartwork-lernhilfe.git
+  > git clone https://github.com/BernardTsai/smartwork-lernhilfe.git
+
+- **In das Verzeichnis wechseln**:
+
+  > cd smartwork-lernhilfe
+
+- **Virtuelle Laufzeitumgebung erstellen**:
+
+  > nodeenv --force .
+
+- **Virtuelle Laufzeitumgebung aktivieren**:
+
+  > source bin/activate
+
+- **Bibliotheken installieren**:
+
+  > npm install
 
 - **Program starten**:
 
-  ./start.sh
+  > node index.js
 
 - **Program nutzen**:
 
-  im Browser die URL "http://localhost:8000/index.html" öffnen
+  im Browser die URL "http://localhost:3000/index.html" öffnen

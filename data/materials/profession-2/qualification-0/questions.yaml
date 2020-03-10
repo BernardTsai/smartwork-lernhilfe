@@ -1,0 +1,51 @@
+# profession:    "Maler/-in und Lackierer/-in"
+# qualification: "Untergründe vorbereiten und bearbeiten"
+# questions:
+- title: "Präsident der U.S.A"
+  description: |
+    Der Präsident der Vereinigten Staaten von Amerika wird in regelmäßigen Intervallen gewählt.
+  question: "Wer wurde 2017 zum Präsidenten der Vereinigten Staaten von Amerika gewählt?"
+  options:
+    - "Donald Trump"
+    - "Barack Obama"
+    - "George Bush"
+  answers:
+    - yes
+    - no
+    - no
+  explanation: |
+    Donald Trump wurde 2017 zum Präsidenten der Vereinigten Staaten von Amerika gewählt.
+  points: 5
+- title: "Hauptstadt von Bolivien"
+  description: |
+    Bolivien ist ein Binnenstaat in Südamerika, der im Westen an Peru und Chile,
+    im Süden an Argentinien und Paraguay, im Osten und Norden an Brasilien grenzt.
+  question: "Wie heißt die Hauptstadt von Bolivien?"
+  options:
+    - "Caracas"
+    - "Sucre"
+    - "Bogotá"
+  answers:
+    - no
+    - yes
+    - no
+  explanation: |
+    Sucre ist die Hauptstadt von Bolivien.
+  points: 5
+- title: "Währung in Vietnam"
+  description: |
+    Vietnam ist ein langgestreckter Küstenstaat in Südostasien.
+    Er grenzt an China, Laos, Kambodscha,
+    den Golf von Thailand und das Südchinesische Meer.
+  question: "Welche Währung wird in Vietnam genutzt?"
+  options:
+    - "Baht"
+    - "Won"
+    - "Dong"
+  answers:
+    - no
+    - no
+    - yes
+  explanation: |
+    In Vietnam wird Dong als Währung genutzt.
+  points: 5

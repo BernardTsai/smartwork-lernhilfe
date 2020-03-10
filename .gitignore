@@ -1,4 +1,12 @@
 # MacOS
+bin
+include
+share
+src
+lib/dtrace
+lib/node_modules
+node_modules
+package-lock.json
 .DS_Store
 
 # Byte-compiled / optimized / DLL files

@@ -1,0 +1,7 @@
+#profession li {
+  cursor: pointer
+}
+
+#profession li:hover {
+  color:   red
+}
