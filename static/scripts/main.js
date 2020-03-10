@@ -19,9 +19,9 @@ quiz:
   date:          ""
   length:        -1
   question:      -1
-  # questions: list of {options: ['string'] answers: ['string'], status: ""}
+  # questions: list of {options: ['string'] answers: ['string'], success: ""}
   questions:     []
-  status:        ""
+  sucess:        ""
   mode:          ""
 `
 

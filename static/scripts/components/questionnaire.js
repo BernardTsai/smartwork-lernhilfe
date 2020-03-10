@@ -62,16 +62,19 @@ Vue.component( 'questionnaire',
     },
     computed: {
       questionnaire: function() {
+        date = new Date()
+
         this.model.questionnaire = loadData( "GET", "/questionnaire/" + this.model.profession + "/" + this.model.qualification)
 
         this.model.quiz.profession    = this.model.profession
         this.model.quiz.qualification = this.model.qualification
         this.model.quiz.length        = this.model.questionnaire.length
         this.model.quiz.question      = 0
-        this.model.quiz.date          = Date.now()
+        this.model.quiz.date          = date.getDate() + "." + date.getMonth() + "." + date.getFullYear()
         this.model.quiz.status        = "new"
         this.model.quiz.mode          = "question"
-
+        this.model.quiz.questions     = []
+        
         for (var q of this.model.questionnaire) {
           options = []
           answers = []
