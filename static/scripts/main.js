@@ -21,7 +21,7 @@ quiz:
   question:      -1
   # questions: list of {options: ['string'] answers: ['string'], success: ""}
   questions:     []
-  sucess:        ""
+  success:       ""
   mode:          ""
 `
 

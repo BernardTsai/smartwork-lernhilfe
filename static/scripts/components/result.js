@@ -3,8 +3,30 @@ Vue.component( 'result',
   props:    ['model'],
   methods: {
     question: function(index) {
-      console.log(index)
       return this.model.questionnaire[index].question
+    },
+    saveCertificate: function() {
+      var request = new XMLHttpRequest();
+
+      // callback function to process the results
+      function saveCertificateCB() {
+        if (this.readyState == 4) {
+          // check status
+          if (this.status != 200) {
+            return
+          }
+
+          console.log(request.responseText)
+        }
+      }
+
+      // issue request to server backend
+      var params  = JSON.stringify( { email: model.email,  quiz: model.quiz } )
+
+      request.onreadystatechange = saveCertificateCB
+      request.open('POST', '/quiz', true);  // asynchronous request
+      request.setRequestHeader('Content-type', 'application/json');
+      request.send(params);
     }
   },
   computed: {
@@ -29,12 +51,18 @@ Vue.component( 'result',
       }
       this.model.quiz.success = success
 
+      this.saveCertificate()
+
       return this.model.quiz.success
     }
   },
   template: `
-    <div id="result" class="mt-3 shadow p-3 mb-5 mx-3 bg-white rounded">
+    <div id="result" class="mt-3 shadow p-3 mb-5 mx-3 bg-white rounded" @click="model.mode='home'"">
       <div class="bg-light px-3 d-flex">
+        <a class="navbar-brand" @click="home()">
+          <img src="images/logo.png" width="30" height="30" alt="">
+          smart<span class="text-danger">work</span>
+        </a>
         <span class="ml-auto">{{model.quiz.date}}</span>
       </div>
       <div class="bg-light px-3">
@@ -53,7 +81,7 @@ Vue.component( 'result',
         Für ein Zertifikat müssen alle Fragen richtig beantwortet werden.
       </div>
       <div v-if="success == 'yes'" class="px-3 text-success">
-        Glückwunsch - die Fragen wurde alle richtig beantwortet.
+        Glückwunsch - die Fragen wurden alle richtig beantwortet.
       </div>
 
     </div>`

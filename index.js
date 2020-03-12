@@ -23,14 +23,14 @@ function questionnaire(req, res) {
   filename  = directory + '/questions.yaml'
   response  = {}
 
-  console.log(filename)
-
   // read overview information
   fs.readFile(filename,
     // callback function that is called when reading file is done
     function(err, data) {
       if (err) {
         console.log(err)
+        writeResponse(res, {err: err.toString()})
+        return
       }
 
       if (data) {
@@ -57,6 +57,8 @@ function overview(req, res) {
     function(err, data) {
       if (err) {
         console.log(err)
+        writeResponse(res, {err: err.toString()})
+        return
       }
 
       if (data) {
@@ -68,6 +70,37 @@ function overview(req, res) {
       writeResponse(res, response)
     }
   )
+}
+
+//------------------------------------------------------------------------------
+
+function saveQuiz(req, res) {
+  var quiz  = req.body.quiz  ? req.body.quiz  : ""
+  var email = req.body.email ? req.body.email : ""
+
+  // check if email and quiz have been defined
+  if (email == "" || quiz == "") {
+    writeResponse(res, {err: 'missing parameters'})
+    return
+  }
+
+  // determine profession and qualification
+  profession    = quiz.profession
+  qualification = quiz.qualification
+
+  // write file
+  directory = './data/students/' + email
+  filename  = directory + '/certificate-' + profession + "-" + qualification
+
+  try {
+    fs.writeFileSync(filename, yaml.safeDump(quiz))
+  }
+  catch (e) {
+    writeResponse(res, {err: e.toString()})
+    return
+  }
+
+  writeResponse(res, {err: ''})
 }
 
 //------------------------------------------------------------------------------
@@ -89,7 +122,7 @@ function login(req, res) {
 
   // check if directory exists
   directory = './data/students/' + email
-  filename  = directory + '/passwort'
+  filename  = directory + '/password'
 
   // check if directory exists
   if (!fs.existsSync(directory)) {
@@ -115,8 +148,6 @@ function login(req, res) {
         real_password = data.toString('utf8').trim()
         response.validated = (password === real_password ? "yes" : "no")
       }
-
-      console.log(response)
       writeResponse(res, response)
     }
   )
@@ -131,6 +162,7 @@ app.use( express.static('./static') )            // static files from root
 app.post('/login',                                    login)
 app.get( '/overview',                                 overview)
 app.get( '/questionnaire/:profession/:qualification', questionnaire)
+app.post( '/quiz',                                    saveQuiz)
 
 server = app.listen(port, () => console.log(`Server listening on port ${port}!`))
 server.timeout = 5000

@@ -15,7 +15,7 @@ Vue.component( 'app',
       }
     },
     template: `
-      <div>
+      <div id="app">
 
         <!-- navigation bar -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
