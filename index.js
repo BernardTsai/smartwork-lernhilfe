@@ -155,6 +155,43 @@ function login(req, res) {
 
 //------------------------------------------------------------------------------
 
+function saveCertificate(req, res) {
+  var certs  = req.body.certs  ? req.body.certs  : ""
+  var email = req.body.email ? req.body.email : ""
+
+  // check if email and certs have been defined
+  if (email == "" || certs == "") {
+    writeResponse(res, {err: 'missing parameters'})
+    return
+  }
+
+  // current timestamp in milliseconds
+  var ts = Date.now();
+
+  var date_ob = new Date(ts);
+  var date = date_ob.getDate();
+  var month = date_ob.getMonth() + 1;
+  var year = date_ob.getFullYear();
+  var hours = date_ob.getHours();
+  var minutes = date_ob.getMinutes();
+
+  // write file
+  directory = './data/students/' + email
+  filename  = directory + '/final-certificate_' + year + "-" + month + "-" + date + "_" + hours + "-" + minutes
+
+  try {
+    fs.writeFileSync(filename, yaml.safeDump(certs))
+  }
+  catch (e) {
+    writeResponse(res, {err: e.toString()})
+    return
+  }
+
+  writeResponse(res, {err: ''})
+}
+
+//------------------------------------------------------------------------------
+
 app.use( parser.json() )                         // support json encoded bodies
 app.use( parser.urlencoded({ extended: true }) ) // support encoded bodies
 app.use( express.static('./static') )            // static files from root
@@ -163,6 +200,7 @@ app.post('/login',                                    login)
 app.get( '/overview',                                 overview)
 app.get( '/questionnaire/:profession/:qualification', questionnaire)
 app.post( '/quiz',                                    saveQuiz)
+app.post('/certificate',                              saveCertificate)
 
 server = app.listen(port, () => console.log(`Server listening on port ${port}!`))
 server.timeout = 5000
