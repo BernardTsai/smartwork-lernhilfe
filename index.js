@@ -89,7 +89,7 @@ function saveQuiz(req, res) {
   qualification = quiz.qualification
 
   // write file
-  directory = './data/students/' + email
+  directory = './data/students/' + email + '/certificates'
   filename  = directory + '/certificate-' + profession + "-" + qualification
 
   try {
@@ -128,6 +128,7 @@ function login(req, res) {
   if (!fs.existsSync(directory)) {
     // create directory
     fs.mkdirSync(directory)
+    fs.mkdirSync(directory + '/certificates')
 
     // write password file
     var writeStream = fs.createWriteStream(filename)
@@ -176,7 +177,7 @@ function saveCertificate(req, res) {
   var minutes = date_ob.getMinutes();
 
   // write file
-  directory = './data/students/' + email
+  directory = './data/students/' + email + '/certificates'
   filename  = directory + '/final-certificate_' + year + "-" + month + "-" + date + "_" + hours + "-" + minutes
 
   try {
@@ -192,6 +193,75 @@ function saveCertificate(req, res) {
 
 //------------------------------------------------------------------------------
 
+function loadCertificate(req, res) {
+  var cert  = req.body.cert  ? req.body.cert  : ""
+  var email = req.body.email ? req.body.email : ""
+
+  // check if email has been defined
+  if (email == "") {
+    writeResponse(res, {err: 'missing parameter'})
+    return
+  }
+
+  // check cert for change dir i.e. if cert includes '../' and abort if true
+  if (cert.includes('../')) {
+    writeResponse(res, {err: 'manipulation detected'})
+    return
+  }
+
+  directory = './data/students/' + email + '/certificates/'
+
+  // if a certificate was requested
+  if (cert != "") {
+
+    filename  = directory + cert
+    response  = {}
+
+    // read certificate
+    fs.readFile(filename,
+      // callback function that is called when reading file is done
+      function(err, data) {
+        if (err) {
+          console.log(err)
+          writeResponse(res, {err: err.toString()})
+          return
+        }
+
+        if (data) {
+          information = data.toString('utf8')
+
+          response = yaml.safeLoad(information)
+        }
+
+        writeResponse(res, response)
+      }
+    )
+  }
+  // if no certificate was requested - return list of existing certificates
+  else {
+    // get list of all files
+    fs.readdir(directory,
+      function (err, files) {
+        if (err) {
+          console.log('Unable to scan directory: ' + err)
+	  writeResponse(res, {err: err.toString()})
+	  return
+        }
+	if (files) {
+	  //listing all files using forEach
+          files.forEach(function (file) {
+            // ToDo:
+            // Maybe check certificate or something..
+	  })
+	}
+        writeResponse(res, files)
+      }
+    )
+  }
+}
+
+//------------------------------------------------------------------------------
+
 app.use( parser.json() )                         // support json encoded bodies
 app.use( parser.urlencoded({ extended: true }) ) // support encoded bodies
 app.use( express.static('./static') )            // static files from root
@@ -201,6 +271,7 @@ app.get( '/overview',                                 overview)
 app.get( '/questionnaire/:profession/:qualification', questionnaire)
 app.post( '/quiz',                                    saveQuiz)
 app.post('/certificate',                              saveCertificate)
+app.post('/loadcertificate',                          loadCertificate)
 
 server = app.listen(port, () => console.log(`Server listening on port ${port}!`))
 server.timeout = 5000
