@@ -67,8 +67,8 @@ Vue.component( 'result',
       </div>
       <div class="bg-light px-3">
         <p class="h1">Zertifikat</p>
-        <p class="h3"><b>Profession:</b> {{profession}}</p>
-        <p class="h3"><b>Qualification:</b> {{qualification}}</p>
+        <p class="h3"><b>Berufsfeld:</b> {{profession}}</p>
+        <p class="h3"><b>Qualifikation:</b> {{qualification}}</p>
       </div>
 
       <div v-for="(q,i) in model.quiz.questions" class="p-3 d-flex">
