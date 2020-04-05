@@ -89,50 +89,11 @@ function saveQuiz(req, res) {
   qualification = quiz.qualification
 
   // write file
-  directory = './data/students/' + email
+  directory = './data/students/' + email + '/certificates'
   filename  = directory + '/certificate-' + profession + "-" + qualification
 
   try {
     fs.writeFileSync(filename, yaml.safeDump(quiz))
-  }
-  catch (e) {
-    writeResponse(res, {err: e.toString()})
-    return
-  }
-
-  writeResponse(res, {err: ''})
-}
-
-//------------------------------------------------------------------------------
-
-function saveCertificate(req, res) {
-  var certs = req.body.certs ? req.body.certs : ""
-  var email = req.body.email ? req.body.email : ""
-
-  console.log(req.body)
-
-  // check if email and certs have been defined
-  if (email == "" || certs == "") {
-    writeResponse(res, {err: 'missing parameters'})
-    return
-  }
-
-  // current timestamp in milliseconds
-  var ts = Date.now();
-
-  var date_ob = new Date(ts);
-  var date = date_ob.getDate();
-  var month = date_ob.getMonth() + 1;
-  var year = date_ob.getFullYear();
-  var hours = date_ob.getHours();
-  var minutes = date_ob.getMinutes();
-
-  // write file
-  directory = './data/students/' + email
-  filename  = directory + '/final-certificate_' + year + "-" + month + "-" + date + "_" + hours + "-" + minutes
-
-  try {
-    fs.writeFileSync(filename, yaml.safeDump(certs))
   }
   catch (e) {
     writeResponse(res, {err: e.toString()})
@@ -167,6 +128,7 @@ function login(req, res) {
   if (!fs.existsSync(directory)) {
     // create directory
     fs.mkdirSync(directory)
+    fs.mkdirSync(directory + '/certificates')
 
     // write password file
     var writeStream = fs.createWriteStream(filename)
@@ -194,6 +156,112 @@ function login(req, res) {
 
 //------------------------------------------------------------------------------
 
+function saveCertificate(req, res) {
+  var certs  = req.body.certs  ? req.body.certs  : ""
+  var email = req.body.email ? req.body.email : ""
+
+  // check if email and certs have been defined
+  if (email == "" || certs == "") {
+    writeResponse(res, {err: 'missing parameters'})
+    return
+  }
+
+  // current timestamp in milliseconds
+  var ts = Date.now();
+
+  var date_ob = new Date(ts);
+  var date = date_ob.getDate();
+  var month = date_ob.getMonth() + 1;
+  var year = date_ob.getFullYear();
+  var hours = date_ob.getHours();
+  var minutes = date_ob.getMinutes();
+
+  // write file
+  directory = './data/students/' + email + '/certificates'
+  filename  = directory + '/final-certificate_' + year + "-" + month + "-" + date + "_" + hours + "-" + minutes
+
+  try {
+    fs.writeFileSync(filename, yaml.safeDump(certs))
+  }
+  catch (e) {
+    writeResponse(res, {err: e.toString()})
+    return
+  }
+
+  writeResponse(res, {err: ''})
+}
+
+//------------------------------------------------------------------------------
+
+function loadCertificate(req, res) {
+  var cert  = req.body.cert  ? req.body.cert  : ""
+  var email = req.body.email ? req.body.email : ""
+
+  // check if email has been defined
+  if (email == "") {
+    writeResponse(res, {err: 'missing parameter'})
+    return
+  }
+
+  // check cert for change dir i.e. if cert includes '../' and abort if true
+  if (cert.includes('../')) {
+    writeResponse(res, {err: 'manipulation detected'})
+    return
+  }
+
+  directory = './data/students/' + email + '/certificates/'
+
+  // if a certificate was requested
+  if (cert != "") {
+
+    filename  = directory + cert
+    response  = {}
+
+    // read certificate
+    fs.readFile(filename,
+      // callback function that is called when reading file is done
+      function(err, data) {
+        if (err) {
+          console.log(err)
+          writeResponse(res, {err: err.toString()})
+          return
+        }
+
+        if (data) {
+          information = data.toString('utf8')
+
+          response = yaml.safeLoad(information)
+        }
+
+        writeResponse(res, response)
+      }
+    )
+  }
+  // if no certificate was requested - return list of existing certificates
+  else {
+    // get list of all files
+    fs.readdir(directory,
+      function (err, files) {
+        if (err) {
+          console.log('Unable to scan directory: ' + err)
+	  writeResponse(res, {err: err.toString()})
+	  return
+        }
+	if (files) {
+	  //listing all files using forEach
+          files.forEach(function (file) {
+            // ToDo:
+            // Maybe check certificate or something..
+	  })
+	}
+        writeResponse(res, files)
+      }
+    )
+  }
+}
+
+//------------------------------------------------------------------------------
+
 app.use( parser.json() )                         // support json encoded bodies
 app.use( parser.urlencoded({ extended: true }) ) // support encoded bodies
 app.use( express.static('./static') )            // static files from root
@@ -202,7 +270,8 @@ app.post('/login',                                    login)
 app.get( '/overview',                                 overview)
 app.get( '/questionnaire/:profession/:qualification', questionnaire)
 app.post( '/quiz',                                    saveQuiz)
-app.post( '/certificate',                             saveCertificate)
+app.post('/certificate',                              saveCertificate)
+app.post('/loadcertificate',                          loadCertificate)
 
 server = app.listen(port, () => console.log(`Server listening on port ${port}!`))
 server.timeout = 5000
