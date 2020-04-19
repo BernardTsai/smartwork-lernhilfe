@@ -39,8 +39,15 @@ Vue.component( 'app',
                   <a v-for="(profession, index) in model.materials.professions" class="dropdown-item" @click="select(index)">{{profession.profession}}</a>
                 </div>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Zertifikate</a>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Zertifikate
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" @click="model.mode='professions'">Übersicht</a>
+                  <div class="dropdown-divider"></div>
+                  <a v-for="(profession, index) in model.materials.professions" class="dropdown-item" @click="select(index)">{{profession.profession}}</a>
+                </div>
               </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -64,6 +71,8 @@ Vue.component( 'app',
         <profession    v-bind:model="model" v-if="model.mode == 'profession'"   ></profession>
         <questionnaire v-bind:model="model" v-if="model.mode == 'questionnaire'"></questionnaire>
         <result        v-bind:model="model" v-if="model.mode == 'result'"       ></result>
+        <certificates  v-bind:model="model" v-if="model.mode == 'certificates'" ></certificates>
+        <certificate   v-bind:model="model" v-if="model.mode == 'certificate'"  ></certificate>
       </div>`
   }
 )
