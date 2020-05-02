@@ -44,7 +44,7 @@ Vue.component( 'app',
                   Zertifikate
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" @click="model.mode='professions'">Übersicht</a>
+                  <a class="dropdown-item" @click="model.mode='certificates'">Übersicht</a>
                   <div class="dropdown-divider"></div>
                   <a v-for="(profession, index) in model.materials.professions" class="dropdown-item" @click="select(index)">{{profession.profession}}</a>
                 </div>

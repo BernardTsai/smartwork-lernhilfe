@@ -9,6 +9,10 @@ email:         "bernard@tsai.eu"
 password:      "test"
 validated:     ""
 materials:     {}
+certificates:  {}
+certificate:
+  index:         -1
+  content:       {}
 profession:    -1
 qualification: -1
 question:      -1
