@@ -1,0 +1,36 @@
+profession: 0
+qualification: 0
+date: 27.5.2020
+length: 3
+question: 2
+questions:
+  - options:
+      - 'yes'
+      - 'no'
+      - 'no'
+    answers:
+      - 'yes'
+      - 'yes'
+      - 'yes'
+    success: 'yes'
+  - options:
+      - 'no'
+      - 'yes'
+      - 'no'
+    answers:
+      - 'yes'
+      - 'yes'
+      - 'yes'
+    success: 'yes'
+  - options:
+      - 'no'
+      - 'no'
+      - 'yes'
+    answers:
+      - 'yes'
+      - 'yes'
+      - 'yes'
+    success: 'yes'
+success: 'yes'
+mode: answer
+status: new

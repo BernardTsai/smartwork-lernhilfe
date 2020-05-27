@@ -6,41 +6,16 @@ Vue.component( 'certificate',
         model.qualification = index
         model.question      = -1
         model.mode          = "questionnaire"
-      },
-      // get list of all certificates
-      loadCert: function() {
-        var request = new XMLHttpRequest();
-
-        // callback function to process the results
-        function loadCertCB() {
-          if (this.readyState == 4) {
-            // check status
-            if (this.status != 200) {
-              return
-            }
-            model.certificate.content = jsyaml.safeLoad(request.responseText)
-          }
-        }
-
-        // issue request to server backend
-        var params  = JSON.stringify( { cert: this.model.certificates[this.model.certificate.index].filename, email: model.email } )
-
-        request.onreadystatechange = loadCertCB
-        request.open('POST', '/loadcertificate', true);  // asynchronous request
-        request.setRequestHeader('Content-type', 'application/json');
-        request.send(params);
       }
     },
     beforeMount(){
-      this.loadCert()
     },
     computed: {
       certificate: function() {
-//        return this.model.certificates[this.model.certificate.index]
-        return this.model.certificate.content
+        return this.model.certificates[this.model.certificate].certificate
       },
       details: function() {
-        return this.model.materials.professions[this.model.certificate.content.profession]
+        return this.model.materials.professions[this.model.certificates[this.model.certificate].certificate.profession]
       }
     },
     template: `
@@ -55,7 +30,7 @@ Vue.component( 'certificate',
         <div class="bg-light px-3">
           <p class="h1">Zertifikat</p>
           <p class="h3"><b>Berufsfeld:</b> {{details.profession}}</p>
-          <p class="h3"><b>Qualifikation:</b> {{details.qualifications[this.model.certificate.content.qualification].qualification}}</p>
+          <p class="h3"><b>Qualifikation:</b> {{details.qualifications[certificate.qualification].qualification}}</p>
         </div>
 
         <div v-for="(q,i) in model.quiz.questions" class="p-3 d-flex">

@@ -10,9 +10,7 @@ password:      "test"
 validated:     ""
 materials:     {}
 certificates:  {}
-certificate:
-  index:         -1
-  content:       {}
+certificate:   -1
 profession:    -1
 qualification: -1
 question:      -1
