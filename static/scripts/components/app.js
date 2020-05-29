@@ -44,7 +44,7 @@ Vue.component( 'app',
                   Zertifikate
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" @click="model.mode='certificates'">Übersicht</a>
+                  <a class="dropdown-item" @click="model.mode='certs_overview'">Übersicht</a>
                   <div class="dropdown-divider"></div>
                   <a v-for="(profession, index) in model.materials.professions" class="dropdown-item" @click="select(index)">{{profession.profession}}</a>
                 </div>
@@ -65,14 +65,15 @@ Vue.component( 'app',
           </div>
         </nav>
 
-        <login         v-bind:model="model" v-if="model.mode == 'login'"        ></login>
-        <home          v-bind:model="model" v-if="model.mode == 'home'"         ></home>
-        <professions   v-bind:model="model" v-if="model.mode == 'professions'"  ></professions>
-        <profession    v-bind:model="model" v-if="model.mode == 'profession'"   ></profession>
-        <questionnaire v-bind:model="model" v-if="model.mode == 'questionnaire'"></questionnaire>
-        <result        v-bind:model="model" v-if="model.mode == 'result'"       ></result>
-        <certificates  v-bind:model="model" v-if="model.mode == 'certificates'" ></certificates>
-        <certificate   v-bind:model="model" v-if="model.mode == 'certificate'"  ></certificate>
+        <login           v-bind:model="model" v-if="model.mode == 'login'"          ></login>
+        <home            v-bind:model="model" v-if="model.mode == 'home'"           ></home>
+        <professions     v-bind:model="model" v-if="model.mode == 'professions'"    ></professions>
+        <profession      v-bind:model="model" v-if="model.mode == 'profession'"     ></profession>
+        <questionnaire   v-bind:model="model" v-if="model.mode == 'questionnaire'"  ></questionnaire>
+        <result          v-bind:model="model" v-if="model.mode == 'result'"         ></result>
+        <certs_overview  v-bind:model="model" v-if="model.mode == 'certs_overview'" ></certs_overview>
+        <certs_details   v-bind:model="model" v-if="model.mode == 'certs_details'"  ></certs_details>
+        <certificate     v-bind:model="model" v-if="model.mode == 'certificate'"    ></certificate>
       </div>`
   }
 )

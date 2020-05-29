@@ -1,8 +1,9 @@
 // TODO: First show all professions in which the user has more than 0% progress and show the progress. E.g. Fortschritt: 67%
 // TODO: If the user has 100% show the final certificate if he clicks on it and make it possible to view the individual certificates
 // TODO: If the user has less than 100% show all awarded certificates for the profession if he clicks on it
-Vue.component( 'certificates',
+Vue.component( 'certs_overview',
   {
+    var professions = {}
     props:    ['model'],
     methods: {
       select: function(index) {
@@ -22,7 +23,7 @@ Vue.component( 'certificates',
               return
             }
             // modify responseText to correctly populate model.certificates
-            //TODO: catch exception if there are no certificates!
+            // TODO: catch exception if there are no certificates!
             var certTmp = request.responseText
             certTmp = certTmp.replace(/\n/g, "")
             certTmp = certTmp.replace(/- /g, '"\n- certificate: {}\n  filename: "')
@@ -49,6 +50,12 @@ Vue.component( 'certificates',
           var params  = JSON.stringify( { cert: this.model.certificates[i].filename, email: model.email } )
           this.model.certificates[i].certificate = loadData('POST', '/loadcertificate', params);
         }
+      },
+      // get list of all professions for which a certificate exists
+      getProfessions: function() {
+        // scan model.certificates for filenames
+        // scan filenames for profesions -> certificate-profession-qualification
+        // resolve profession number to get the actual Profession
       }
     },
     beforeMount(){

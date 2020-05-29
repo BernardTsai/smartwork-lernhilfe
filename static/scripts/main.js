@@ -8,6 +8,7 @@ mode:          "login"
 email:         "bernard@tsai.eu"
 password:      "test"
 validated:     ""
+tmp:           -1
 materials:     {}
 certificates:  {}
 certificate:   -1

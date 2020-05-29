@@ -23,7 +23,7 @@ Vue.component( 'home',
           </div>
         </div>
 
-        <div class="card my-3 mx-auto" style="max-width: 540px;" @click="model.mode = 'login'">
+        <div class="card my-3 mx-auto" style="max-width: 540px;" @click="model.mode = 'certs_overview'">
           <div class="row no-gutters">
             <div class="col-md-4 my-auto">
               <img src="../../images/certificate.png" class="card-img" alt="Zertifikate">
