@@ -10,23 +10,24 @@ Vue.component( 'certs_overview',
         model.mode = 'certs_details'
       },
       // get all professions for which a certificate exists
-      getProfessions: function() {
-        var professions = [];
-        var professionTmp;
-        for (var i = 0; i < this.model.certificates.length; i++) {
-          if (this.model.certificates[i].filename.includes('certificate-')) {
-            professionTmp = this.model.certificates[i].filename[12];
-            // check if professions to avoid dublicates
-            var found = false;
-            for (var j = 0; j < professions.length; j++) {
-              if (professions[j] == professionTmp) found = true;
-            }
-            if (!found) professions.push(professionTmp);
-          }
-        }
+//      getProfessions: function() {
+//        var professions = [];
+//        var professionTmp;
+//        for (var i = 0; i < this.model.certificates.length; i++) {
+//          if (this.model.certificates[i].filename.includes('certificate-')) {
+//            professionTmp = this.model.certificates[i].filename[12];
+            // check professions to avoid dublicates
+//            var found = false;
+//            for (var j = 0; j < professions.length; j++) {
+//              if (professions[j] == professionTmp) found = true;
+//            }
+//            if (!found) professions.push(professionTmp);
+//          }
+//        }
 //        console.log(professions);
-        this.model.tmp = professions;
-      },
+//        this.model.certs_p = professions;
+//      },
+      // get percentage of learning state
       getPercentage: function(profession) {
         var total = this.model.materials.professions[profession].qualifications.length;
         var counter = 0;
@@ -40,7 +41,7 @@ Vue.component( 'certs_overview',
     beforeMount(){
       // TODO: check if this.model.certificates is already populated and skip if it is
       loadCerts();
-      this.getProfessions();
+      getProfessions();
     },
     computed: {
       details: function() {
@@ -51,16 +52,16 @@ Vue.component( 'certs_overview',
       <div id="certificates" class="container">
 
         <!-- loop over all professions -->
-        <div v-for="(profession, index) in model.tmp" class="card my-3 mx-auto" style="max-width: 540px;" @click="select(this.model.tmp[index])">
+        <div v-for="(profession, index) in model.certs_p" class="card my-3 mx-auto" style="max-width: 540px;" @click="select(this.model.certs_p[index])">
           <div class="row no-gutters">
             <div class="col-md-2 my-auto">
               <img src="../../images/logo.png" class="card-img p-1" alt="LOGO">
             </div>
             <div class="col-md-10">
               <div class="card-body">
-                <h5 class="card-title">{{this.model.materials.professions[this.model.tmp[index]].profession}}</h5>
+                <h5 class="card-title">{{this.model.materials.professions[this.model.certs_p[index]].profession}}</h5>
                 <p class="card-text">
-                  Fortschritt: {{getPercentage(this.model.tmp[index])}}%
+                  Fortschritt: {{getPercentage(this.model.certs_p[index])}}%
                 </p>
               </div>
             </div>

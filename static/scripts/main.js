@@ -5,12 +5,13 @@ var data = `
 model:         "smartwork-lernhilfe"
 version:       "0.0.0"
 mode:          "login"
-email:         "bernard@tsai.eu"
+email:         "user@test.de"
 password:      "test"
 validated:     ""
 tmp:           -1
 materials:     {}
 certificates:  {}
+certs_p:       {}
 certificate:   -1
 profession:    -1
 qualification: -1
@@ -34,6 +35,10 @@ var model = jsyaml.safeLoad(data);
 // load training course information
 model.materials = loadData( "GET", "/overview")
 
+// load awarded certificates
+loadCerts();
+loadCert();
+getProfessions();
 //------------------------------------------------------------------------------
 
 var app

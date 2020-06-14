@@ -12,6 +12,11 @@ Vue.component( 'app',
         model.profession = index
 
         model.mode = 'profession'
+      },
+      selectCerts: function(professionId) {
+        model.tmp = professionId
+        // aus Gruenden wird beforeMount() in certs_details nicht ausgefuehrt wenn es hier aufgerufen wird
+        model.mode = 'certs_details'
       }
     },
     template: `
@@ -46,7 +51,9 @@ Vue.component( 'app',
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                   <a class="dropdown-item" @click="model.mode='certs_overview'">Übersicht</a>
                   <div class="dropdown-divider"></div>
-                  <a v-for="(profession, index) in model.materials.professions" class="dropdown-item" @click="select(index)">{{profession.profession}}</a>
+                  <a v-for="(profession, index) in model.certs_p" class="dropdown-item" @click="selectCerts(model.certs_p[index])">
+                    {{model.materials.professions[model.certs_p[index]].profession}}
+                  </a>
                 </div>
               </li>
               <li class="nav-item dropdown">

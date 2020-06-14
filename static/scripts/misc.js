@@ -28,7 +28,7 @@ function loadCerts() {
         return
       }
       // modify responseText to correctly populate model.certificates
-      // TODO: catch exception if there are no certificates!
+      // TODO: catch exception if there are no certificates!!!
       var certTmp = request.responseText
       certTmp = certTmp.replace(/\n/g, "")
       certTmp = certTmp.replace(/- /g, '"\n- certificate: {}\n  filename: "')
@@ -57,4 +57,22 @@ function loadCert() {
   }
 }
 
+// get all professions for which a certificate exists
+function getProfessions() {
+  var professions = [];
+  var professionTmp;
+  for (var i = 0; i < this.model.certificates.length; i++) {
+    if (this.model.certificates[i].filename.includes('certificate-')) {
+      professionTmp = this.model.certificates[i].filename[12];
+      // check professions to avoid dublicates
+      var found = false;
+      for (var j = 0; j < professions.length; j++) {
+        if (professions[j] == professionTmp) found = true;
+      }
+      if (!found) professions.push(professionTmp);
+    }
+  }
+//  console.log(professions);
+  this.model.certs_p = professions;
+}
 //------------------------------------------------------------------------------
