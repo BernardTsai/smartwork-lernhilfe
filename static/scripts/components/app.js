@@ -44,7 +44,10 @@ Vue.component( 'app',
                   <a v-for="(profession, index) in model.materials.professions" class="dropdown-item" @click="select(index)">{{profession.profession}}</a>
                 </div>
               </li>
-              <li class="nav-item dropdown">
+              <li class="nav-item">
+                <a class="nav-link" @click="model.mode='certs_overview'">Zertifikate</a>
+              </li>
+              <!-- li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   Zertifikate
                 </a>
@@ -55,7 +58,7 @@ Vue.component( 'app',
                     {{model.materials.professions[model.certs_p[index]].profession}}
                   </a>
                 </div>
-              </li>
+              </li -->
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   Konto

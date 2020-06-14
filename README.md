@@ -39,4 +39,4 @@ Installation
 
 - **Program nutzen**:
 
-  im Browser die URL "http://localhost:3000/index.html" öffnen
+  im Browser die URL "http://localhost:8080/index.html" öffnen

@@ -36,9 +36,9 @@ var model = jsyaml.safeLoad(data);
 model.materials = loadData( "GET", "/overview")
 
 // load awarded certificates
-loadCerts();
-loadCert();
-getProfessions();
+// loadCerts();
+// loadCert();
+// getProfessions();
 //------------------------------------------------------------------------------
 
 var app
