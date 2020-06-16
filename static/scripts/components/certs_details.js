@@ -13,7 +13,7 @@ Vue.component( 'certs_details',
       getCerts: function() {
         var certs = [];
         for (var i = 0; i < this.model.certificates.length; i++) {
-          if (this.model.certificates[i].certificate.profession == this.model.tmp) certs.push(i);
+          if (this.model.certificates[i].certificate.profession == this.model.profession) certs.push(i);
         }
         this.model.tmp = certs;
       }
@@ -31,12 +31,12 @@ Vue.component( 'certs_details',
     },
     template: `
       <div id="certificates" class="container">
-        <h3 class="text-center">{{this.model.materials.professions[this.model.certificates[this.model.tmp[0]].certificate.profession].profession}}</h3>
+        <h3 class="text-center">{{this.model.materials.professions[this.model.profession].profession}}</h3>
         <!-- loop over all professions -->
         <div v-for="(certificate, index) in model.tmp" class="card my-3 mx-auto" style="max-width: 540px;" @click="select(index)">
           <div class="row no-gutters">
             <div class="col-md-2 my-auto">
-              <img src="../../images/logo.png" class="card-img p-1" alt="LOGO">
+              <img :src="'../../images/' + details[this.model.profession].image" class="card-img p-1" :alt="details[this.model.profession].profession">
             </div>
             <div class="col-md-10">
               <div class="card-body">

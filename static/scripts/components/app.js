@@ -45,7 +45,7 @@ Vue.component( 'app',
                 </div>
               </li>
               <li class="nav-item">
-                <a class="nav-link" @click="model.mode='certs_overview'">Zertifikate</a>
+                <a class="nav-link btn" @click="model.mode='certs_overview'">Zertifikate</a>
               </li>
               <!-- li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

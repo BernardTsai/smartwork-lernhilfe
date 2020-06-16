@@ -5,7 +5,7 @@ Vue.component( 'certs_overview',
     props:    ['model'],
     methods: {
       select: function(profession) {
-        model.tmp = profession
+        model.profession = profession
 
         model.mode = 'certs_details'
       },
@@ -55,7 +55,7 @@ Vue.component( 'certs_overview',
         <div v-for="(profession, index) in model.certs_p" class="card my-3 mx-auto" style="max-width: 540px;" @click="select(this.model.certs_p[index])">
           <div class="row no-gutters">
             <div class="col-md-2 my-auto">
-              <img src="../../images/logo.png" class="card-img p-1" alt="LOGO">
+              <img :src="'../../images/' + details[profession].image" class="card-img p-1" :alt="details[profession].profession">
             </div>
             <div class="col-md-10">
               <div class="card-body">
