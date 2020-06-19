@@ -5,6 +5,7 @@ var data = `
 model:         "smartwork-lernhilfe"
 version:       "0.0.0"
 mode:          "login"
+submode:       ""
 email:         "user@test.de"
 password:      "test"
 validated:     ""

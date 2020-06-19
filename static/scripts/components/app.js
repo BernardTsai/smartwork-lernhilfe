@@ -64,7 +64,7 @@ Vue.component( 'app',
                   Konto
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown2">
-                  <a class="dropdown-item" href="#">Einstellungen</a>
+                  <a class="dropdown-item" @click="model.mode='settings'"">Einstellungen</a>
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" target="smartwork" href="https://www.smart-work-frankfurt.de/extra/datenschutz.html">Datenschutz</a>
                   <a class="dropdown-item" target="smartwork" href="https://www.smart-work-frankfurt.de/extra/impressum.html">Impressum</a>
@@ -84,6 +84,7 @@ Vue.component( 'app',
         <certs_overview  v-bind:model="model" v-if="model.mode == 'certs_overview'" ></certs_overview>
         <certs_details   v-bind:model="model" v-if="model.mode == 'certs_details'"  ></certs_details>
         <certificate     v-bind:model="model" v-if="model.mode == 'certificate'"    ></certificate>
+        <settings        v-bind:model="model" v-if="model.mode == 'settings'"       ></settings>
       </div>`
   }
 )
