@@ -25,20 +25,22 @@ Vue.component( 'settings',
 
         <div id="Sidebar" class="d-none d-md-block bg-dark sidebar">
           <a href="javascript:void(0)" class="closebtn" @click="closeNav()">x</a>
-          <ul class="nav flex-column">
-            <li class="nav-item">
+          <!-- some parts are commented out because they may cause some problems on mobile devices -->
+          <!-- testing requiered!! -->
+          <!-- <ul class="nav flex-column">
+            <li class="nav-item"> -->
               <a @click="model.submode='settings-dashboard'">
                 <span class="fa fa-home"></span>
                 Dashboard
               </a>
-            </li>
-            <li class="nav-item">
+            <!-- </li>
+            <li class="nav-item"> -->
               <a @click="model.submode='settings-password'">
                 <span class="fa fa-lock"></span>
                 Password
               </a>
-            </li>
-          </ul>
+            <!-- </li>
+          </ul> -->
         </div>
 
         <div id="settingsContent">
