@@ -169,6 +169,10 @@ function changePassword(req, res) {
 
   // check if email is valid and password has been defined
   if (email == '' || oldPassword == '' || newPassword == '' || email.includes('..') || email.includes('/')) {
+    //console.log(`email, old or new password ist empty or invalid`)
+    //console.log(email)
+    //console.log(oldPassword)
+    //console.log(newPassword)
     writeResponse(res, response)
     return
   }
