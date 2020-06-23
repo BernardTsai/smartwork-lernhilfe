@@ -156,6 +156,80 @@ function login(req, res) {
 
 //------------------------------------------------------------------------------
 
+function changePassword(req, res) {
+  email    = req.body.email    ? req.body.email    : ""
+  oldPassword = req.body.oldpassword ? req.body.oldpassword : ""
+  newPassword = req.body.newpassword ? req.body.newpassword : ""
+  response = {
+    'email':     email,
+    'password':  oldPassword,
+    'validated': "no",
+    'success':   "no"
+  }
+
+  // check if email is valid and password has been defined
+  if (email == '' || oldPassword == '' || newPassword == '' || email.includes('..') || email.includes('/')) {
+    writeResponse(res, response)
+    return
+  }
+
+  // check if directory exists
+  directory = './data/students/' + email
+  filename  = directory + '/password'
+
+  // check if directory exists
+  if (!fs.existsSync(directory)) {
+    // maybe some messing around because this shouldn't happen -> deauth
+    //console.log(`Directory (i.e. user) doesn't exist!`)
+    response.validated = "no"
+    response.success = "no"
+    writeResponse(res, response)
+    return
+  }
+
+  // read file password file to check if old Password is correct
+  fs.readFile(filename,
+    // callback function that is called when reading file is done
+    function(err, data) {
+      // error will reading password file
+      if (!err) {
+        real_password = data.toString('utf8').trim()
+        response.validated = (oldPassword === real_password ? "yes" : "no")
+
+        // check if old password was correct
+        if (response.validated === "no") {
+          // just to make sure..
+          //console.log(`validated: no!`)
+
+          response.validated = "no"
+          response.success = "no"
+          writeResponse(res, response)
+          return
+        }
+        else if (response.validated === "yes") {
+          // write new password
+          //console.log(`validated: yes!`)
+
+          try {
+            fs.writeFileSync(filename, newPassword)
+          }
+          catch (e) {
+            writeResponse(res, {err: e.toString()})
+            return
+          }
+
+          response.password = newPassword
+          response.validated = "yes"
+          response.success = "yes"
+        }
+      }
+      writeResponse(res, response)
+    }
+  )
+}
+
+//------------------------------------------------------------------------------
+
 function saveCertificate(req, res) {
   var certs  = req.body.certs  ? req.body.certs  : ""
   var email = req.body.email ? req.body.email : ""
@@ -272,6 +346,7 @@ app.get( '/questionnaire/:profession/:qualification', questionnaire)
 app.post( '/quiz',                                    saveQuiz)
 app.post('/certificate',                              saveCertificate)
 app.post('/loadcertificate',                          loadCertificate)
+app.post('/changepassword',                           changePassword)
 
 server = app.listen(port, () => console.log(`Server listening on port ${port}!`))
 server.timeout = 5000
