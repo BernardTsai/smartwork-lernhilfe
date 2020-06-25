@@ -46,8 +46,10 @@ Vue.component( 'settings',
         <div id="settingsContent">
           <button class="openbtn" @click="openNav()">☰ </button>  
 
-          <settings-dashboard v-bind:model="model" v-if="model.submode == 'settings-dashboard'" ></settings-dashboard>
-          <settings-password  v-bind:model="model" v-if="model.submode == 'settings-password'"  ></settings-password>
+          <settings-dashboard       v-bind:model="model" v-if="model.submode == 'settings-dashboard'"       ></settings-dashboard>
+          <settings-password        v-bind:model="model" v-if="model.submode == 'settings-password'"        ></settings-password>
+          <settings-instructorarea  v-bind:model="model" v-if="model.submode == 'settings-instructorarea'"  ></settings-instructorarea>
+          <settings-usercontrol     v-bind:model="model" v-if="model.submode == 'settings-usercontrol'"     ></settings-usercontrol>
 
         </div>
 
