@@ -45,7 +45,7 @@ Vue.component( 'app',
                 </div>
               </li>
               <li class="nav-item">
-                <a class="nav-link btn" @click="model.mode='certs_overview'">Zertifikate</a>
+                <a class="nav-link" href="#" @click="model.mode='certs_overview'">Zertifikate</a>
               </li>
               <!-- li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -64,7 +64,7 @@ Vue.component( 'app',
                   Konto
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown2">
-                  <a class="dropdown-item" @click="model.mode='settings'"">Einstellungen</a>
+                  <a class="dropdown-item" @click="model.mode='settings'; model.submode='settings-dashboard'">Einstellungen</a>
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" target="smartwork" href="https://www.smart-work-frankfurt.de/extra/datenschutz.html">Datenschutz</a>
                   <a class="dropdown-item" target="smartwork" href="https://www.smart-work-frankfurt.de/extra/impressum.html">Impressum</a>

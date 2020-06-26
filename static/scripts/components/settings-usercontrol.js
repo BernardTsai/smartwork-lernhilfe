@@ -2,11 +2,63 @@ Vue.component( 'settings-usercontrol',
   {
     props:    ['model'],
     methods: {
-      //select: function(index) {
-        //model.profession = index
+      addUser: function() {
+        this.form.email = $("#inputEmail").val();
+        this.form.type = $("#userType").val();
+        console.log(this.form.email);
+        console.log(this.form.type);
 
-        //model.mode = 'profession'
-      //}
+        // generate password function
+        function generatePassword() {
+          var length = 8,
+          charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+          retVal = "";
+          for (var i = 0, n = charset.length; i < length; ++i) {
+            retVal += charset.charAt(Math.floor(Math.random() * n));
+          }
+          return retVal;
+        }
+
+        this.form.password = generatePassword();
+
+        // show login credentials
+        $("#loginData").modal()
+
+//        if (this.compareNewPasswords() && this.comparePasswords()) {
+//          var request = new XMLHttpRequest();
+
+          // callback function to process the results
+//          function saveCertificateCB() {
+//            if (this.readyState == 4) {
+              // check status
+//              if (this.status != 200) {
+//                return
+//              }
+              //console.log(request.responseText)
+//              result = jsyaml.safeLoad(request.responseText)
+//              model.validated = result.validated
+//              model.password = result.password
+
+//              if (result.success == "yes") alert("Passwort erfolgreich ge      ndert!");
+//            }
+//          }
+
+//          var params  = JSON.stringify( {email: model.email, oldpassword: this.form.oldPw, newpassword: this.form.newPw1} )
+//          request.onreadystatechange = saveCertificateCB
+//          request.open('POST', '/changepassword', true);  // asynchronous request
+//          request.setRequestHeader('Content-type', 'application/json');
+//          request.send(params);
+//        }
+      }
+    },
+    data() {
+      return {
+        form: {
+          email: '',
+          password: '',
+          type: ''
+        }
+      }
     },
     template: `
       <div id="settings-usercontrol" class="container">
@@ -14,7 +66,7 @@ Vue.component( 'settings-usercontrol',
         <h3 class="text-center">Benutzerverwaltung</h3>
 
         <!-- Button trigger modal -->
-        <div class="card my-3 mx-auto" style="max-width: 540px;" data-toggle="modal" data-target="#exampleModalCenter">
+        <div class="card my-3 mx-auto" style="max-width: 540px;" data-toggle="modal" data-target="#userAddModalCenter">
           <div class="row no-gutters">
             <div class="col-md-2 my-auto">
               <img src="images/logo.png" class="card-img p-1" alt="LOGO">
@@ -31,30 +83,77 @@ Vue.component( 'settings-usercontrol',
         </div>
 
         <!-- Modal -->
-        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal fade" id="userAddModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+                <h5 class="modal-title" id="exampleModalLongTitle">Neuen Benutzer erstellen</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
               <div class="modal-body">
-                <h5>Popover in a modal</h5>
-                <p>This <a href="#" role="button" class="btn btn-secondary popover-test" title="Popover title" data-content="Popover body content is set in this attribute.">button</a> triggers a popover on click.</p>
-                <hr>
-                <h5>Tooltips in a modal</h5>
-                <p><a href="#" class="tooltip-test" title="Tooltip">This link</a> and <a href="#" class="tooltip-test" title="Tooltip">that link</a> have tooltips on hover.</p>
+
+                <div class="form-group">
+                  <label for="inputEmail">Email Adresse</label>
+                  <input id="inputEmail" type="email" class="form-control" placeholder="name@beispiel.de">
+                  <small id="emailHelp" class="form-text text-muted">Geben Sie die Email Adresse des neuen Nutzers ein.</small>
+                </div>
+
+                <div class="form-group">
+                  <label for="inputNewPassword">Neues Passwort</label>
+                  <input type="password" class="form-control" id="inputNewPassword" value="Neues Passwort" disabled>
+                  <small id="newPasswordHelp" class="form-text text-muted">Das Passwort wird automatisch generiert und nach dem best&aumltigen angezeigt.</small>
+                </div>
+
+                <div class="form-group">
+                  <label for="userType">Nutzerart</label>
+                  <select class="form-control" id="userType">
+                    <option>Sch&uumller/Azubi</option>
+                    <option>Ausbilder</option>
+                    <option>Administrator</option>
+                  </select>
+                  <small id="usertypeHelp" class="form-text text-muted">W&aumlhlen Sie aus, welchem Typ der neue Nutzer zugeordnet werden soll.</small>
+                </div>
+
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+                <button type="button" class="btn btn-primary" @click="addUser()" data-dismiss="modal">Best&aumltigen</button>
               </div>
             </div>
           </div>
         </div>
 
+        <!-- Modal mit Logindaten nach erstellung des Nutzers -->
+        <div class="modal fade" id="loginData" tabindex="-1" role="dialog" aria-labelledby="loginDataModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Login Daten des neuen Nutzers</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <h3>Teilen Sie dem neuen Nutzer diese Daten mit!</h3>
+                <div class="form-group">
+                  <label for="accountname">Email Adresse/Accountname:</label>
+                  <input id="accountname" type="email" class="form-control" :value="this.form.email" disabled>
+                  <small id="accountnameHelp" class="form-text text-muted">Dies ist die Emailadresse mit der sich der Nutzer einloggen muss.</small>
+                </div>
+                <div class="form-group">
+                  <label for="genPassword"Passwort:</label>
+                  <input id="genPassword" type="text" class="form-control" :value="this.form.password" disabled>
+                  <small id="genPasswordHelp" class="form-text text-muted">Dies ist das Passwort des neuen Nutzers.</small>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Schlie&szligen</button>
+              </div>
+            </div>
+          </div>
+        </div>
 
 
 

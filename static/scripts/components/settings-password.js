@@ -26,7 +26,6 @@ Vue.component( 'settings-password',
         this.form.oldPw = $("#inputOldPassword").val();
         this.form.newPw1 = $("#inputNewPassword1").val();
         this.form.newPw2 = $("#inputNewPassword2").val();
-        console.log(this.form);
         // check passwords and if successful issue request to server backend
         if (this.compareNewPasswords() && this.comparePasswords()) {
           var request = new XMLHttpRequest();
@@ -61,8 +60,7 @@ Vue.component( 'settings-password',
           oldPw: '',
           newPw1: '',
           newPw2: ''
-        },
-        name: ''
+        }
       }
     },
     template: `
@@ -76,7 +74,8 @@ Vue.component( 'settings-password',
             <input id="inputOldPassword" type="password" class="form-control" placeholder="Altes Passwort">
             <small id="oldPasswordHelp" class="form-text text-muted">Geben Sie Ihr altes Passwort ein.</small>
           </div>
-
+          <br>
+          <hr>
           <div class="form-group">
             <label for="inputNewPassword1">Neues Passwort</label>
             <input type="password" class="form-control" id="inputNewPassword1" placeholder="Neues Passwort">
