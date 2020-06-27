@@ -69,7 +69,7 @@ Vue.component( 'settings-usercontrol',
         <div class="card my-3 mx-auto" style="max-width: 540px;" data-toggle="modal" data-target="#userAddModalCenter">
           <div class="row no-gutters">
             <div class="col-md-2 my-auto">
-              <img src="images/logo.png" class="card-img p-1" alt="LOGO">
+              <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/plus-square.svg" class="card-img p-3" alt="LOGO">
             </div>
             <div class="col-md-10">
               <div class="card-body">

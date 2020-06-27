@@ -105,6 +105,110 @@ function saveQuiz(req, res) {
 
 //------------------------------------------------------------------------------
 
+function createAccount(req, res) {
+  emailNew    = req.body.emailNew    ? req.body.emailNew    : ""
+  passwordNew = req.body.passwordNew ? req.body.passwordNew : ""
+  typeNew     = req.body.typeNew     ? req.body.typeNew     : ""
+  email       = req.body.email       ? req.body.email       : ""
+  password    = req.body.password    ? req.body.password    : ""
+  response = {
+    'email':     email,
+    'password':  password,
+    'msg':       "error"
+  }
+
+  // check if email is valid and password has been defined
+  if (email == '' || password == '' || email.includes('..') || email.includes('/')) {
+    writeResponse(res, response)
+    return
+  }
+
+  // check if emailNew is valid and passwordNew has been defined
+  if (emailNew == '' || passwordNew == '' || typeNew == ''  || emailNew.includes('..') || emailNew.includes('/')) {
+    writeResponse(res, response)
+    return
+  }
+
+  // check if directory exists
+  directory = './data/students/' + email
+  filename  = directory + '/password'
+  check = {
+    'validated': "no",
+    'type':      ""
+  }
+
+  // read file password file
+  fs.readFile(filename,
+    // callback function that is called when reading file is done
+    function(err, data) {
+      // error will reading password file
+      if (!err) {
+        real_password = data.toString('utf8').trim()
+        check.validated = (password === real_password ? "yes" : "no")
+
+        // read file type
+        fs.readFile(directory + '/type',
+          // callback function that is called when reading file is done
+          function(err, data) {
+            // error will reading password file
+            if (!err) {
+              type = data.toString('utf8').trim()
+              check.type = type
+
+              if (check.validated == "no") {
+                response.msg = "don't mess with me"
+                writeResponse(res, response)
+                return
+              }
+
+              if (check.type == "Ausbilder" && typeNew == "Administrator") {
+                response.msg = "no permission"
+                writeResponse(res, response)
+                return
+              }
+
+              // check if directory exists
+              directory = './data/students/' + emailNew
+              filename  = directory + '/password'
+
+              // check if directory exists
+              if (!fs.existsSync(directory)) {
+                // create directory
+                fs.mkdirSync(directory)
+                fs.mkdirSync(directory + '/certificates')
+
+                // write password file
+                var writeStream = fs.createWriteStream(filename)
+                writeStream.write(passwordNew)
+                writeStream.end()
+
+                // write permission file
+                writeStream = fs.createWriteStream(directory + '/type')
+                writeStream.write(typeNew)
+                writeStream.end()
+
+                response.msg = "account created"
+                response.email = emailNew
+                response.password = passwordNew
+                writeResponse(res, response)
+                return
+              }
+              // if account already exists
+              else {
+                response.msg = "account already exists"
+                writeResponse(res, response)
+                return
+              }
+            }
+          }
+        )
+      }
+    }
+  )
+}
+
+//------------------------------------------------------------------------------
+
 function login(req, res) {
   email    = req.body.email    ? req.body.email    : ""
   password = req.body.password ? req.body.password : ""
@@ -351,6 +455,7 @@ app.post( '/quiz',                                    saveQuiz)
 app.post('/certificate',                              saveCertificate)
 app.post('/loadcertificate',                          loadCertificate)
 app.post('/changepassword',                           changePassword)
+app.post('/createaccount',                            createAccount)
 
 server = app.listen(port, () => console.log(`Server listening on port ${port}!`))
 server.timeout = 5000

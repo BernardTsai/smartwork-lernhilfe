@@ -84,7 +84,7 @@ Vue.component( 'settings-password',
 
           <div class="form-group">
             <label for="inputNewPassword2">Neues Passwort</label>
-            <input type="password" class="form-control" id="inputNewPassword2" placeholder="Neues Passwort">
+            <input type="password" class="form-control validate" id="inputNewPassword2" placeholder="Neues Passwort">
             <small id="confirmNewPasswordHelp" class="form-text text-muted">Bestätigen Sie Ihr neues Passwort, indem Sie es erneut eingeben.</small>
           </div>
 
