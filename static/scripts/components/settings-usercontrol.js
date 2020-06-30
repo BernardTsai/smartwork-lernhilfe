@@ -2,6 +2,14 @@ Vue.component( 'settings-usercontrol',
   {
     props:    ['model'],
     methods: {
+      getUsers: function() {
+        // needed for authentication (not working yet)
+//        var params  = JSON.stringify( { email: model.email, password: model.password } )
+        this.users = loadData('POST', '/getallusers'/*, params*/);
+
+//        console.log(this.users)
+      },
+
       addUser: function() {
         this.form.email = $("#inputEmail").val();
         this.form.type = $("#userType").val();
@@ -57,8 +65,12 @@ Vue.component( 'settings-usercontrol',
           email: '',
           password: '',
           type: ''
-        }
+        },
+        users: {}
       }
+    },
+    beforeMount() {
+      this.getUsers()
     },
     template: `
       <div id="settings-usercontrol" class="container">
@@ -160,7 +172,7 @@ Vue.component( 'settings-usercontrol',
 
 
         <!-- HIER VLLT ALLE NUTZER ANZEIGEN UND BEIM ANKLCKEN EINE NUTZERS DIE OPTIONEN FUER DIESEN ANZEIGEN. ZB. LOESCHEN, PW RESET ETC. -->
-        <div class="card my-3 mx-auto" style="max-width: 540px;">
+        <div class="card my-3 mx-auto" style="max-width: 540px;" @click="getUsers()">
           <div class="row no-gutters">
             <div class="col-md-2 my-auto">
               <img src="images/logo.png" class="card-img p-1" alt="LOGO">
@@ -176,17 +188,18 @@ Vue.component( 'settings-usercontrol',
           </div>
         </div>
 
+        <!-- not working because of.. reasons.. -->
         <!-- loop over all professions
-        <div v-for="(profession, index) in model.materials.professions" class="card my-3 mx-auto" style="max-width: 540px;" @click="select(index)">
+        <div v-for="(user, index) in this.users" class="card my-3 mx-auto" style="max-width: 540px;">
           <div class="row no-gutters">
             <div class="col-md-2 my-auto">
-              <img :src="'../../images/' + profession.image" class="card-img p-1" :alt="profession.profession">
+              <img src="images/logo.png" class="card-img p-1" alt="USER-LOGO">
             </div>
             <div class="col-md-10">
               <div class="card-body">
-                <h5 class="card-title">{{profession.title}}</h5>
+                <h5 class="card-title">{{this.users[index]}}</h5>
                 <p class="card-text">
-                  {{profession.description}}
+                  {{this.users[index]}}
                 </p>
               </div>
             </div>

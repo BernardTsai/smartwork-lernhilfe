@@ -350,6 +350,33 @@ function changePassword(req, res) {
 
 //------------------------------------------------------------------------------
 
+function getAllUsers(req, res) {
+  // TODO: validate requesting user first
+
+
+  directory = './data/students/'
+
+  fs.readdir(directory,
+    function (err, files) {
+      if (err) {
+        console.log('Unable to scan directory: ' + err)
+        writeResponse(res, {err: err.toString()})
+        return
+      }
+      if (files) {
+        //listing all files using forEach
+        files.forEach(function (file) {
+          // ToDo:
+          // Maybe check certificate or something..
+        })
+      }
+      writeResponse(res, files)
+    }
+  )
+}
+
+//------------------------------------------------------------------------------
+
 function saveCertificate(req, res) {
   var certs  = req.body.certs  ? req.body.certs  : ""
   var email = req.body.email ? req.body.email : ""
@@ -468,6 +495,7 @@ app.post('/certificate',                              saveCertificate)
 app.post('/loadcertificate',                          loadCertificate)
 app.post('/changepassword',                           changePassword)
 app.post('/createaccount',                            createAccount)
+app.post('/getallusers',                              getAllUsers)
 
 server = app.listen(port, () => console.log(`Server listening on port ${port}!`))
 server.timeout = 5000
