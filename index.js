@@ -137,7 +137,7 @@ function createAccount(req, res) {
     'type':      ""
   }
 
-  // read file password file
+  // read file password-file
   fs.readFile(filename,
     // callback function that is called when reading file is done
     function(err, data) {
@@ -146,7 +146,7 @@ function createAccount(req, res) {
         real_password = data.toString('utf8').trim()
         check.validated = (password === real_password ? "yes" : "no")
 
-        // read file type
+        // read file type-file
         fs.readFile(directory + '/type',
           // callback function that is called when reading file is done
           function(err, data) {
@@ -157,6 +157,12 @@ function createAccount(req, res) {
 
               if (check.validated == "no") {
                 response.msg = "don't mess with me"
+                writeResponse(res, response)
+                return
+              }
+
+              if (check.type == "Schüler/Azubi") {
+                response.msg = "no permission"
                 writeResponse(res, response)
                 return
               }
@@ -230,16 +236,22 @@ function login(req, res) {
 
   // check if directory exists
   if (!fs.existsSync(directory)) {
+// commented out - replaced by account creation function
     // create directory
-    fs.mkdirSync(directory)
-    fs.mkdirSync(directory + '/certificates')
+//    fs.mkdirSync(directory)
+//    fs.mkdirSync(directory + '/certificates')
 
     // write password file
-    var writeStream = fs.createWriteStream(filename)
-    writeStream.write(password)
-    writeStream.end()
+//    var writeStream = fs.createWriteStream(filename)
+//    writeStream.write(password)
+//    writeStream.end()
 
-    response.validated = "yes"
+//    response.validated = "yes"
+//    writeResponse(res, response)
+//    return
+
+    // account not found
+    response.validated = "no"
     writeResponse(res, response)
     return
   }

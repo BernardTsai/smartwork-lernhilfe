@@ -5,8 +5,8 @@ Vue.component( 'settings-usercontrol',
       addUser: function() {
         this.form.email = $("#inputEmail").val();
         this.form.type = $("#userType").val();
-        console.log(this.form.email);
-        console.log(this.form.type);
+//        console.log(this.form.email);
+//        console.log(this.form.type);
 
         // generate password function
         function generatePassword() {
@@ -21,34 +21,34 @@ Vue.component( 'settings-usercontrol',
 
         this.form.password = generatePassword();
 
-        // show login credentials
-        $("#loginData").modal()
+        var request = new XMLHttpRequest();
 
-//        if (this.compareNewPasswords() && this.comparePasswords()) {
-//          var request = new XMLHttpRequest();
+        // callback function to process the results
+        function createAccountCB() {
+          if (this.readyState == 4) {
+            // check status
+            if (this.status != 200) {
+              return
+            }
+//            console.log(request.responseText)
+            result = jsyaml.safeLoad(request.responseText)
 
-          // callback function to process the results
-//          function saveCertificateCB() {
-//            if (this.readyState == 4) {
-              // check status
-//              if (this.status != 200) {
-//                return
-//              }
-              //console.log(request.responseText)
-//              result = jsyaml.safeLoad(request.responseText)
-//              model.validated = result.validated
-//              model.password = result.password
+            if (result.msg == "account created") {
+              // show login credentials
+              $("#loginData").modal()
+            }
+            else {
+              alert("Accounterstellung fehlgeschlagen!");
+              $("#userAddModalCenter").modal()
+            }
+          }
+        }
 
-//              if (result.success == "yes") alert("Passwort erfolgreich ge      ndert!");
-//            }
-//          }
-
-//          var params  = JSON.stringify( {email: model.email, oldpassword: this.form.oldPw, newpassword: this.form.newPw1} )
-//          request.onreadystatechange = saveCertificateCB
-//          request.open('POST', '/changepassword', true);  // asynchronous request
-//          request.setRequestHeader('Content-type', 'application/json');
-//          request.send(params);
-//        }
+        var params  = JSON.stringify( {emailNew: this.form.email, passwordNew: this.form.password, typeNew: this.form.type, email: model.email, password: model.password} )
+        request.onreadystatechange = createAccountCB
+        request.open('POST', '/createAccount', true);  // asynchronous request
+        request.setRequestHeader('Content-type', 'application/json');
+        request.send(params);
       }
     },
     data() {
@@ -124,6 +124,8 @@ Vue.component( 'settings-usercontrol',
             </div>
           </div>
         </div>
+
+        <hr style="max-width: 540px;">
 
         <!-- Modal mit Logindaten nach erstellung des Nutzers -->
         <div class="modal fade" id="loginData" tabindex="-1" role="dialog" aria-labelledby="loginDataModalCenterTitle" aria-hidden="true">
