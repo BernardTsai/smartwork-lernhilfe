@@ -2,10 +2,15 @@ Vue.component( 'settings-usercontrol',
   {
     props:    ['model'],
     methods: {
+      selectUser: function(index) {
+        this.users.select = index;
+        $("#userOptions").modal();
+      },
+
       getUsers: function() {
         // needed for authentication (not working yet)
 //        var params  = JSON.stringify( { email: model.email, password: model.password } )
-        this.users = loadData('POST', '/getallusers'/*, params*/);
+        this.users.user = loadData('POST', '/getallusers'/*, params*/);
 
 //        console.log(this.users)
       },
@@ -66,7 +71,10 @@ Vue.component( 'settings-usercontrol',
           password: '',
           type: ''
         },
-        users: {}
+        users: {
+          user: {},
+          select: -1
+        }
       }
     },
     beforeMount() {
@@ -77,11 +85,11 @@ Vue.component( 'settings-usercontrol',
 
         <h3 class="text-center">Benutzerverwaltung</h3>
 
-        <!-- Button trigger modal -->
+        <!-- trigger modal account creation-->
         <div class="card my-3 mx-auto" style="max-width: 540px;" data-toggle="modal" data-target="#userAddModalCenter">
           <div class="row no-gutters">
             <div class="col-md-2 my-auto">
-              <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/plus-square.svg" class="card-img p-3" alt="LOGO">
+              <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user-plus.svg" class="card-img p-3" alt="LOGO">
             </div>
             <div class="col-md-10">
               <div class="card-body">
@@ -94,7 +102,12 @@ Vue.component( 'settings-usercontrol',
           </div>
         </div>
 
-        <!-- Modal -->
+        <br>
+        <hr style="max-width: 540px;">
+        <br>
+        <h3 class="text-center">Vorhandene Benutzer</h3>
+
+        <!-- Modal for user account creation -->
         <div class="modal fade" id="userAddModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -137,9 +150,7 @@ Vue.component( 'settings-usercontrol',
           </div>
         </div>
 
-        <hr style="max-width: 540px;">
-
-        <!-- Modal mit Logindaten nach erstellung des Nutzers -->
+        <!-- Modal to show new login credentials -->
         <div class="modal fade" id="loginData" tabindex="-1" role="dialog" aria-labelledby="loginDataModalCenterTitle" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -169,43 +180,65 @@ Vue.component( 'settings-usercontrol',
           </div>
         </div>
 
+        <!-- Modal for user options -->
+        <div class="modal fade" id="userOptions" tabindex="-1" role="dialog" aria-labelledby="userOptionsModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="userOptionsLongTitle">Optionen f&uumlr {{this.users.user[this.users.select]}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="container-fluid">
 
+                  <label for="pwReset"><u>Passwort zur&uumlcksetzen:</u></label>
+                  <div id="pwReset" class="row">
+                    <div class="col-md-4">
+                      <button type="button" class="btn btn-primary">Reset</button>
+                    </div>
+                    <div class="col-md-8 ml-auto">
+                      <input type="text" class="form-control" :value="this.form.email" disabled>
+                      <small id="accountnameHelp" class="form-text text-muted">Dies ist das neue Passwort.</small>
+                    </div>
+                  </div>
 
-        <!-- HIER VLLT ALLE NUTZER ANZEIGEN UND BEIM ANKLCKEN EINE NUTZERS DIE OPTIONEN FUER DIESEN ANZEIGEN. ZB. LOESCHEN, PW RESET ETC. -->
-        <div class="card my-3 mx-auto" style="max-width: 540px;" @click="getUsers()">
-          <div class="row no-gutters">
-            <div class="col-md-2 my-auto">
-              <img src="images/logo.png" class="card-img p-1" alt="LOGO">
-            </div>
-            <div class="col-md-10">
-              <div class="card-body">
-                <h5 class="card-title">Benutzer entfernen</h5>
-                <p class="card-text">
-                  L&oumlscht ein Benutzeraccount mit allen zugeh&oumlrigen Daten
-                </p>
+                  <hr>
+
+                  <label for="deleteAcc"><u>Account l&oumlschen:</u></label>
+                  <div id="deleteAcc" class="row">
+                    <div class="col-md-10">
+                      <button type="button" class="btn btn-primary">L&oumlschen</button>
+                      <small class="form-text text-muted">L&oumlscht den gesamten Account samt aller zugeh&oumlrigen Daten.</small>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Schlie&szligen</button>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- not working because of.. reasons.. -->
-        <!-- loop over all professions
-        <div v-for="(user, index) in this.users" class="card my-3 mx-auto" style="max-width: 540px;">
+        <!-- loop over all users -->
+        <div v-for="(user, index) in this.users.user" class="card my-3 mx-auto" style="max-width: 540px;" @click="selectUser(index)">
           <div class="row no-gutters">
             <div class="col-md-2 my-auto">
-              <img src="images/logo.png" class="card-img p-1" alt="USER-LOGO">
+              <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user.svg" class="card-img p-3" alt="USER-LOGO">
             </div>
             <div class="col-md-10">
               <div class="card-body">
-                <h5 class="card-title">{{this.users[index]}}</h5>
+                <h5 class="card-title">{{user}}</h5>
                 <p class="card-text">
-                  {{this.users[index]}}
+                  {{user}}
                 </p>
               </div>
             </div>
           </div>
         </div>
-        -->
 
       </div>`
   }
