@@ -2,6 +2,49 @@ Vue.component( 'settings-usercontrol',
   {
     props:    ['model'],
     methods: {
+      // generate password function
+      generatePassword: function() {
+        var length = 8,
+        charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+        retVal = "";
+        for (var i = 0, n = charset.length; i < length; ++i) {
+          retVal += charset.charAt(Math.floor(Math.random() * n));
+        }
+        return retVal;
+      },
+
+      pwReset: function() {
+        var password = this.generatePassword();
+
+        var request = new XMLHttpRequest();
+
+        // callback function to process the results
+        function createAccountCB() {
+          if (this.readyState == 4) {
+            // check status
+            if (this.status != 200) {
+              return
+            }
+//            console.log(request.responseText)
+            result = jsyaml.safeLoad(request.responseText)
+
+            if (result.msg == "success") {
+              // show login credentials
+              $("#pwResetNewPw").val(result.password);
+            }
+            else {
+              alert("Reset fehlgeschlagen!");
+            }
+          }
+        }
+
+        var params  = JSON.stringify( {emailReq: this.model.email, passwordReq: this.model.password, emailTar: this.users.user[this.users.select], passwordTar: password} )
+        request.onreadystatechange = createAccountCB
+        request.open('POST', '/passwordReset', true);  // asynchronous request
+        request.setRequestHeader('Content-type', 'application/json');
+        request.send(params);
+      },
+
       selectUser: function(index) {
         this.users.select = index;
         $("#userOptions").modal();
@@ -22,17 +65,17 @@ Vue.component( 'settings-usercontrol',
 //        console.log(this.form.type);
 
         // generate password function
-        function generatePassword() {
-          var length = 8,
-          charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
-          retVal = "";
-          for (var i = 0, n = charset.length; i < length; ++i) {
-            retVal += charset.charAt(Math.floor(Math.random() * n));
-          }
-          return retVal;
-        }
+//        function generatePassword() {
+//          var length = 8,
+//          charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+//          retVal = "";
+//          for (var i = 0, n = charset.length; i < length; ++i) {
+//            retVal += charset.charAt(Math.floor(Math.random() * n));
+//          }
+//          return retVal;
+//        }
 
-        this.form.password = generatePassword();
+        this.form.password = this.generatePassword();
 
         var request = new XMLHttpRequest();
 
@@ -196,10 +239,10 @@ Vue.component( 'settings-usercontrol',
                   <label for="pwReset"><u>Passwort zur&uumlcksetzen:</u></label>
                   <div id="pwReset" class="row">
                     <div class="col-md-4">
-                      <button type="button" class="btn btn-primary">Reset</button>
+                      <button type="button" class="btn btn-primary" @click="pwReset()">Reset</button>
                     </div>
                     <div class="col-md-8 ml-auto">
-                      <input type="text" class="form-control" :value="this.form.email" disabled>
+                      <input id="pwResetNewPw" type="text" class="form-control" value="" disabled>
                       <small id="accountnameHelp" class="form-text text-muted">Dies ist das neue Passwort.</small>
                     </div>
                   </div>
