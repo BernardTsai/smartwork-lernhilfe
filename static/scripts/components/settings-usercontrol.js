@@ -260,7 +260,7 @@ Vue.component( 'settings-usercontrol',
                 </div>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Schlie&szligen</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
               </div>
             </div>
           </div>

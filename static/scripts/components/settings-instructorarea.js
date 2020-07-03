@@ -29,7 +29,7 @@ Vue.component( 'settings-instructorarea',
           </div>
         </div>
 
-        <div class="card my-3 mx-auto" style="max-width: 540px;">
+        <div class="card my-3 mx-auto" style="max-width: 540px;" @click="this.model.submode='settings-userstatus'">
           <div class="row no-gutters">
             <div class="col-md-2 my-auto">
               <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/chart-area.svg" class="card-img p-3" alt="LOGO">

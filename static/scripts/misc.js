@@ -18,7 +18,9 @@ function loadData(method, url, params) {
 }
 
 // loadCerts: get list of all certificates
-function loadCerts() {
+function loadCerts(email) {
+  var paramEmail  = email ? email : model.email
+
   var request = new XMLHttpRequest();
   // callback function to process the results
   function loadCertCB() {
@@ -40,7 +42,7 @@ function loadCerts() {
     }
   }
   // issue request to server backend
-  var params  = JSON.stringify( { cert: '', email: model.email } )
+  var params  = JSON.stringify( { cert: '', email: paramEmail } )
 
   request.onreadystatechange = loadCertCB
   request.open('POST', '/loadcertificate', false);  // synchronous request
