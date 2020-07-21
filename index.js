@@ -2,6 +2,7 @@ const yaml    = require('js-yaml')
 const express = require('express')
 const parser  = require('body-parser')
 const fs      = require('fs')
+const del     = require('del')
 const app     = express()
 const port    = 8080
 
@@ -423,6 +424,7 @@ function passwordReset(req, res) {
                       return
                     }
 
+                    // only Admin and instructors have permission to reset pw
                     if (check.type == "Ausbilder" || check.type == "Administrator") {
 
                       // check if directory exists
@@ -442,7 +444,143 @@ function passwordReset(req, res) {
                         writeResponse(res, response)
                         return
                       }
-                      // if account already exists
+                      // if account doesn't exist
+                      else {
+                        response.msg = "error: Account not found!"
+                        writeResponse(res, response)
+                        return
+                      }
+                    }
+                    else {
+                      response.msg = "no permission"
+                      writeResponse(res, response)
+                      return
+                    }
+                  }
+                }
+              )
+            }
+          }
+        )
+      }
+    }
+  )
+}
+
+//------------------------------------------------------------------------------
+
+function deleteAccount(req, res) {
+  emailReq       = req.body.emailReq    ? req.body.emailReq    : ""
+  passwordReq    = req.body.passwordReq ? req.body.passwordReq : ""
+  emailTar       = req.body.emailTar    ? req.body.emailTar    : ""
+  response = {
+    'email':     emailReq,
+    'password':  passwordReq,
+    'msg':       "error"
+  }
+
+  // check if email is valid and password has been defined
+  if (emailReq == '' || passwordReq == '' || emailReq.includes('..') || emailReq.includes('/')) {
+    writeResponse(res, response)
+    return
+  }
+
+  // check if emailNew is valid and passwordNew has been defined
+  if (emailTar == '' || emailTar.includes('..') || emailTar.includes('/')) {
+    writeResponse(res, response)
+    return
+  }
+
+  // check if directory exists
+  directory = './data/students/' + emailReq
+  filename  = directory + '/password'
+  check = {
+    'validated': "no",
+    'type':      ""
+  }
+
+  // read file password-file of requesting user
+  fs.readFile(filename,
+    // callback function that is called when reading file is done
+    function(err, data) {
+      // error will reading password file
+      if (!err) {
+        real_password = data.toString('utf8').trim()
+        check.validated = (passwordReq === real_password ? "yes" : "no")
+
+        // read file type-file of requesting user
+        fs.readFile(directory + '/type',
+          // callback function that is called when reading file is done
+          function(err, data) {
+            // error will reading type file
+            if (!err) {
+              type = data.toString('utf8').trim()
+              check.type = type
+
+              if (check.validated == "no") {
+                response.msg = "don't mess with me!"
+                writeResponse(res, response)
+                return
+              }
+
+              // maybe check if user exists first
+
+              // check type of target user
+              directory = './data/students/' + emailTar
+              filename  = directory + '/type'
+
+              fs.readFile(filename,
+                // callback function that is called when reading file is done
+                function(err, data) {
+                  // error will reading type file
+                  if (!err) {
+                    tarType = data.toString('utf8').trim()
+
+                    // stop others from deleting an Admin account
+                    if (tarType == "Administrator" && check.type == "Ausbilder") {
+                      response.msg = "no permission"
+                      writeResponse(res, response)
+                      return
+                    }
+
+                    // only allow deletion if permissions are granted
+                    if (check.type == "Ausbilder" || check.type == "Administrator") {
+
+                      // check if directory exists
+                      directory = './data/students/' + emailTar
+
+                      // check if directory exists
+                      if (fs.existsSync(directory)) {
+
+                        // delete directory recursively
+                        (async () => {
+                          try {
+                            await del(directory);
+
+                            console.log(`${directory} is deleted!`);
+
+                            response.msg = "success"
+                            response.email = ""
+                            response.password = ""
+
+                            writeResponse(res, response)
+                            return
+                          }
+                          catch (err) {
+                            console.error(`Error while deleting ${directory}.`);
+                            console.error({err: err.toString()});
+
+                            response.msg = "failed"
+                            response.email = ""
+                            response.password = ""
+
+                            writeResponse(res, response)
+                            return
+                          }
+                        })();
+
+                      }
+                      // if account doesn't exist
                       else {
                         response.msg = "error: Account not found!"
                         writeResponse(res, response)
@@ -614,6 +752,7 @@ app.post('/changepassword',                           changePassword)
 app.post('/createaccount',                            createAccount)
 app.post('/getallusers',                              getAllUsers)
 app.post('/passwordreset',                            passwordReset)
+app.post('/deleteaccount',                            deleteAccount)
 
 server = app.listen(port, () => console.log(`Server listening on port ${port}!`))
 server.timeout = 5000

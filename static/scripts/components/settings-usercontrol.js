@@ -2,6 +2,13 @@ Vue.component( 'settings-usercontrol',
   {
     props:    ['model'],
     methods: {
+      // request list of all registered users from backend
+      getUsers: function() {
+//        needed for authentication (not working yet)
+//        var params  = JSON.stringify( { email: model.email, password: model.password } )
+        this.users.user = loadData('POST', '/getallusers'/*, params*/);
+      },
+
       // generate password function
       generatePassword: function() {
         var length = 8,
@@ -45,35 +52,48 @@ Vue.component( 'settings-usercontrol',
         request.send(params);
       },
 
+      // deletes user account with all data
+      rmUser: function() {
+        var request = new XMLHttpRequest();
+
+        // callback function to process the results
+        function rmAccountCB() {
+          if (this.readyState == 4) {
+            // check status
+            if (this.status != 200) {
+              return
+            }
+//            console.log(request.responseText)
+            result = jsyaml.safeLoad(request.responseText)
+
+            if (result.msg == "success") {
+              // reload Users
+              // doesn't work because of reasons..
+              //this.getUsers();
+            }
+            else {
+              alert("L&oumlschen fehlgeschlagen!");
+            }
+          }
+        }
+
+        var params  = JSON.stringify( {emailReq: this.model.email, passwordReq: this.model.password, emailTar: this.users.user[this.users.select]} )
+        request.onreadystatechange = rmAccountCB
+        request.open('POST', '/deleteaccount', true);  // asynchronous request
+        request.setRequestHeader('Content-type', 'application/json');
+        request.send(params);
+      },
+
+      // opens modal for selected user
       selectUser: function(index) {
         this.users.select = index;
         $("#userOptions").modal();
       },
 
-      getUsers: function() {
-        // needed for authentication (not working yet)
-//        var params  = JSON.stringify( { email: model.email, password: model.password } )
-        this.users.user = loadData('POST', '/getallusers'/*, params*/);
-
-//        console.log(this.users)
-      },
-
+      // create new user
       addUser: function() {
         this.form.email = $("#inputEmail").val();
         this.form.type = $("#userType").val();
-//        console.log(this.form.email);
-//        console.log(this.form.type);
-
-        // generate password function
-//        function generatePassword() {
-//          var length = 8,
-//          charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
-//          retVal = "";
-//          for (var i = 0, n = charset.length; i < length; ++i) {
-//            retVal += charset.charAt(Math.floor(Math.random() * n));
-//          }
-//          return retVal;
-//        }
 
         this.form.password = this.generatePassword();
 
@@ -252,7 +272,7 @@ Vue.component( 'settings-usercontrol',
                   <label for="deleteAcc"><u>Account l&oumlschen:</u></label>
                   <div id="deleteAcc" class="row">
                     <div class="col-md-10">
-                      <button type="button" class="btn btn-primary">L&oumlschen</button>
+                      <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#confirm-delete">L&oumlschen</button>
                       <small class="form-text text-muted">L&oumlscht den gesamten Account samt aller zugeh&oumlrigen Daten.</small>
                     </div>
                   </div>
@@ -261,6 +281,32 @@ Vue.component( 'settings-usercontrol',
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- modal for delete confirmation -->
+        <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="modalLongTitle">L&oumlschen von {{this.users.user[this.users.select]}} best&aumltigen</h5>
+                <button type="button" class="close" data-dismiss="modal" data-toggle="modal" data-target="#userOptions" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+
+                <div class="px-3 text-danger">
+                  <p class="font-weight-bold">ACHTUNG:</p>
+                  <p> Der gesamte Account wird vollständig gel&oumlscht. Diese Aktion kann nicht r&uumlckg&aumlngig gemacht werden!</p>
+                </div>
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" data-toggle="modal" data-target="#userOptions">Abbrechen</button>
+                <a class="btn btn-danger btn-ok" data-dismiss="modal" @click="rmUser()">L&oumlschen</a>
               </div>
             </div>
           </div>
