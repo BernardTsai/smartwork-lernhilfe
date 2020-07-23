@@ -608,6 +608,7 @@ function deleteAccount(req, res) {
 function getAllUsers(req, res) {
   // TODO: validate requesting user first
 
+  response = {}
 
   directory = './data/students/'
 
@@ -620,12 +621,25 @@ function getAllUsers(req, res) {
       }
       if (files) {
         //listing all files using forEach
-        files.forEach(function (file) {
-          // ToDo:
-          // Maybe check certificate or something..
+        response = files
+        files.forEach(function (file, index) {
+          // read type file of user
+          fs.readFile(directory + file + '/type',
+            // callback function that is called when reading file is done
+            function (err, data) {
+              // error will reading type files
+              if (!err) {
+                response[index] = {
+                  'email': file,
+                  'type':  data.toString('utf8').trim()
+                }
+                // wait with writeResponse until response is filled
+                if (index == response.length-1) writeResponse(res, response);
+              }
+            }
+          )
         })
       }
-      writeResponse(res, files)
     }
   )
 }

@@ -8,7 +8,9 @@ Vue.component( 'settings-userstatus',
 
       selectUser: function(index) {
         this.users.select = index;
-        loadCerts(this.users.user[index]);
+        // because of error when trying to access array from modal
+        this.users.emailSel = this.users.user[index].email;
+        loadCerts(this.users.user[index].email);
         getProfessions();
         // show certs in modal
         $("#certs").modal();
@@ -34,7 +36,8 @@ Vue.component( 'settings-userstatus',
       return {
         users: {
           user: {},
-          select: -1
+          select: -1,
+          emailSel: ''
         }
       }
     },
@@ -56,7 +59,7 @@ Vue.component( 'settings-userstatus',
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="certsLongTitle">Lernfortschritt von {{this.users.user[this.users.select]}}</h5>
+                <h5 class="modal-title" id="certsLongTitle">Lernfortschritt von {{this.users.emailSel}}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -96,9 +99,9 @@ Vue.component( 'settings-userstatus',
             </div>
             <div class="col-md-10">
               <div class="card-body">
-                <h5 class="card-title">{{user}}</h5>
+                <h5 class="card-title">{{user.email}}</h5>
                 <p class="card-text">
-                  {{user}}
+                  {{user.type}}
                 </p>
               </div>
             </div>

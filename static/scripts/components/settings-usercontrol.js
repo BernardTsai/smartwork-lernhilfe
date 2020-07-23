@@ -7,6 +7,7 @@ Vue.component( 'settings-usercontrol',
 //        needed for authentication (not working yet)
 //        var params  = JSON.stringify( { email: model.email, password: model.password } )
         this.users.user = loadData('POST', '/getallusers'/*, params*/);
+        console.log(this.users);
       },
 
       // generate password function
@@ -26,7 +27,7 @@ Vue.component( 'settings-usercontrol',
         var request = new XMLHttpRequest();
 
         // callback function to process the results
-        function createAccountCB() {
+        function pwResetCB() {
           if (this.readyState == 4) {
             // check status
             if (this.status != 200) {
@@ -45,8 +46,8 @@ Vue.component( 'settings-usercontrol',
           }
         }
 
-        var params  = JSON.stringify( {emailReq: this.model.email, passwordReq: this.model.password, emailTar: this.users.user[this.users.select], passwordTar: password} )
-        request.onreadystatechange = createAccountCB
+        var params  = JSON.stringify( {emailReq: this.model.email, passwordReq: this.model.password, emailTar: this.users.user[this.users.select].email, passwordTar: password} )
+        request.onreadystatechange = pwResetCB
         request.open('POST', '/passwordReset', true);  // asynchronous request
         request.setRequestHeader('Content-type', 'application/json');
         request.send(params);
@@ -55,6 +56,7 @@ Vue.component( 'settings-usercontrol',
       // deletes user account with all data
       rmUser: function() {
         var request = new XMLHttpRequest();
+        var self = this;
 
         // callback function to process the results
         function rmAccountCB() {
@@ -69,7 +71,7 @@ Vue.component( 'settings-usercontrol',
             if (result.msg == "success") {
               // reload Users
               // doesn't work because of reasons..
-              //this.getUsers();
+              self.getUsers();
             }
             else {
               alert("L&oumlschen fehlgeschlagen!");
@@ -77,7 +79,7 @@ Vue.component( 'settings-usercontrol',
           }
         }
 
-        var params  = JSON.stringify( {emailReq: this.model.email, passwordReq: this.model.password, emailTar: this.users.user[this.users.select]} )
+        var params  = JSON.stringify( {emailReq: this.model.email, passwordReq: this.model.password, emailTar: this.users.user[this.users.select].email} )
         request.onreadystatechange = rmAccountCB
         request.open('POST', '/deleteaccount', true);  // asynchronous request
         request.setRequestHeader('Content-type', 'application/json');
@@ -87,6 +89,8 @@ Vue.component( 'settings-usercontrol',
       // opens modal for selected user
       selectUser: function(index) {
         this.users.select = index;
+        // because of error when trying to access array from modal
+        this.users.emailSel = this.users.user[index].email;
         $("#userOptions").modal();
       },
 
@@ -98,6 +102,7 @@ Vue.component( 'settings-usercontrol',
         this.form.password = this.generatePassword();
 
         var request = new XMLHttpRequest();
+        var self = this;
 
         // callback function to process the results
         function createAccountCB() {
@@ -112,6 +117,7 @@ Vue.component( 'settings-usercontrol',
             if (result.msg == "account created") {
               // show login credentials
               $("#loginData").modal()
+              self.getUsers();
             }
             else {
               alert("Accounterstellung fehlgeschlagen!");
@@ -130,18 +136,24 @@ Vue.component( 'settings-usercontrol',
     data() {
       return {
         form: {
-          email: '',
+          email:    '',
           password: '',
-          type: ''
+          type:     ''
         },
         users: {
           user: {},
-          select: -1
+          select: -1,
+          emailSel: ''
         }
       }
     },
     beforeMount() {
       this.getUsers()
+    },
+    computed: {
+      user: function() {
+        return this.users.emailSel
+      }
     },
     template: `
       <div id="settings-usercontrol" class="container">
@@ -248,7 +260,7 @@ Vue.component( 'settings-usercontrol',
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="userOptionsLongTitle">Optionen f&uumlr {{this.users.user[this.users.select]}}</h5>
+                <h5 class="modal-title" id="userOptionsLongTitle">Optionen f&uumlr {{user}}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -291,7 +303,7 @@ Vue.component( 'settings-usercontrol',
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="modalLongTitle">L&oumlschen von {{this.users.user[this.users.select]}} best&aumltigen</h5>
+                <h5 class="modal-title" id="modalLongTitle">L&oumlschen von {{user}} best&aumltigen</h5>
                 <button type="button" class="close" data-dismiss="modal" data-toggle="modal" data-target="#userOptions" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -320,9 +332,9 @@ Vue.component( 'settings-usercontrol',
             </div>
             <div class="col-md-10">
               <div class="card-body">
-                <h5 class="card-title">{{user}}</h5>
+                <h5 class="card-title">{{user.email}}</h5>
                 <p class="card-text">
-                  {{user}}
+                  {{user.type}}
                 </p>
               </div>
             </div>
