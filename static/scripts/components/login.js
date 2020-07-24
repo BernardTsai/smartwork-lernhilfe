@@ -19,6 +19,7 @@ Vue.component( 'login',
 
             if (model.validated == 'yes') {
               model.mode = 'home'
+              model.type = result.type
             }
           }
         }

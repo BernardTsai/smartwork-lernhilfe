@@ -9,6 +9,7 @@ submode:       ""
 email:         "user@test.de"
 password:      "test"
 validated:     ""
+type:          ""
 tmp:           -1
 materials:     {}
 certificates:  {}

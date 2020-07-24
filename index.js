@@ -222,6 +222,7 @@ function login(req, res) {
   response = {
     'email':     email,
     'password':  password,
+    'type':      "",
     'validated': "no"
   }
 
@@ -237,20 +238,6 @@ function login(req, res) {
 
   // check if directory exists
   if (!fs.existsSync(directory)) {
-// commented out - replaced by account creation function
-    // create directory
-//    fs.mkdirSync(directory)
-//    fs.mkdirSync(directory + '/certificates')
-
-    // write password file
-//    var writeStream = fs.createWriteStream(filename)
-//    writeStream.write(password)
-//    writeStream.end()
-
-//    response.validated = "yes"
-//    writeResponse(res, response)
-//    return
-
     // account not found
     response.validated = "no"
     writeResponse(res, response)
@@ -265,8 +252,26 @@ function login(req, res) {
       if (!err) {
         real_password = data.toString('utf8').trim()
         response.validated = (password === real_password ? "yes" : "no")
+
+        // read type-file
+        fs.readFile(directory + '/type',
+          // callback function that is called when reading file is done
+          function(err, data) {
+            if (err) {
+              console.log(err)
+              writeResponse(res, {err: err.toString()})
+              return
+            }
+
+            if (data) {
+              response.type = data.toString('utf8').trim()
+            }
+            writeResponse(res, response)
+          }
+        )
+
       }
-      writeResponse(res, response)
+      //writeResponse(res, response)
     }
   )
 }
