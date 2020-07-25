@@ -651,6 +651,47 @@ function getAllUsers(req, res) {
 
 //------------------------------------------------------------------------------
 
+function getAllGroups(req, res) {
+  // TODO: validate requesting user first
+
+  response = {}
+
+  directory = './data/groups/'
+
+  fs.readdir(directory,
+    function (err, files) {
+      if (err) {
+        console.log('Unable to scan directory: ' + err)
+        writeResponse(res, {err: err.toString()})
+        return
+      }
+      if (files) {
+        //listing all files using forEach
+        response = files
+        files.forEach(function (file, index) {
+          // read group files
+          fs.readFile(directory + file,
+            // callback function that is called when reading file is done
+            function (err, data) {
+              // error will reading group file
+              if (!err) {
+                response[index] = {
+                  'groupName': file,
+                  'members':  data.toString('utf8')
+                }
+                // wait with writeResponse until response is filled
+                if (index == response.length-1) writeResponse(res, response);
+              }
+            }
+          )
+        })
+      }
+    }
+  )
+}
+
+//------------------------------------------------------------------------------
+
 function saveCertificate(req, res) {
   var certs  = req.body.certs  ? req.body.certs  : ""
   var email = req.body.email ? req.body.email : ""
@@ -772,6 +813,7 @@ app.post('/createaccount',                            createAccount)
 app.post('/getallusers',                              getAllUsers)
 app.post('/passwordreset',                            passwordReset)
 app.post('/deleteaccount',                            deleteAccount)
+app.post('/getallgroups',                             getAllGroups)
 
 server = app.listen(port, () => console.log(`Server listening on port ${port}!`))
 server.timeout = 5000

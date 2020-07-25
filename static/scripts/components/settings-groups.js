@@ -1,4 +1,4 @@
-Vue.component( 'settings-usercontrol',
+Vue.component( 'settings-groups',
   {
     props:    ['model'],
     methods: {
@@ -7,50 +7,24 @@ Vue.component( 'settings-usercontrol',
 //        needed for authentication (not working yet)
 //        var params  = JSON.stringify( { email: model.email, password: model.password } )
         this.users.user = loadData('POST', '/getallusers'/*, params*/);
-//        console.log(this.users);
       },
 
-      // generate password function
-      generatePassword: function() {
-        var length = 8,
-        charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
-        retVal = "";
-        for (var i = 0, n = charset.length; i < length; ++i) {
-          retVal += charset.charAt(Math.floor(Math.random() * n));
+      // request list of all groups from backend
+      getGroups: function() {
+//        needed for authentication (not working yet)
+//        var params  = JSON.stringify( { email: model.email, password: model.password } )
+        this.groups.group = loadData('POST', '/getallgroups'/*, params*/);
+        for (let group of this.groups.group) {
+          group.members = jsyaml.safeLoad(group.members);
         }
-        return retVal;
+//        console.log(this.groups);
       },
 
-      pwReset: function() {
-        var password = this.generatePassword();
-
-        var request = new XMLHttpRequest();
-
-        // callback function to process the results
-        function pwResetCB() {
-          if (this.readyState == 4) {
-            // check status
-            if (this.status != 200) {
-              return
-            }
-//            console.log(request.responseText)
-            result = jsyaml.safeLoad(request.responseText)
-
-            if (result.msg == "success") {
-              // show login credentials
-              $("#pwResetNewPw").val(result.password);
-            }
-            else {
-              alert("Reset fehlgeschlagen!");
-            }
-          }
-        }
-
-        var params  = JSON.stringify( {emailReq: this.model.email, passwordReq: this.model.password, emailTar: this.users.user[this.users.select].email, passwordTar: password} )
-        request.onreadystatechange = pwResetCB
-        request.open('POST', '/passwordReset', true);  // asynchronous request
-        request.setRequestHeader('Content-type', 'application/json');
-        request.send(params);
+      selectGroup: function(index) {
+        this.groups.select = index;
+        // because of error when trying to access array from modal
+        this.groups.groupTmp = this.groups.group[index]
+        $("#groupOptions").modal();
       },
 
       // deletes user account with all data
@@ -86,51 +60,28 @@ Vue.component( 'settings-usercontrol',
         request.send(params);
       },
 
-      // opens modal for selected user
+      // adds or removes user to/from array to later add users to a group
       selectUser: function(index) {
         this.users.select = index;
         // because of error when trying to access array from modal
         this.users.emailSel = this.users.user[index].email;
-        $("#userOptions").modal();
-      },
 
-      // create new user
-      addUser: function() {
-        this.form.email = $("#inputEmail").val();
-        this.form.type = $("#userType").val();
+        // visible effect of selection
+        var selUser = document.getElementById('selUser_'+index);
+        selUser.classList.toggle("bg-primary");
 
-        this.form.password = this.generatePassword();
-
-        var request = new XMLHttpRequest();
-        var self = this;
-
-        // callback function to process the results
-        function createAccountCB() {
-          if (this.readyState == 4) {
-            // check status
-            if (this.status != 200) {
-              return
-            }
-//            console.log(request.responseText)
-            result = jsyaml.safeLoad(request.responseText)
-
-            if (result.msg == "account created") {
-              // show login credentials
-              $("#loginData").modal()
-              self.getUsers();
-            }
-            else {
-              alert("Accounterstellung fehlgeschlagen!");
-              $("#userAddModalCenter").modal()
-            }
+        // fill array with selected users
+        if (this.groups.user.includes(this.users.user[index])) {
+          const arrIndex = this.groups.user.indexOf(this.users.user[index]);
+          if (arrIndex > -1) {
+            this.groups.user.splice(arrIndex, 1);
           }
+//          console.log(this.groups.user);
         }
-
-        var params  = JSON.stringify( {emailNew: this.form.email, passwordNew: this.form.password, typeNew: this.form.type, email: model.email, password: model.password} )
-        request.onreadystatechange = createAccountCB
-        request.open('POST', '/createAccount', true);  // asynchronous request
-        request.setRequestHeader('Content-type', 'application/json');
-        request.send(params);
+        else {
+          this.groups.user.push(this.users.user[index]);
+//          console.log(this.groups.user);
+        }
       }
     },
     data() {
@@ -144,11 +95,18 @@ Vue.component( 'settings-usercontrol',
           user: {},
           select: -1,
           emailSel: ''
+        },
+        groups: {
+          group: {},
+          groupTmp: {},
+          select: -1,
+          user: []
         }
       }
     },
     beforeMount() {
-      this.getUsers()
+      this.getUsers();
+      this.getGroups();
     },
     computed: {
       user: function() {
@@ -156,21 +114,21 @@ Vue.component( 'settings-usercontrol',
       }
     },
     template: `
-      <div id="settings-usercontrol" class="container">
+      <div id="settings-groups" class="container">
 
-        <h3 class="text-center">Benutzerverwaltung</h3>
+        <h3 class="text-center">Gruppenverwaltung</h3>
 
-        <!-- trigger modal account creation-->
-        <div class="card my-3 mx-auto" style="max-width: 540px;" data-toggle="modal" data-target="#userAddModalCenter">
+        <!-- trigger modal group creation-->
+        <div class="card my-3 mx-auto" style="max-width: 540px;" data-toggle="modal" data-target="#groupAddModalCenter">
           <div class="row no-gutters">
             <div class="col-md-2 my-auto">
               <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user-plus.svg" class="card-img p-3" alt="LOGO">
             </div>
             <div class="col-md-10">
               <div class="card-body">
-                <h5 class="card-title">Benutzer hinzuf&uumlgen</h5>
+                <h5 class="card-title">Neue Gruppe erstellen</h5>
                 <p class="card-text">
-                  Erstelle ein neuen Account f&uumlr einen Benutzer
+                  Erstellen einer neuen Gruppe und mit Zuweisung einer Lehrkraft
                 </p>
               </div>
             </div>
@@ -180,14 +138,14 @@ Vue.component( 'settings-usercontrol',
         <br>
         <hr style="max-width: 540px;">
         <br>
-        <h3 class="text-center">Vorhandene Benutzer</h3>
+        <h3 class="text-center">Vorhandene Gruppen</h3>
 
-        <!-- Modal for user account creation -->
-        <div class="modal fade" id="userAddModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <!-- Modal for group creation -->
+        <div class="modal fade" id="groupAddModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Neuen Benutzer erstellen</h5>
+                <h5 class="modal-title" id="exampleModalLongTitle">Neue Gruppe erstellen</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -195,17 +153,18 @@ Vue.component( 'settings-usercontrol',
               <div class="modal-body">
 
                 <div class="form-group">
-                  <label for="inputEmail">Email Adresse</label>
-                  <input id="inputEmail" type="email" class="form-control" placeholder="name@beispiel.de">
-                  <small id="emailHelp" class="form-text text-muted">Geben Sie die Email Adresse des neuen Nutzers ein.</small>
+                  <label for="inputGroupName">Gruppenname</label>
+                  <input id="inputGroupName" type="text" class="form-control" placeholder="Gruppe_1">
+                  <small id="groupNameHelp" class="form-text text-muted">Geben Sie einen Namen f&uumlr die neue Gruppe ein.</small>
                 </div>
 
                 <div class="form-group">
-                  <label for="inputNewPassword">Neues Passwort</label>
-                  <input type="password" class="form-control" id="inputNewPassword" value="Neues Passwort" disabled>
-                  <small id="newPasswordHelp" class="form-text text-muted">Das Passwort wird automatisch generiert und nach dem best&aumltigen angezeigt.</small>
+                  <label for="addToGroup">Nutzer hinzuf&uumlgen</label>
+                  <button id="addToGroup" type="button" class="btn btn-primary" data-toggle="modal" data-target="#userSelect">Nutzer ausw&aumlhlen</button>
+                  <small id="addToGroupHelp" class="form-text text-muted">W&aumlhlen Sie aus der List die Nutzer aus, die der Gruppe hinzugef&uumlgt werden sollen.</small>
                 </div>
 
+                <!--
                 <div class="form-group">
                   <label for="userType">Nutzerart</label>
                   <select class="form-control" id="userType">
@@ -215,6 +174,7 @@ Vue.component( 'settings-usercontrol',
                   </select>
                   <small id="usertypeHelp" class="form-text text-muted">W&aumlhlen Sie aus, welchem Typ der neue Nutzer zugeordnet werden soll.</small>
                 </div>
+                -->
 
               </div>
               <div class="modal-footer">
@@ -225,53 +185,83 @@ Vue.component( 'settings-usercontrol',
           </div>
         </div>
 
-        <!-- Modal to show new login credentials -->
-        <div class="modal fade" id="loginData" tabindex="-1" role="dialog" aria-labelledby="loginDataModalCenterTitle" aria-hidden="true">
+        <!-- Modal for user select -->
+        <div class="modal fade" id="userSelect" tabindex="-1" role="dialog" aria-labelledby="userSelectModalCenterTitle" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Login Daten des neuen Nutzers</h5>
+                <h5 class="modal-title" id="exampleModalLongTitle">Nutzer ausw&aumlhlen</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
               <div class="modal-body">
-                <h3>Teilen Sie dem neuen Nutzer diese Daten mit!</h3>
-                <div class="form-group">
-                  <label for="accountname">Email Adresse/Accountname:</label>
-                  <input id="accountname" type="email" class="form-control" :value="this.form.email" disabled>
-                  <small id="accountnameHelp" class="form-text text-muted">Dies ist die Emailadresse mit der sich der Nutzer einloggen muss.</small>
+                <h3>Hinzuzuf&uumlgenden Nutzer ausw&aumlhlen</h3>
+
+
+                <!-- loop over all users -->
+                <div v-for="(user, index) in this.users.user" class="card my-3 mx-auto" style="max-width: 540px;" @click="selectUser(index)" :id="'selUser_'+index">
+                  <div class="row no-gutters">
+                    <div class="col-md-2 my-auto">
+                      <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user.svg" class="card-img p-3" alt="USER-LOGO">
+                    </div>
+                    <div class="col-md-10">
+                      <div class="card-body">
+                        <h5 class="card-title">{{user.email}}</h5>
+                        <p class="card-text">
+                          {{user.type}}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="form-group">
-                  <label for="genPassword"Passwort:</label>
-                  <input id="genPassword" type="text" class="form-control" :value="this.form.password" disabled>
-                  <small id="genPasswordHelp" class="form-text text-muted">Dies ist das Passwort des neuen Nutzers.</small>
-                </div>
+
+
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Schlie&szligen</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Hinzuf&uumlgen</button>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Modal for user options -->
-        <div class="modal fade" id="userOptions" tabindex="-1" role="dialog" aria-labelledby="userOptionsModalCenterTitle" aria-hidden="true">
+        <!-- Modal for group options -->
+        <div class="modal fade" id="groupOptions" tabindex="-1" role="dialog" aria-labelledby="groupOptionsModalCenterTitle" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="userOptionsLongTitle">Optionen f&uumlr {{user}}</h5>
+                <h5 class="modal-title" id="groupOptionsLongTitle">Optionen f&uumlr {{this.groups.groupTmp.groupName}}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
               <div class="modal-body">
                 <div class="container-fluid">
+                  <h3>Mitglieder der Gruppe</h3>
+
+                  <!-- loop over all members -->
+                  <div v-for="(member, index) in this.groups.groupTmp.members" class="card my-3 mx-auto" style="max-width: 540px;" :id="'selUserG_'+index">
+                    <div class="row no-gutters">
+                      <div class="col-md-2 my-auto">
+                        <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user.svg" class="card-img p-3" alt="USER-LOGO">
+                      </div>
+                      <div class="col-md-10">
+                        <div class="card-body">
+                          <h5 class="card-title">{{member.member}}</h5>
+                          <p class="card-text">
+                            {{member.type}}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
 
                   <label for="pwReset"><u>Passwort zur&uumlcksetzen:</u></label>
                   <div id="pwReset" class="row">
                     <div class="col-md-4">
-                      <button type="button" class="btn btn-primary" @click="pwReset()">Reset</button>
+                      <button type="button" class="btn btn-primary" @click="pwReset()" disabled>Reset</button>
                     </div>
                     <div class="col-md-8 ml-auto">
                       <input id="pwResetNewPw" type="text" class="form-control" value="" disabled>
@@ -284,7 +274,7 @@ Vue.component( 'settings-usercontrol',
                   <label for="deleteAcc"><u>Account l&oumlschen:</u></label>
                   <div id="deleteAcc" class="row">
                     <div class="col-md-10">
-                      <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#confirm-delete">L&oumlschen</button>
+                      <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#confirm-delete" disabled>L&oumlschen</button>
                       <small class="form-text text-muted">L&oumlscht den gesamten Account samt aller zugeh&oumlrigen Daten.</small>
                     </div>
                   </div>
@@ -325,16 +315,16 @@ Vue.component( 'settings-usercontrol',
         </div>
 
         <!-- loop over all users -->
-        <div v-for="(user, index) in this.users.user" class="card my-3 mx-auto" style="max-width: 540px;" @click="selectUser(index)">
+        <div v-for="(group, index) in this.groups.group" class="card my-3 mx-auto" style="max-width: 540px;" @click="selectGroup(index)">
           <div class="row no-gutters">
             <div class="col-md-2 my-auto">
               <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user.svg" class="card-img p-3" alt="USER-LOGO">
             </div>
             <div class="col-md-10">
               <div class="card-body">
-                <h5 class="card-title">{{user.email}}</h5>
+                <h5 class="card-title">{{group.groupName}}</h5>
                 <p class="card-text">
-                  {{user.type}}
+                  {{group.groupName}}
                 </p>
               </div>
             </div>

@@ -1,0 +1,6 @@
+- member: "max@mustermann.de"
+  type:   "Administrator"
+- member: "user@test.de"
+  type:   "Ausbilder"
+- member: "test@bla.de"
+  type:   "Schüler/Azubi"

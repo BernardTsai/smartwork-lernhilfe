@@ -1,0 +1,4 @@
+- member: "max@mustermann.de"
+  type:   "Administrator"
+- member: "user@test.de"
+  type:   "Ausbilder"
