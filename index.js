@@ -692,6 +692,110 @@ function getAllGroups(req, res) {
 
 //------------------------------------------------------------------------------
 
+function createGroup(req, res) {
+  members   = req.body.members   ? req.body.members   : ""
+  groupName = req.body.groupName ? req.body.groupName : ""
+  email     = req.body.email     ? req.body.email     : ""
+  password  = req.body.password  ? req.body.password  : ""
+  response = {
+    'groupName': groupName,
+    'members':   members,
+    'msg':       "error"
+  }
+
+  // check if email is valid and password has been defined
+  if (email == '' || password == '' || email.includes('..') || email.includes('/')) {
+    writeResponse(res, response)
+    return
+  }
+
+  // check if groupName is valid has been defined
+  if (members == '' || groupName == ''  || groupName.includes('..') || groupName.includes('/')) {
+    writeResponse(res, response)
+    return
+  }
+
+  // check if directory exists
+  directory = './data/students/' + email
+  filename  = directory + '/password'
+  check = {
+    'validated': "no",
+    'type':      ""
+  }
+
+  // read file password-file
+  fs.readFile(filename,
+    // callback function that is called when reading file is done
+    function(err, data) {
+      // error will reading password file
+      if (!err) {
+        real_password = data.toString('utf8').trim()
+        check.validated = (password === real_password ? "yes" : "no")
+
+        // read file type-file
+        fs.readFile(directory + '/type',
+          // callback function that is called when reading file is done
+          function(err, data) {
+            // error will reading password file
+            if (!err) {
+              type = data.toString('utf8').trim()
+              check.type = type
+
+              if (check.validated == "no") {
+                response.msg = "don't mess with me"
+                writeResponse(res, response)
+                return
+              }
+
+              if (check.type == "Schüler/Azubi") {
+                response.msg = "no permission"
+                writeResponse(res, response)
+                return
+              }
+
+//              console.log(members);
+
+              // check if directory exists
+              directory = './data/groups/'
+              filename  = directory + groupName
+
+              // check if file exists
+              if (!fs.existsSync(filename)) {
+                // write group file
+//                var writeStream = fs.createWriteStream(filename)
+//                writeStream.write(members)
+//                writeStream.end()
+
+                try {
+                  fs.writeFileSync(filename, yaml.safeDump(members))
+                }
+                catch (e) {
+                  writeResponse(res, {err: e.toString()})
+                  return
+                }
+
+                response.msg = "success"
+                response.groupName = groupName
+                response.members = members
+                writeResponse(res, response)
+                return
+              }
+              // if group already exists
+              else {
+                response.msg = "group already exists"
+                writeResponse(res, response)
+                return
+              }
+            }
+          }
+        )
+      }
+    }
+  )
+}
+
+//------------------------------------------------------------------------------
+
 function saveCertificate(req, res) {
   var certs  = req.body.certs  ? req.body.certs  : ""
   var email = req.body.email ? req.body.email : ""
@@ -814,6 +918,7 @@ app.post('/getallusers',                              getAllUsers)
 app.post('/passwordreset',                            passwordReset)
 app.post('/deleteaccount',                            deleteAccount)
 app.post('/getallgroups',                             getAllGroups)
+app.post('/creategroup',                              createGroup)
 
 server = app.listen(port, () => console.log(`Server listening on port ${port}!`))
 server.timeout = 5000

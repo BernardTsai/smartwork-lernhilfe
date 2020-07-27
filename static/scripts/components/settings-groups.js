@@ -27,6 +27,43 @@ Vue.component( 'settings-groups',
         $("#groupOptions").modal();
       },
 
+      createGroup: function() {
+        this.groups.groupName = $("#inputGroupName").val();
+        if (this.groups.groupName == '') {
+          alert("Gruppenname wurde nicht eingegeben");
+          return;
+        }
+
+        var request = new XMLHttpRequest();
+        var self = this;
+
+        // callback function to process the results
+        function createGroupCB() {
+          if (this.readyState == 4) {
+            // check status
+            if (this.status != 200) {
+              return
+            }
+            result = jsyaml.safeLoad(request.responseText)
+
+            if (result.msg == "success") {
+              // reload Users
+              // doesn't work because of reasons..
+              self.getGroups();
+            }
+            else {
+              alert("L&oumlschen fehlgeschlagen!");
+            }
+          }
+        }
+
+        var params  = JSON.stringify( {groupName: this.groups.groupName, members: this.groups.user, email: this.model.email, password: this.model.password} )
+        request.onreadystatechange = createGroupCB
+        request.open('POST', '/creategroup', true);  // asynchronous request
+        request.setRequestHeader('Content-type', 'application/json');
+        request.send(params);
+      },
+
       // deletes user account with all data
       rmUser: function() {
         var request = new XMLHttpRequest();
@@ -100,7 +137,8 @@ Vue.component( 'settings-groups',
           group: {},
           groupTmp: {},
           select: -1,
-          user: []
+          user: [],
+          groupName: ''
         }
       }
     },
@@ -179,7 +217,7 @@ Vue.component( 'settings-groups',
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
-                <button type="button" class="btn btn-primary" @click="addUser()" data-dismiss="modal">Best&aumltigen</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" @click="createGroup()">Best&aumltigen</button>
               </div>
             </div>
           </div>
@@ -219,8 +257,8 @@ Vue.component( 'settings-groups',
 
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Hinzuf&uumlgen</button>
+               <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>-->
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Auswahl abschlie&szligen</button>
               </div>
             </div>
           </div>
@@ -248,7 +286,7 @@ Vue.component( 'settings-groups',
                       </div>
                       <div class="col-md-10">
                         <div class="card-body">
-                          <h5 class="card-title">{{member.member}}</h5>
+                          <h5 class="card-title">{{member.email}}</h5>
                           <p class="card-text">
                             {{member.type}}
                           </p>
