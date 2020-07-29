@@ -45,6 +45,7 @@ Vue.component( 'settings-dashboard',
           </div>
         </div>
 
+        <!--
         <div v-if="model.type=='Ausbilder' || model.type=='Administrator'" class="card my-3 mx-auto" style="max-width: 540px;" @click="this.model.submode='settings-groups'">
           <div class="row no-gutters">
             <div class="col-md-2 my-auto">
@@ -59,7 +60,7 @@ Vue.component( 'settings-dashboard',
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
 
       </div>`
   }

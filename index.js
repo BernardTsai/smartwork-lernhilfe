@@ -796,6 +796,100 @@ function createGroup(req, res) {
 
 //------------------------------------------------------------------------------
 
+function deleteGroup(req, res) {
+  emailReq       = req.body.emailReq    ? req.body.emailReq    : ""
+  passwordReq    = req.body.passwordReq ? req.body.passwordReq : ""
+  groupName      = req.body.groupName   ? req.body.groupName   : ""
+  response = {
+    'email':     emailReq,
+    'password':  passwordReq,
+    'msg':       "error"
+  }
+
+  // check if email is valid and password has been defined
+  if (emailReq == '' || passwordReq == '' || emailReq.includes('..') || emailReq.includes('/')) {
+    writeResponse(res, response)
+    return
+  }
+
+  // check if emailNew is valid and passwordNew has been defined
+  if (groupName == '' || groupName.includes('..') || groupName.includes('/')) {
+    writeResponse(res, response)
+    return
+  }
+
+  // check if directory exists
+  directory = './data/students/' + emailReq
+  filename  = directory + '/password'
+  check = {
+    'validated': "no",
+    'type':      ""
+  }
+
+  // read file password-file of requesting user
+  fs.readFile(filename,
+    // callback function that is called when reading file is done
+    function(err, data) {
+      // error will reading password file
+      if (!err) {
+        real_password = data.toString('utf8').trim()
+        check.validated = (passwordReq === real_password ? "yes" : "no")
+
+        // read file type-file of requesting user
+        fs.readFile(directory + '/type',
+          // callback function that is called when reading file is done
+          function(err, data) {
+            // error will reading type file
+            if (!err) {
+              type = data.toString('utf8').trim()
+              check.type = type
+
+              if (check.validated == "no") {
+                response.msg = "don't mess with me!"
+                writeResponse(res, response)
+                return
+              }
+
+              if (check.type == "Schüler/Azubi") {
+                response.msg = "no permission"
+                writeResponse(res, response)
+                return
+              }
+
+              // check type of target user
+              directory = './data/groups/'
+              filename  = directory + groupName
+
+              // check if file exists
+              if (fs.existsSync(filename)) {
+                // remove group file
+                try {
+                  fs.unlinkSync(filename)
+
+                  response.msg = "success"
+                  writeResponse(res, response)
+                  return
+                } catch(err) {
+                  console.error(err)
+                  writeResponse(res, {err: err.toString()})
+                  return
+                }
+              }
+              else {
+                response.msg = "error: groups doesn't exist"
+                writeResponse(res, response)
+                return
+              }
+            }
+          }
+        )
+      }
+    }
+  )
+}
+
+//------------------------------------------------------------------------------
+
 function saveCertificate(req, res) {
   var certs  = req.body.certs  ? req.body.certs  : ""
   var email = req.body.email ? req.body.email : ""
@@ -919,6 +1013,7 @@ app.post('/passwordreset',                            passwordReset)
 app.post('/deleteaccount',                            deleteAccount)
 app.post('/getallgroups',                             getAllGroups)
 app.post('/creategroup',                              createGroup)
+app.post('/deletegroup',                              deleteGroup)
 
 server = app.listen(port, () => console.log(`Server listening on port ${port}!`))
 server.timeout = 5000

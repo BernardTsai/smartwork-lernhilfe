@@ -47,8 +47,7 @@ Vue.component( 'settings-groups',
             result = jsyaml.safeLoad(request.responseText)
 
             if (result.msg == "success") {
-              // reload Users
-              // doesn't work because of reasons..
+              // reload Groups
               self.getGroups();
             }
             else {
@@ -65,12 +64,12 @@ Vue.component( 'settings-groups',
       },
 
       // deletes user account with all data
-      rmUser: function() {
+      rmGroup: function() {
         var request = new XMLHttpRequest();
         var self = this;
 
         // callback function to process the results
-        function rmAccountCB() {
+        function rmGroupCB() {
           if (this.readyState == 4) {
             // check status
             if (this.status != 200) {
@@ -80,19 +79,18 @@ Vue.component( 'settings-groups',
             result = jsyaml.safeLoad(request.responseText)
 
             if (result.msg == "success") {
-              // reload Users
-              // doesn't work because of reasons..
-              self.getUsers();
+              // reload Groups
+              self.getGroups();
             }
             else {
-              alert("L&oumlschen fehlgeschlagen!");
+              alert("failed!");
             }
           }
         }
 
-        var params  = JSON.stringify( {emailReq: this.model.email, passwordReq: this.model.password, emailTar: this.users.user[this.users.select].email} )
-        request.onreadystatechange = rmAccountCB
-        request.open('POST', '/deleteaccount', true);  // asynchronous request
+        var params  = JSON.stringify( {emailReq: this.model.email, passwordReq: this.model.password, groupName: this.groups.groupTmp.groupName} )
+        request.onreadystatechange = rmGroupCB
+        request.open('POST', '/deletegroup', true);  // asynchronous request
         request.setRequestHeader('Content-type', 'application/json');
         request.send(params);
       },
@@ -309,11 +307,11 @@ Vue.component( 'settings-groups',
 
                   <hr>
 
-                  <label for="deleteAcc"><u>Account l&oumlschen:</u></label>
+                  <label for="deleteAcc"><u>Gruppe l&oumlschen:</u></label>
                   <div id="deleteAcc" class="row">
                     <div class="col-md-10">
-                      <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#confirm-delete" disabled>L&oumlschen</button>
-                      <small class="form-text text-muted">L&oumlscht den gesamten Account samt aller zugeh&oumlrigen Daten.</small>
+                      <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#confirm-delete">L&oumlschen</button>
+                      <small class="form-text text-muted">L&oumlscht die gesamte Gruppe samt aller zugeh&oumlrigen Daten.</small>
                     </div>
                   </div>
 
@@ -331,8 +329,8 @@ Vue.component( 'settings-groups',
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="modalLongTitle">L&oumlschen von {{user}} best&aumltigen</h5>
-                <button type="button" class="close" data-dismiss="modal" data-toggle="modal" data-target="#userOptions" aria-label="Close">
+                <h5 class="modal-title" id="modalLongTitle">L&oumlschen von {{this.groups.groupTmp.groupName}} best&aumltigen</h5>
+                <button type="button" class="close" data-dismiss="modal" data-toggle="modal" data-target="#groupOptions" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
@@ -340,19 +338,19 @@ Vue.component( 'settings-groups',
 
                 <div class="px-3 text-danger">
                   <p class="font-weight-bold">ACHTUNG:</p>
-                  <p> Der gesamte Account wird vollständig gel&oumlscht. Diese Aktion kann nicht r&uumlckg&aumlngig gemacht werden!</p>
+                  <p> Der gesamte Gruppe wird vollst&aumlndig gel&oumlscht. Diese Aktion kann nicht r&uumlckg&aumlngig gemacht werden!</p>
                 </div>
 
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" data-toggle="modal" data-target="#userOptions">Abbrechen</button>
-                <a class="btn btn-danger btn-ok" data-dismiss="modal" @click="rmUser()">L&oumlschen</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" data-toggle="modal" data-target="#groupOptions">Abbrechen</button>
+                <a class="btn btn-danger btn-ok" data-dismiss="modal" @click="rmGroup()">L&oumlschen</a>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- loop over all users -->
+        <!-- loop over all groups -->
         <div v-for="(group, index) in this.groups.group" class="card my-3 mx-auto" style="max-width: 540px;" @click="selectGroup(index)">
           <div class="row no-gutters">
             <div class="col-md-2 my-auto">
