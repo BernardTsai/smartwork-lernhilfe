@@ -236,7 +236,14 @@ Vue.component( 'settings-groups',
 
 
                 <!-- loop over all users -->
-                <div v-for="(user, index) in this.users.user" class="card my-3 mx-auto" style="max-width: 540px;" @click="selectUser(index)" :id="'selUser_'+index">
+                <div v-for="(user, index) in this.users.user" :class="{
+                                                                'card': true,
+                                                                'my-3': true,
+                                                                'mx-auto': true,
+                                                                'border-info': user.type == 'Ausbilder',
+                                                                'border-danger': user.type == 'Administrator',
+                                                                'border-success': user.type == 'Schüler/Azubi'
+                                                              }" style="max-width: 540px; border: 2px solid;" @click="selectUser(index)" :id="'selUser_'+index">
                   <div class="row no-gutters">
                     <div class="col-md-2 my-auto">
                       <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user.svg" class="card-img p-3" alt="USER-LOGO">
@@ -277,7 +284,14 @@ Vue.component( 'settings-groups',
                   <h3>Mitglieder der Gruppe</h3>
 
                   <!-- loop over all members -->
-                  <div v-for="(member, index) in this.groups.groupTmp.members" class="card my-3 mx-auto" style="max-width: 540px;" :id="'selUserG_'+index">
+                  <div v-for="(member, index) in this.groups.groupTmp.members" :class="{
+                                                                                 'card': true,
+                                                                                 'my-3': true,
+                                                                                 'mx-auto': true,
+                                                                                 'border-info': member.type == 'Ausbilder',
+                                                                                 'border-danger': member.type == 'Administrator',
+                                                                                 'border-success': member.type == 'Schüler/Azubi'
+                                                                               }" style="max-width: 540px; border: 2px solid;" :id="'selUserG_'+index">
                     <div class="row no-gutters">
                       <div class="col-md-2 my-auto">
                         <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user.svg" class="card-img p-3" alt="USER-LOGO">

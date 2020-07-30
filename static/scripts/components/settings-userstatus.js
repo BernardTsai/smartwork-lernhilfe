@@ -92,7 +92,14 @@ Vue.component( 'settings-userstatus',
         </div>
 
         <!-- loop over all users -->
-        <div v-for="(user, index) in this.users.user" class="card my-3 mx-auto" style="max-width: 540px;" @click="selectUser(index)">
+        <div v-for="(user, index) in this.users.user" :class="{
+                                                        'card': true,
+                                                        'my-3': true,
+                                                        'mx-auto': true,
+                                                        'border-info': user.type == 'Ausbilder',
+                                                        'border-danger': user.type == 'Administrator',
+                                                        'border-success': user.type == 'Schüler/Azubi'
+                                                      }" style="max-width: 540px; border: 2px solid;" @click="selectUser(index)">
           <div class="row no-gutters">
             <div class="col-md-2 my-auto">
               <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user.svg" class="card-img p-3" alt="USER-LOGO">
