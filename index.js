@@ -890,6 +890,156 @@ function deleteGroup(req, res) {
 
 //------------------------------------------------------------------------------
 
+function editGroup(req, res) {
+  email      = req.body.email     ? req.body.email     : ""
+  password   = req.body.password  ? req.body.password  : ""
+  groupName  = req.body.groupName ? req.body.groupName : ""
+  action     = req.body.action    ? req.body.action    : ""
+  actionData = req.body.data      ? req.body.data      : ""
+  response = {
+    'success': "no",
+    'msg':     ""
+  }
+
+  // check if email is valid and password has been defined
+  if (email == '' || password == '' || email.includes('..') || email.includes('/')) {
+    writeResponse(res, response)
+    return
+  }
+
+  // check if groupName is valid and has been defined
+  if (groupName == '' || groupName.includes('..') || groupName.includes('/')) {
+    writeResponse(res, response)
+    return
+  }
+
+  directory = './data/students/' + email
+  filename  = directory + '/password'
+
+  // read file password-file of requesting user
+  fs.readFile(filename,
+    // callback function that is called when reading file is done
+    function(err, data) {
+      // error will reading password file
+      if (!err) {
+        real_password = data.toString('utf8').trim()
+        validated = (password === real_password ? "yes" : "no")
+        if (validated == "no") {
+          response.msg = "don't mess with me!"
+          writeResponse(res, response)
+          return
+        }
+
+        // read file type-file of requesting user
+        fs.readFile(directory + '/type',
+          // callback function that is called when reading file is done
+          function(err, data) {
+            // error will reading type file
+            if (!err) {
+              type = data.toString('utf8').trim()
+
+              if (type == "Schüler/Azubi") {
+                response.msg = "no permission"
+                writeResponse(res, response)
+                return
+              }
+
+              directory = './data/groups/'
+              filename  = directory + groupName
+
+              // check if file exists
+              if (fs.existsSync(filename)) {
+                // read file group-file
+                fs.readFile(filename,
+                  // callback function that is called when reading file is done
+                  function(err, data) {
+                    // error will reading group file
+                    if (!err) {
+                      group = data.toString('utf8')
+                      group = yaml.safeLoad(group)
+//                      console.log(group)
+
+                      if (action == "addMember") {
+                        group = group.concat(actionData);
+                      }
+                      else if (action == "removeMember") {
+                        
+                      }
+
+//                      console.log(group)
+//                      console.log("");
+
+                      try {
+                        fs.writeFileSync(filename, yaml.safeDump(group))
+                        response.success = "yes"
+                      }
+                      catch (e) {
+                        writeResponse(res, {err: e.toString()})
+                        return
+                      }
+
+
+                    }
+                    writeResponse(res, response)
+                  }
+                )
+              }
+
+
+                // remove group file
+//                try {
+//                  fs.unlinkSync(filename)
+
+//                  response.msg = "success"
+//                  writeResponse(res, response)
+//                  return
+//                } catch(err) {
+//                  console.error(err)
+//                  writeResponse(res, {err: err.toString()})
+//                  return
+//                }
+//              }
+//              else {
+//                response.msg = "error: groups doesn't exist"
+//                writeResponse(res, response)
+//                return
+//              }
+
+
+
+
+
+//              // check if file exists
+//              if (fs.existsSync(filename)) {
+//                // remove group file
+//                try {
+//                  fs.unlinkSync(filename)
+
+//                  response.msg = "success"
+//                  writeResponse(res, response)
+//                  return
+//                } catch(err) {
+//                  console.error(err)
+//                  writeResponse(res, {err: err.toString()})
+//                  return
+//                }
+//              }
+//              else {
+//                response.msg = "error: groups doesn't exist"
+//                writeResponse(res, response)
+//                return
+//              }
+            }
+          }
+        )
+      }
+    }
+  )
+
+}
+
+//------------------------------------------------------------------------------
+
 function saveCertificate(req, res) {
   var certs  = req.body.certs  ? req.body.certs  : ""
   var email = req.body.email ? req.body.email : ""
@@ -1014,6 +1164,7 @@ app.post('/deleteaccount',                            deleteAccount)
 app.post('/getallgroups',                             getAllGroups)
 app.post('/creategroup',                              createGroup)
 app.post('/deletegroup',                              deleteGroup)
+app.post('/editGroup',                                editGroup)
 
 server = app.listen(port, () => console.log(`Server listening on port ${port}!`))
 server.timeout = 5000

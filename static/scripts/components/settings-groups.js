@@ -51,7 +51,7 @@ Vue.component( 'settings-groups',
               self.getGroups();
             }
             else {
-              alert("L&oumlschen fehlgeschlagen!");
+              alert("Erstellen fehlgeschlagen!");
             }
           }
         }
@@ -94,6 +94,63 @@ Vue.component( 'settings-groups',
         request.setRequestHeader('Content-type', 'application/json');
         request.send(params);
       },
+
+      editGroup: function(action) {
+        var request = new XMLHttpRequest();
+        var self = this;
+
+        // callback function to process the results
+        function editGroupCB() {
+          if (this.readyState == 4) {
+            // check status
+            if (this.status != 200) {
+              return
+            }
+//            console.log(request.responseText)
+            result = jsyaml.safeLoad(request.responseText)
+
+            if (result.success == "yes") {
+              // reload Groups
+              self.getGroups();
+              self.groups.groupTmp = self.groups.group[self.groups.select]
+            }
+            else {
+              alert("failed!");
+            }
+          }
+        }
+
+        var params  = JSON.stringify( {email: this.model.email, password: this.model.password, groupName: this.groups.groupTmp.groupName, action: action, data: this.groups.user} )
+        request.onreadystatechange = editGroupCB
+        request.open('POST', '/editgroup', true);  // asynchronous request
+        request.setRequestHeader('Content-type', 'application/json');
+        request.send(params);
+      },
+
+//      usersShow: function() {
+//        if (this.groups.select > -1) {
+//          console.log("sollte anderes ergebnis sein!");
+//          var tmp = [];
+//          var check = false;
+
+//          for (let user of this.users.user) {
+//            for (let compareUser of this.groups.groupTmp.members) {
+//              if (user.email == compareUser.email) {
+//                check = true;
+//              }
+//            }
+//            if (!check) {
+//              tmp.push(user);
+//            }
+//            check = false;
+//          }
+//          return tmp;
+//        }
+//        else {
+          //console.log(this.users.user);
+//          return this.users.user;
+//        }
+//      },
 
       // adds or removes user to/from array to later add users to a group
       selectUser: function(index) {
@@ -144,6 +201,21 @@ Vue.component( 'settings-groups',
       this.getUsers();
       this.getGroups();
     },
+//    mounted() {
+//      self = this;
+//      $("#groupAddModalCenter").on('show.bs.modal', function () {
+        // before group creation modal is shown reset groupselection
+        // otherwise not all users are displayed in userselect
+//        self.groups.groupTmp = [];
+//        self.groups.select = -1;
+//      });
+//      $("#userSelect").on('show.bs.modal', function () {
+        // for test purposes
+//        console.log(self.usersShow());
+//        self.groups.groupTmp = self.usersShow();
+//        console.log(self.groups);
+//      });
+//    },
     computed: {
       user: function() {
         return this.users.emailSel
@@ -263,7 +335,7 @@ Vue.component( 'settings-groups',
               </div>
               <div class="modal-footer">
                <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>-->
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Auswahl abschlie&szligen</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Auswahl hinzuf&uumlgen</button>
               </div>
             </div>
           </div>
@@ -311,7 +383,7 @@ Vue.component( 'settings-groups',
                   <label for="pwReset"><u>Passwort zur&uumlcksetzen:</u></label>
                   <div id="pwReset" class="row">
                     <div class="col-md-4">
-                      <button type="button" class="btn btn-primary" @click="pwReset()" disabled>Reset</button>
+                      <button type="button" class="btn btn-primary" @click="editGroup('addMember')">TEST!!</button>
                     </div>
                     <div class="col-md-8 ml-auto">
                       <input id="pwResetNewPw" type="text" class="form-control" value="" disabled>
