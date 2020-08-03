@@ -95,37 +95,58 @@ Vue.component( 'settings-groups',
         request.send(params);
       },
 
-      editGroup: function(action) {
-        var request = new XMLHttpRequest();
-        var self = this;
-
-        // callback function to process the results
-        function editGroupCB() {
-          if (this.readyState == 4) {
-            // check status
-            if (this.status != 200) {
-              return
-            }
-//            console.log(request.responseText)
-            result = jsyaml.safeLoad(request.responseText)
-
-            if (result.success == "yes") {
-              // reload Groups
-              self.getGroups();
-              self.groups.groupTmp = self.groups.group[self.groups.select]
+      editGroup: function() {
+        // because of reasons nothing worked so far
+        this.groups.user = this.groups.groupTmp.members
+        console.log(this.groups)
+        for (let i in this.users.user) {
+          var selectUser = document.getElementById('selUser_'+i);
+          for (let j of this.groups.user) {
+            if (this.users.user[i].email == j.email) {
+              if (!selectUser.classList.contains("bg-primary")) {
+                selectUser.classList.add("bg-primary");
+              }
             }
             else {
-              alert("failed!");
+              if (selectUser.classList.contains("bg-primary")) {
+                selectUser.classList.remove("bg-primary");
+              }
             }
           }
         }
-
-        var params  = JSON.stringify( {email: this.model.email, password: this.model.password, groupName: this.groups.groupTmp.groupName, action: action, data: this.groups.user} )
-        request.onreadystatechange = editGroupCB
-        request.open('POST', '/editgroup', true);  // asynchronous request
-        request.setRequestHeader('Content-type', 'application/json');
-        request.send(params);
       },
+
+//      editGroupOLD: function(action) {
+//        var request = new XMLHttpRequest();
+//        var self = this;
+
+        // callback function to process the results
+//        function editGroupCB() {
+//          if (this.readyState == 4) {
+            // check status
+//            if (this.status != 200) {
+//              return
+//            }
+//            console.log(request.responseText)
+//            result = jsyaml.safeLoad(request.responseText)
+
+//            if (result.success == "yes") {
+              // reload Groups
+//              self.getGroups();
+//              self.groups.groupTmp = self.groups.group[self.groups.select]
+//            }
+//            else {
+//              alert("failed!");
+//            }
+//          }
+//        }
+
+//        var params  = JSON.stringify( {email: this.model.email, password: this.model.password, groupName: this.groups.groupTmp.groupName, action: action, data: this.groups.user} )
+//        request.onreadystatechange = editGroupCB
+//        request.open('POST', '/editgroup', true);  // asynchronous request
+//        request.setRequestHeader('Content-type', 'application/json');
+//        request.send(params);
+//      },
 
 //      usersShow: function() {
 //        if (this.groups.select > -1) {
@@ -293,7 +314,7 @@ Vue.component( 'settings-groups',
           </div>
         </div>
 
-        <!-- Modal for user select -->
+        <!-- Modal for user select
         <div class="modal fade" id="userSelect" tabindex="-1" role="dialog" aria-labelledby="userSelectModalCenterTitle" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -307,7 +328,6 @@ Vue.component( 'settings-groups',
                 <h3>Hinzuzuf&uumlgenden Nutzer ausw&aumlhlen</h3>
 
 
-                <!-- loop over all users -->
                 <div v-for="(user, index) in this.users.user" :class="{
                                                                 'card': true,
                                                                 'my-3': true,
@@ -334,12 +354,11 @@ Vue.component( 'settings-groups',
 
               </div>
               <div class="modal-footer">
-               <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>-->
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Auswahl hinzuf&uumlgen</button>
               </div>
             </div>
           </div>
-        </div>
+        </div> -->
 
         <!-- Modal for group options -->
         <div class="modal fade" id="groupOptions" tabindex="-1" role="dialog" aria-labelledby="groupOptionsModalCenterTitle" aria-hidden="true">
@@ -383,7 +402,7 @@ Vue.component( 'settings-groups',
                   <label for="pwReset"><u>Passwort zur&uumlcksetzen:</u></label>
                   <div id="pwReset" class="row">
                     <div class="col-md-4">
-                      <button type="button" class="btn btn-primary" @click="editGroup('addMember')">TEST!!</button>
+                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#userSelect"  @click="editGroup()">TEST!!</button>
                     </div>
                     <div class="col-md-8 ml-auto">
                       <input id="pwResetNewPw" type="text" class="form-control" value="" disabled>
@@ -405,6 +424,54 @@ Vue.component( 'settings-groups',
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal for user select -->
+        <div class="modal fade" id="userSelect" tabindex="-1" role="dialog" aria-labelledby="userSelectModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Nutzer ausw&aumlhlen</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <h3>Hinzuzuf&uumlgenden Nutzer ausw&aumlhlen</h3>
+
+
+                <!-- loop over all users -->
+                <div v-for="(user, index) in this.users.user" :class="{
+                                                                'card': true,
+                                                                'my-3': true,
+                                                                'mx-auto': true,
+                                                                'border-info': user.type == 'Ausbilder',
+                                                                'border-danger': user.type == 'Administrator',
+                                                                'border-success': user.type == 'Schüler/Azubi'
+                                                              }" style="max-width: 540px; border: 2px solid;" @click="selectUser(index)" :id="'selUser_'+index">
+                  <div class="row no-gutters">
+                    <div class="col-md-2 my-auto">
+                      <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user.svg" class="card-img p-3" alt="USER-LOGO">
+                    </div>
+                    <div class="col-md-10">
+                      <div class="card-body">
+                        <h5 class="card-title">{{user.email}}</h5>
+                        <p class="card-text">
+                          {{user.type}}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+
+              </div>
+              <div class="modal-footer">
+               <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>-->
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Auswahl hinzuf&uumlgen</button>
               </div>
             </div>
           </div>
