@@ -98,22 +98,26 @@ Vue.component( 'settings-groups',
       editGroup: function() {
         // because of reasons nothing worked so far
         this.groups.user = this.groups.groupTmp.members
-        console.log(this.groups)
+        this.groups.groupName = this.groups.groupTmp.groupName
+        var found = false
         for (let i in this.users.user) {
           var selectUser = document.getElementById('selUser_'+i);
           for (let j of this.groups.user) {
             if (this.users.user[i].email == j.email) {
-              if (!selectUser.classList.contains("bg-primary")) {
-                selectUser.classList.add("bg-primary");
-              }
-            }
-            else {
-              if (selectUser.classList.contains("bg-primary")) {
-                selectUser.classList.remove("bg-primary");
-              }
+              found = true
             }
           }
+          if (found) {
+            if (!selectUser.classList.contains("bg-primary")) {
+              selectUser.classList.add("bg-primary");
+            }
+          }
+          else if (selectUser.classList.contains("bg-primary")) {
+            selectUser.classList.remove("bg-primary");
+          }
+          found = false
         }
+        console.log(this.groups)
       },
 
 //      editGroupOLD: function(action) {
@@ -195,6 +199,16 @@ Vue.component( 'settings-groups',
           this.groups.user.push(this.users.user[index]);
 //          console.log(this.groups.user);
         }
+      },
+
+      initialState: function() {
+        this.groups.user = []
+        for (let i in this.users.user) {
+          var selectUser = document.getElementById('selUser_'+i);
+          if (selectUser.classList.contains("bg-primary")) {
+            selectUser.classList.remove("bg-primary");
+          }
+        }
       }
     },
     data() {
@@ -248,7 +262,7 @@ Vue.component( 'settings-groups',
         <h3 class="text-center">Gruppenverwaltung</h3>
 
         <!-- trigger modal group creation-->
-        <div class="card my-3 mx-auto" style="max-width: 540px;" data-toggle="modal" data-target="#groupAddModalCenter">
+        <div class="card my-3 mx-auto" style="max-width: 540px;" data-toggle="modal" data-target="#groupAddModalCenter" @click="initialState()">
           <div class="row no-gutters">
             <div class="col-md-2 my-auto">
               <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user-plus.svg" class="card-img p-3" alt="LOGO">
