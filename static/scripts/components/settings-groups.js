@@ -25,6 +25,7 @@ Vue.component( 'settings-groups',
         // because of error when trying to access array from modal
         this.groups.groupTmp = this.groups.group[index]
         $("#groupOptions").modal();
+        console.log(this.groups)
       },
 
       createGroup: function() {
@@ -95,8 +96,7 @@ Vue.component( 'settings-groups',
         request.send(params);
       },
 
-      editGroup: function() {
-        // because of reasons nothing worked so far
+      groupEditMembers: function() {
         this.groups.user = this.groups.groupTmp.members
         this.groups.groupName = this.groups.groupTmp.groupName
         var found = false
@@ -117,7 +117,11 @@ Vue.component( 'settings-groups',
           }
           found = false
         }
-        console.log(this.groups)
+//        console.log(this.groups)
+      },
+
+      groupSaveChanges: function() {
+        alert("SPEICHERN")
       },
 
 //      editGroupOLD: function(action) {
@@ -328,52 +332,6 @@ Vue.component( 'settings-groups',
           </div>
         </div>
 
-        <!-- Modal for user select
-        <div class="modal fade" id="userSelect" tabindex="-1" role="dialog" aria-labelledby="userSelectModalCenterTitle" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Nutzer ausw&aumlhlen</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                <h3>Hinzuzuf&uumlgenden Nutzer ausw&aumlhlen</h3>
-
-
-                <div v-for="(user, index) in this.users.user" :class="{
-                                                                'card': true,
-                                                                'my-3': true,
-                                                                'mx-auto': true,
-                                                                'border-info': user.type == 'Ausbilder',
-                                                                'border-danger': user.type == 'Administrator',
-                                                                'border-success': user.type == 'Schüler/Azubi'
-                                                              }" style="max-width: 540px; border: 2px solid;" @click="selectUser(index)" :id="'selUser_'+index">
-                  <div class="row no-gutters">
-                    <div class="col-md-2 my-auto">
-                      <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user.svg" class="card-img p-3" alt="USER-LOGO">
-                    </div>
-                    <div class="col-md-10">
-                      <div class="card-body">
-                        <h5 class="card-title">{{user.email}}</h5>
-                        <p class="card-text">
-                          {{user.type}}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Auswahl hinzuf&uumlgen</button>
-              </div>
-            </div>
-          </div>
-        </div> -->
-
         <!-- Modal for group options -->
         <div class="modal fade" id="groupOptions" tabindex="-1" role="dialog" aria-labelledby="groupOptionsModalCenterTitle" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered" role="document">
@@ -412,15 +370,12 @@ Vue.component( 'settings-groups',
                     </div>
                   </div>
 
+                  <hr>
 
-                  <label for="pwReset"><u>Passwort zur&uumlcksetzen:</u></label>
+                  <label for="pwReset"><u>Gruppenmitglieder bearbeiten:</u></label>
                   <div id="pwReset" class="row">
-                    <div class="col-md-4">
-                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#userSelect"  @click="editGroup()">TEST!!</button>
-                    </div>
-                    <div class="col-md-8 ml-auto">
-                      <input id="pwResetNewPw" type="text" class="form-control" value="" disabled>
-                      <small id="accountnameHelp" class="form-text text-muted">Dies ist das neue Passwort.</small>
+                    <div class="col-md-12">
+                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#userSelect"  @click="groupEditMembers()">Gruppenmitglieder ausw&aumlhlen</button>
                     </div>
                   </div>
 
@@ -438,6 +393,7 @@ Vue.component( 'settings-groups',
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" @click="groupSaveChanges()">Best&aumltigen</button>
               </div>
             </div>
           </div>
