@@ -23,12 +23,13 @@ Vue.component( 'settings-groups',
       selectGroup: function(index) {
         this.groups.select = index;
         // because of error when trying to access array from modal
-        this.groups.groupTmp = this.groups.group[index]
+        this.groups.groupTmp = JSON.parse(JSON.stringify(this.groups.group[index]))
+        this.groups.groupName = this.groups.group[index].groupName
         $("#groupOptions").modal();
-        console.log(this.groups)
+//        console.log(this.groups)
       },
 
-      createGroup: function() {
+      createGroup: async function() {
         this.groups.groupName = $("#inputGroupName").val();
         if (this.groups.groupName == '') {
           alert("Gruppenname wurde nicht eingegeben");
@@ -45,6 +46,7 @@ Vue.component( 'settings-groups',
             if (this.status != 200) {
               return
             }
+            console.log(request.responseText)
             result = jsyaml.safeLoad(request.responseText)
 
             if (result.msg == "success") {
@@ -54,10 +56,12 @@ Vue.component( 'settings-groups',
             else {
               alert("Erstellen fehlgeschlagen!");
             }
+            return
           }
         }
 
         var params  = JSON.stringify( {groupName: this.groups.groupName, members: this.groups.user, email: this.model.email, password: this.model.password} )
+        //console.log(params)
         request.onreadystatechange = createGroupCB
         request.open('POST', '/creategroup', true);  // asynchronous request
         request.setRequestHeader('Content-type', 'application/json');
@@ -65,7 +69,7 @@ Vue.component( 'settings-groups',
       },
 
       // deletes user account with all data
-      rmGroup: function() {
+      rmGroup: async function() {
         var request = new XMLHttpRequest();
         var self = this;
 
@@ -76,7 +80,7 @@ Vue.component( 'settings-groups',
             if (this.status != 200) {
               return
             }
-//            console.log(request.responseText)
+            console.log(request.responseText)
             result = jsyaml.safeLoad(request.responseText)
 
             if (result.msg == "success") {
@@ -86,18 +90,20 @@ Vue.component( 'settings-groups',
             else {
               alert("failed!");
             }
+            return
           }
         }
 
         var params  = JSON.stringify( {emailReq: this.model.email, passwordReq: this.model.password, groupName: this.groups.groupTmp.groupName} )
+        //console.log(params)
         request.onreadystatechange = rmGroupCB
         request.open('POST', '/deletegroup', true);  // asynchronous request
         request.setRequestHeader('Content-type', 'application/json');
         request.send(params);
       },
 
-      groupEditMembers: function() {
-        this.groups.user = this.groups.groupTmp.members
+      groupEditMarkMembers: function() {
+        this.groups.user = JSON.parse(JSON.stringify(this.groups.groupTmp.members))
         this.groups.groupName = this.groups.groupTmp.groupName
         var found = false
         for (let i in this.users.user) {
@@ -120,8 +126,14 @@ Vue.component( 'settings-groups',
 //        console.log(this.groups)
       },
 
-      groupSaveChanges: function() {
-        alert("SPEICHERN")
+      groupSaveChanges: async function() {
+        // not very reliable so change to specialized Function
+        await this.rmGroup()
+
+        $("#inputGroupName").val(this.groups.groupName)
+        await this.createGroup()
+
+        await this.initialState()
       },
 
 //      editGroupOLD: function(action) {
@@ -191,21 +203,41 @@ Vue.component( 'settings-groups',
         var selUser = document.getElementById('selUser_'+index);
         selUser.classList.toggle("bg-primary");
 
-        // fill array with selected users
-        if (this.groups.user.includes(this.users.user[index])) {
-          const arrIndex = this.groups.user.indexOf(this.users.user[index]);
+        var arrIndex = -1
+        var found = false
+        for (let i in this.groups.user) {
+          if (this.groups.user[i].email == this.users.user[index].email) {
+            found = true
+            arrIndex = i
+          }
+        }
+        if (found) {
           if (arrIndex > -1) {
             this.groups.user.splice(arrIndex, 1);
           }
-//          console.log(this.groups.user);
         }
         else {
           this.groups.user.push(this.users.user[index]);
-//          console.log(this.groups.user);
         }
+
+        // fill array with selected users
+//        if (this.groups.user.includes(this.users.user[index])) {
+//          const arrIndex = this.groups.user.indexOf(this.users.user[index]);
+//          if (arrIndex > -1) {
+//            this.groups.user.splice(arrIndex, 1);
+//          }
+//          console.log(this.groups.user);
+//        }
+//        else {
+//          this.groups.user.push(this.users.user[index]);
+//          console.log(this.groups.user);
+//        }
       },
 
-      initialState: function() {
+      initialState: async function() {
+        this.groups.group = {}
+        this.groups.groupTmp = {}
+        this.groups.select = -1
         this.groups.user = []
         for (let i in this.users.user) {
           var selectUser = document.getElementById('selUser_'+i);
@@ -213,6 +245,8 @@ Vue.component( 'settings-groups',
             selectUser.classList.remove("bg-primary");
           }
         }
+        this.groups.groupName = ""
+        this.getGroups()
       }
     },
     data() {
@@ -375,7 +409,7 @@ Vue.component( 'settings-groups',
                   <label for="pwReset"><u>Gruppenmitglieder bearbeiten:</u></label>
                   <div id="pwReset" class="row">
                     <div class="col-md-12">
-                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#userSelect"  @click="groupEditMembers()">Gruppenmitglieder ausw&aumlhlen</button>
+                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#userSelect"  @click="groupEditMarkMembers()">Gruppenmitglieder ausw&aumlhlen</button>
                     </div>
                   </div>
 
@@ -441,7 +475,7 @@ Vue.component( 'settings-groups',
               </div>
               <div class="modal-footer">
                <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>-->
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Auswahl hinzuf&uumlgen</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Auswahl best&aumltigen</button>
               </div>
             </div>
           </div>
