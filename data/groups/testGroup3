@@ -1,5 +1,3 @@
-- email: langhals@giraffe.de
-  type: Schüler/Azubi
 - email: max@mustermann.de
   type: Administrator
 - email: peter@tafelkreide.fr
@@ -10,3 +8,5 @@
   type: Schüler/Azubi
 - email: user@test.de
   type: Ausbilder
+- email: langhals@giraffe.de
+  type: Schüler/Azubi

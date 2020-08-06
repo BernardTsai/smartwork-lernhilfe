@@ -1,2 +1,4 @@
 - email: max@mustermann.de
   type: Administrator
+- email: user@test.de
+  type: Ausbilder

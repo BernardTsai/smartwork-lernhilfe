@@ -891,11 +891,10 @@ function deleteGroup(req, res) {
 //------------------------------------------------------------------------------
 
 function editGroup(req, res) {
-  email      = req.body.email     ? req.body.email     : ""
-  password   = req.body.password  ? req.body.password  : ""
-  groupName  = req.body.groupName ? req.body.groupName : ""
-  action     = req.body.action    ? req.body.action    : ""
-  actionData = req.body.data      ? req.body.data      : ""
+  email     = req.body.email     ? req.body.email     : ""
+  password  = req.body.password  ? req.body.password  : ""
+  groupName = req.body.groupName ? req.body.groupName : ""
+  groupNew  = req.body.data      ? req.body.data      : ""
   response = {
     'success': "no",
     'msg':     ""
@@ -959,12 +958,7 @@ function editGroup(req, res) {
                       group = yaml.safeLoad(group)
 //                      console.log(group)
 
-                      if (action == "addMember") {
-                        group = group.concat(actionData);
-                      }
-                      else if (action == "removeMember") {
-                        
-                      }
+                      group = groupNew
 
 //                      console.log(group)
 //                      console.log("");
@@ -977,58 +971,11 @@ function editGroup(req, res) {
                         writeResponse(res, {err: e.toString()})
                         return
                       }
-
-
                     }
                     writeResponse(res, response)
                   }
                 )
               }
-
-
-                // remove group file
-//                try {
-//                  fs.unlinkSync(filename)
-
-//                  response.msg = "success"
-//                  writeResponse(res, response)
-//                  return
-//                } catch(err) {
-//                  console.error(err)
-//                  writeResponse(res, {err: err.toString()})
-//                  return
-//                }
-//              }
-//              else {
-//                response.msg = "error: groups doesn't exist"
-//                writeResponse(res, response)
-//                return
-//              }
-
-
-
-
-
-//              // check if file exists
-//              if (fs.existsSync(filename)) {
-//                // remove group file
-//                try {
-//                  fs.unlinkSync(filename)
-
-//                  response.msg = "success"
-//                  writeResponse(res, response)
-//                  return
-//                } catch(err) {
-//                  console.error(err)
-//                  writeResponse(res, {err: err.toString()})
-//                  return
-//                }
-//              }
-//              else {
-//                response.msg = "error: groups doesn't exist"
-//                writeResponse(res, response)
-//                return
-//              }
             }
           }
         )

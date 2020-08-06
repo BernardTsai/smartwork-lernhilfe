@@ -29,7 +29,7 @@ Vue.component( 'settings-groups',
 //        console.log(this.groups)
       },
 
-      createGroup: async function() {
+      createGroup: function() {
         this.groups.groupName = $("#inputGroupName").val();
         if (this.groups.groupName == '') {
           alert("Gruppenname wurde nicht eingegeben");
@@ -69,7 +69,7 @@ Vue.component( 'settings-groups',
       },
 
       // deletes user account with all data
-      rmGroup: async function() {
+      rmGroup: function() {
         var request = new XMLHttpRequest();
         var self = this;
 
@@ -126,72 +126,37 @@ Vue.component( 'settings-groups',
 //        console.log(this.groups)
       },
 
-      groupSaveChanges: async function() {
-        // not very reliable so change to specialized Function
-        await this.rmGroup()
-
-        $("#inputGroupName").val(this.groups.groupName)
-        await this.createGroup()
-
-        await this.initialState()
-      },
-
-//      editGroupOLD: function(action) {
-//        var request = new XMLHttpRequest();
-//        var self = this;
+      groupSaveChanges: function() {
+        var request = new XMLHttpRequest();
+        var self = this;
 
         // callback function to process the results
-//        function editGroupCB() {
-//          if (this.readyState == 4) {
+        function saveChangesCB() {
+          if (this.readyState == 4) {
             // check status
-//            if (this.status != 200) {
-//              return
-//            }
+            if (this.status != 200) {
+              return
+            }
 //            console.log(request.responseText)
-//            result = jsyaml.safeLoad(request.responseText)
+            result = jsyaml.safeLoad(request.responseText)
 
-//            if (result.success == "yes") {
+            if (result.success == "yes") {
               // reload Groups
-//              self.getGroups();
-//              self.groups.groupTmp = self.groups.group[self.groups.select]
-//            }
-//            else {
-//              alert("failed!");
-//            }
-//          }
-//        }
+              self.getGroups();
+              self.groups.groupTmp = JSON.parse(JSON.stringify(self.groups.group[self.groups.select]))
+            }
+            else {
+              alert("failed!");
+            }
+          }
+        }
 
-//        var params  = JSON.stringify( {email: this.model.email, password: this.model.password, groupName: this.groups.groupTmp.groupName, action: action, data: this.groups.user} )
-//        request.onreadystatechange = editGroupCB
-//        request.open('POST', '/editgroup', true);  // asynchronous request
-//        request.setRequestHeader('Content-type', 'application/json');
-//        request.send(params);
-//      },
-
-//      usersShow: function() {
-//        if (this.groups.select > -1) {
-//          console.log("sollte anderes ergebnis sein!");
-//          var tmp = [];
-//          var check = false;
-
-//          for (let user of this.users.user) {
-//            for (let compareUser of this.groups.groupTmp.members) {
-//              if (user.email == compareUser.email) {
-//                check = true;
-//              }
-//            }
-//            if (!check) {
-//              tmp.push(user);
-//            }
-//            check = false;
-//          }
-//          return tmp;
-//        }
-//        else {
-          //console.log(this.users.user);
-//          return this.users.user;
-//        }
-//      },
+        var params  = JSON.stringify( {email: this.model.email, password: this.model.password, groupName: this.groups.groupTmp.groupName, data: this.groups.user} )
+        request.onreadystatechange = saveChangesCB
+        request.open('POST', '/editgroup', true);  // asynchronous request
+        request.setRequestHeader('Content-type', 'application/json');
+        request.send(params);
+      },
 
       // adds or removes user to/from array to later add users to a group
       selectUser: function(index) {
@@ -203,6 +168,7 @@ Vue.component( 'settings-groups',
         var selUser = document.getElementById('selUser_'+index);
         selUser.classList.toggle("bg-primary");
 
+        // fill array with selected users
         var arrIndex = -1
         var found = false
         for (let i in this.groups.user) {
@@ -219,19 +185,6 @@ Vue.component( 'settings-groups',
         else {
           this.groups.user.push(this.users.user[index]);
         }
-
-        // fill array with selected users
-//        if (this.groups.user.includes(this.users.user[index])) {
-//          const arrIndex = this.groups.user.indexOf(this.users.user[index]);
-//          if (arrIndex > -1) {
-//            this.groups.user.splice(arrIndex, 1);
-//          }
-//          console.log(this.groups.user);
-//        }
-//        else {
-//          this.groups.user.push(this.users.user[index]);
-//          console.log(this.groups.user);
-//        }
       },
 
       initialState: async function() {
@@ -380,25 +333,27 @@ Vue.component( 'settings-groups',
                 <div class="container-fluid">
                   <h3>Mitglieder der Gruppe</h3>
 
-                  <!-- loop over all members -->
-                  <div v-for="(member, index) in this.groups.groupTmp.members" :class="{
-                                                                                 'card': true,
-                                                                                 'my-3': true,
-                                                                                 'mx-auto': true,
-                                                                                 'border-info': member.type == 'Ausbilder',
-                                                                                 'border-danger': member.type == 'Administrator',
-                                                                                 'border-success': member.type == 'Schüler/Azubi'
-                                                                               }" style="max-width: 540px; border: 2px solid;" :id="'selUserG_'+index">
-                    <div class="row no-gutters">
-                      <div class="col-md-2 my-auto">
-                        <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user.svg" class="card-img p-3" alt="USER-LOGO">
-                      </div>
-                      <div class="col-md-10">
-                        <div class="card-body">
-                          <h5 class="card-title">{{member.email}}</h5>
-                          <p class="card-text">
-                            {{member.type}}
-                          </p>
+                  <div class="addScroll">
+                    <!-- loop over all members -->
+                    <div v-for="(member, index) in this.groups.groupTmp.members" :class="{
+                                                                                   'card': true,
+                                                                                   'my-3': true,
+                                                                                   'mx-auto': true,
+                                                                                   'border-info': member.type == 'Ausbilder',
+                                                                                   'border-danger': member.type == 'Administrator',
+                                                                                   'border-success': member.type == 'Schüler/Azubi'
+                                                                                 }" style="max-width: 540px; border: 2px solid;" :id="'selUserG_'+index">
+                      <div class="row no-gutters">
+                        <div class="col-md-2 my-auto">
+                          <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user.svg" class="card-img p-3" alt="USER-LOGO">
+                        </div>
+                        <div class="col-md-10">
+                          <div class="card-body">
+                            <h5 class="card-title">{{member.email}}</h5>
+                            <p class="card-text">
+                              {{member.type}}
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -410,6 +365,7 @@ Vue.component( 'settings-groups',
                   <div id="pwReset" class="row">
                     <div class="col-md-12">
                       <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#userSelect"  @click="groupEditMarkMembers()">Gruppenmitglieder ausw&aumlhlen</button>
+                      <small class="form-text text-muted">Die ausgewählten Nutzer werden nach einem Klick auf Best&aumltigen hinzugef&uumlgt.</small>
                     </div>
                   </div>
 
