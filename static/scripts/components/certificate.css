@@ -1,7 +1,4 @@
-#profession li {
-  cursor: pointer
-}
-
-#profession li:hover {
-  color:   red
+#certificate {
+  width: 210mm;
+  height: 297mm;
 }

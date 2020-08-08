@@ -9,6 +9,8 @@ Vue.component( 'certificate',
       }
     },
     beforeMount(){
+      var qualification = this.model.certificates[this.model.certificate].certificate.qualification
+      this.model.questionnaire = loadData( "GET", "/questionnaire/" + this.model.profession + "/" + qualification)
     },
     computed: {
       certificate: function() {
@@ -33,21 +35,13 @@ Vue.component( 'certificate',
           <p class="h3"><b>Qualifikation:</b> {{details.qualifications[certificate.qualification].qualification}}</p>
         </div>
 
-        <div v-for="(q,i) in model.quiz.questions" class="p-3 d-flex">
-          <!-- {{i+1}}. {{question(i)}} --> FRAGE
-          <!-- <span v-if="q.success=='yes'" class="far fa-check-circle text-success ml-auto text-success"></span> -->
-          <!-- <span v-if="q.success!='yes'" class="far fa-times-circle text-success ml-auto text-danger"></span> -->
-          <span class="far fa-times-circle text-success ml-auto text-success"></span>
+        <div v-for="(q,i) in model.questionnaire" class="p-3 d-flex">
+          {{i+1}}. {{q.title}}
+          <span class="far fa-check-circle text-success ml-auto text-success"></span>
         </div>
 
-        <!-- <div v-if="success == 'no'" class="px-3 text-danger"> -->
-          <!-- F      r ein Zertifikat m      ssen alle Fragen richtig beantwortet werden. -->
-        <!-- </div> -->
-        <!-- <div v-if="success == 'yes'" class="px-3 text-success"> -->
-          <!-- Gl      ckwunsch - die Fragen wurden alle richtig beantwortet. -->
-        <!-- </div> -->
-        <div class="px-3 test-success">
-          Zertifikat vorhanden!
+        <div class="px-3 text-success">
+          Zertifikat am {{certificate.date}} erhalten!
         </div>
 
       </div>`
