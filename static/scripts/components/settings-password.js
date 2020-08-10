@@ -37,7 +37,6 @@ Vue.component( 'settings-password',
               if (this.status != 200) {
                 return
               }
-              //console.log(request.responseText)
               result = jsyaml.safeLoad(request.responseText)
               model.validated = result.validated
               model.password = result.password

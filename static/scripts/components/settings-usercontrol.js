@@ -7,7 +7,6 @@ Vue.component( 'settings-usercontrol',
 //        needed for authentication (not working yet)
 //        var params  = JSON.stringify( { email: model.email, password: model.password } )
         this.users.user = loadData('POST', '/getallusers'/*, params*/);
-//        console.log(this.users);
       },
 
       // generate password function
@@ -33,7 +32,6 @@ Vue.component( 'settings-usercontrol',
             if (this.status != 200) {
               return
             }
-//            console.log(request.responseText)
             result = jsyaml.safeLoad(request.responseText)
 
             if (result.msg == "success") {
@@ -65,12 +63,10 @@ Vue.component( 'settings-usercontrol',
             if (this.status != 200) {
               return
             }
-//            console.log(request.responseText)
             result = jsyaml.safeLoad(request.responseText)
 
             if (result.msg == "success") {
               // reload Users
-              // doesn't work because of reasons..
               self.getUsers();
             }
             else {
@@ -111,7 +107,6 @@ Vue.component( 'settings-usercontrol',
             if (this.status != 200) {
               return
             }
-//            console.log(request.responseText)
             result = jsyaml.safeLoad(request.responseText)
 
             if (result.msg == "account created") {

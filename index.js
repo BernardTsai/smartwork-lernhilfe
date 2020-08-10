@@ -1078,7 +1078,8 @@ function loadCertificate(req, res) {
 	  writeResponse(res, {err: err.toString()})
 	  return
         }
-	if (files) {
+        if (files.length == 0) { files = "no certificates found" }
+	else if (files) {
 	  //listing all files using forEach
           files.forEach(function (file) {
             // ToDo:

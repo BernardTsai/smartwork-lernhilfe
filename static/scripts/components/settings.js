@@ -18,10 +18,9 @@ Vue.component( 'settings',
       <div id="settings" class="container">
 
 
+        <!-- Test with a sidebar - not very successful - problems on mobile devices -->
         <!-- <div id="Sidebar" class="d-none d-md-block bg-dark sidebar">
-          <a href="javascript:void(0)" class="closebtn" @click="closeNav()">x</a> -->
-          <!-- commented out because there are problems on mobile devices -->
-          <!--
+          <a href="javascript:void(0)" class="closebtn" @click="closeNav()">x</a>
           <ul class="nav flex-column">
             <li class="nav-item">
               <a @click="model.submode='settings-dashboard'">

@@ -29,8 +29,12 @@ function loadCerts(email) {
       if (this.status != 200) {
         return
       }
+      // check if user has certificates at all
+      if (request.responseText.indexOf("no certificates found") > -1) {
+        model.certificates = []
+        return
+      }
       // modify responseText to correctly populate model.certificates
-      // TODO: catch exception if there are no certificates!!!
       var certTmp = request.responseText
       certTmp = certTmp.replace(/\n/g, "")
       certTmp = certTmp.replace(/- /g, '"\n- certificate: {}\n  filename: "')

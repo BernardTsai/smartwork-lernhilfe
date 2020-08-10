@@ -2,11 +2,6 @@ Vue.component( 'settings-dashboard',
   {
     props:    ['model'],
     methods: {
-      //select: function(index) {
-        //model.profession = index
-
-        //model.mode = 'profession'
-      //}
     },
     template: `
       <div id="settings-dashboard" class="container">
@@ -44,23 +39,6 @@ Vue.component( 'settings-dashboard',
             </div>
           </div>
         </div>
-
-        <!--
-        <div v-if="model.type=='Ausbilder' || model.type=='Administrator'" class="card my-3 mx-auto" style="max-width: 540px;" @click="this.model.submode='settings-groups'">
-          <div class="row no-gutters">
-            <div class="col-md-2 my-auto">
-              <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/bars.svg" class="card-img p-3" alt="LOGO">
-            </div>
-            <div class="col-md-10">
-              <div class="card-body">
-                <h5 class="card-title">Gruppenerstellung</h5>
-                <p class="card-text">
-                  Erstellen von Gruppen und Zuordnung von Ausbildern
-                </p>
-              </div>
-            </div>
-          </div>
-        </div> -->
 
       </div>`
   }

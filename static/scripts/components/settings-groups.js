@@ -17,7 +17,6 @@ Vue.component( 'settings-groups',
         for (let group of this.groups.group) {
           group.members = jsyaml.safeLoad(group.members);
         }
-//        console.log(this.groups);
       },
 
       selectGroup: function(index) {
@@ -26,7 +25,6 @@ Vue.component( 'settings-groups',
         this.groups.groupTmp = JSON.parse(JSON.stringify(this.groups.group[index]))
         this.groups.groupName = this.groups.group[index].groupName
         $("#groupOptions").modal();
-//        console.log(this.groups)
       },
 
       createGroup: function() {
@@ -61,7 +59,6 @@ Vue.component( 'settings-groups',
         }
 
         var params  = JSON.stringify( {groupName: this.groups.groupName, members: this.groups.user, email: this.model.email, password: this.model.password} )
-        //console.log(params)
         request.onreadystatechange = createGroupCB
         request.open('POST', '/creategroup', true);  // asynchronous request
         request.setRequestHeader('Content-type', 'application/json');
@@ -95,7 +92,6 @@ Vue.component( 'settings-groups',
         }
 
         var params  = JSON.stringify( {emailReq: this.model.email, passwordReq: this.model.password, groupName: this.groups.groupTmp.groupName} )
-        //console.log(params)
         request.onreadystatechange = rmGroupCB
         request.open('POST', '/deletegroup', true);  // asynchronous request
         request.setRequestHeader('Content-type', 'application/json');
@@ -123,7 +119,6 @@ Vue.component( 'settings-groups',
           }
           found = false
         }
-//        console.log(this.groups)
       },
 
       groupSaveChanges: function() {
@@ -137,7 +132,6 @@ Vue.component( 'settings-groups',
             if (this.status != 200) {
               return
             }
-//            console.log(request.responseText)
             result = jsyaml.safeLoad(request.responseText)
 
             if (result.success == "yes") {
