@@ -16,7 +16,7 @@ Vue.component( 'result',
             return
           }
 
-          console.log(request.responseText)
+//          console.log(request.responseText)
         }
       }
 

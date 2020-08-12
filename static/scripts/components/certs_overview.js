@@ -9,24 +9,7 @@ Vue.component( 'certs_overview',
 
         model.mode = 'certs_details'
       },
-      // get all professions for which a certificate exists
-//      getProfessions: function() {
-//        var professions = [];
-//        var professionTmp;
-//        for (var i = 0; i < this.model.certificates.length; i++) {
-//          if (this.model.certificates[i].filename.includes('certificate-')) {
-//            professionTmp = this.model.certificates[i].filename[12];
-            // check professions to avoid dublicates
-//            var found = false;
-//            for (var j = 0; j < professions.length; j++) {
-//              if (professions[j] == professionTmp) found = true;
-//            }
-//            if (!found) professions.push(professionTmp);
-//          }
-//        }
-//        console.log(professions);
-//        this.model.certs_p = professions;
-//      },
+
       // get percentage of learning state
       getPercentage: function(profession) {
         var total = this.model.materials.professions[profession].qualifications.length;
@@ -35,6 +18,39 @@ Vue.component( 'certs_overview',
           if (this.model.certificates[i].filename.includes('certificate-' + profession)) counter++;
         }
 	var percent = (counter/total)*100
+        // if percent == 100% and final cert doesn't exist yet, create it (if final cert exists, percent is > 100 because there is one cert more than there're qualifications
+        if (percent == 100) {
+          var request = new XMLHttpRequest();
+
+          // callback function to process the results
+          function saveCertificateCB() {
+            if (this.readyState == 4) {
+              // check status
+              if (this.status != 200) {
+                return
+              }
+            }
+          }
+
+          date = new Date()
+          var finalCert = {
+            profession:    profession,
+            qualification: -1,
+            date:          date.getDate() + "." + (date.getMonth()+1) + "." + date.getFullYear()
+          }
+
+          // issue request to server backend
+          var params  = JSON.stringify( { email: model.email,  certs: finalCert } )
+
+          request.onreadystatechange = saveCertificateCB
+          request.open('POST', '/certificate', true);  // asynchronous request
+          request.setRequestHeader('Content-type', 'application/json');
+          request.send(params);
+        }
+
+        //correct percentage if necessary
+        if (percent > 100) percent = ((counter-1)/total)*100
+
         return Math.round((percent + Number.EPSILON) * 100) / 100
       }
     },

@@ -1009,7 +1009,8 @@ function saveCertificate(req, res) {
 
   // write file
   directory = './data/students/' + email + '/certificates'
-  filename  = directory + '/final-certificate_' + year + "-" + month + "-" + date + "_" + hours + "-" + minutes
+//  filename  = directory + '/final-certificate_' + year + "-" + month + "-" + date + "_" + hours + "-" + minutes
+  filename  = directory + '/final-certificate-' + certs.profession
 
   try {
     fs.writeFileSync(filename, yaml.safeDump(certs))

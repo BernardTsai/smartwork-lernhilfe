@@ -9,8 +9,22 @@ Vue.component( 'certificate',
       }
     },
     beforeMount(){
-      var qualification = this.model.certificates[this.model.certificate].certificate.qualification
-      this.model.questionnaire = loadData( "GET", "/questionnaire/" + this.model.profession + "/" + qualification)
+      if (this.model.certificates[this.model.certificate].certificate.qualification > -1) {
+        var qualification = this.model.certificates[this.model.certificate].certificate.qualification
+        this.model.questionnaire = loadData( "GET", "/questionnaire/" + this.model.profession + "/" + qualification)
+      }
+      // load everything a bit different for final cert to display qualifications insted of question titles
+      else if (this.model.certificates[this.model.certificate].certificate.qualification == -1) {
+        this.model.questionnaire = []
+        var qualifications = this.model.materials.professions[this.model.certificates[this.model.certificate].certificate.profession].qualifications
+        for (let i in qualifications) {
+          var content = {
+            title: ""
+          }
+          this.model.questionnaire.push(content)
+          this.model.questionnaire[i].title = qualifications[i].qualification
+        }
+      }
     },
     computed: {
       certificate: function() {
@@ -32,7 +46,12 @@ Vue.component( 'certificate',
         <div class="bg-light px-3">
           <p class="h1">Zertifikat</p>
           <p class="h3"><b>Berufsfeld:</b> {{details.profession}}</p>
-          <p class="h3"><b>Qualifikation:</b> {{details.qualifications[certificate.qualification].qualification}}</p>
+          <p class="h3" v-if="this.model.certificates[this.model.certificate].certificate.qualification > -1">
+            <b>Qualifikation:</b> {{details.qualifications[certificate.qualification].qualification}}
+          </p>
+          <p class="h3 text-success" v-if="this.model.certificates[this.model.certificate].certificate.qualification == -1">
+            <b>Finales Zertifikat</b>
+          </p>
         </div>
 
         <div v-for="(q,i) in model.questionnaire" class="p-3 d-flex">

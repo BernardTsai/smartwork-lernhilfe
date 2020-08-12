@@ -40,10 +40,13 @@ Vue.component( 'certs_details',
             </div>
             <div class="col-md-10">
               <div class="card-body">
-                <h5 class="card-title">
+                <h5 class="card-title" v-if="this.model.certificates[this.model.tmp[index]].certificate.qualification > -1">
                   {{ details[this.model.certificates[this.model.tmp[index]].certificate.profession].
                      qualifications[this.model.certificates[this.model.tmp[index]].certificate.qualification].
                      qualification }}
+                </h5>
+                <h5 class="card-title text-success" v-if="this.model.certificates[this.model.tmp[index]].certificate.qualification == -1">
+                  Finales Zertifikat
                 </h5>
                 <p class="card-text">
                   Erhalten am: {{ this.model.certificates[this.model.tmp[index]].certificate.date }}

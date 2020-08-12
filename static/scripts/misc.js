@@ -17,6 +17,8 @@ function loadData(method, url, params) {
   }
 }
 
+//------------------------------------------------------------------------------
+
 // loadCerts: get list of all certificates
 function loadCerts(email) {
   var paramEmail  = email ? email : model.email
@@ -54,6 +56,8 @@ function loadCerts(email) {
   request.send(params);
 }
 
+//------------------------------------------------------------------------------
+
 // loadCert: load all certificates
 function loadCert() {
   var request = new XMLHttpRequest();
@@ -63,12 +67,23 @@ function loadCert() {
   }
 }
 
+//------------------------------------------------------------------------------
+
 // get all professions for which a certificate exists
 function getProfessions() {
   var professions = [];
   var professionTmp;
   for (var i = 0; i < this.model.certificates.length; i++) {
-    if (this.model.certificates[i].filename.includes('certificate-')) {
+    if (this.model.certificates[i].filename.includes('final-certificate-')) {
+      professionTmp = this.model.certificates[i].filename[18];
+      // check professions to avoid dublicates
+      var found = false;
+      for (var j = 0; j < professions.length; j++) {
+        if (professions[j] == professionTmp) found = true;
+      }
+      if (!found) professions.push(professionTmp);
+    }
+    else if (this.model.certificates[i].filename.includes('certificate-')) {
       professionTmp = this.model.certificates[i].filename[12];
       // check professions to avoid dublicates
       var found = false;
@@ -81,4 +96,5 @@ function getProfessions() {
 //  console.log(professions);
   this.model.certs_p = professions;
 }
+
 //------------------------------------------------------------------------------
