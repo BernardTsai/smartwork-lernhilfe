@@ -10,3 +10,8 @@
     max-height: 350px;
     overflow-y: auto;
 }
+
+/* dirty hack to still be able to scroll on first modal whe second modal is closed */
+#settings-groups #groupOptions{
+    overflow-y: scroll;
+}

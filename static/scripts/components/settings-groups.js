@@ -25,6 +25,7 @@ Vue.component( 'settings-groups',
         this.groups.groupTmp = JSON.parse(JSON.stringify(this.groups.group[index]))
         this.groups.groupName = this.groups.group[index].groupName
         $("#groupOptions").modal();
+        this.checkIntegrity()
       },
 
       createGroup: function() {
@@ -44,7 +45,7 @@ Vue.component( 'settings-groups',
             if (this.status != 200) {
               return
             }
-            console.log(request.responseText)
+//            console.log(request.responseText)
             result = jsyaml.safeLoad(request.responseText)
 
             if (result.msg == "success") {
@@ -77,7 +78,7 @@ Vue.component( 'settings-groups',
             if (this.status != 200) {
               return
             }
-            console.log(request.responseText)
+//            console.log(request.responseText)
             result = jsyaml.safeLoad(request.responseText)
 
             if (result.msg == "success") {
@@ -150,6 +151,29 @@ Vue.component( 'settings-groups',
         request.open('POST', '/editgroup', true);  // asynchronous request
         request.setRequestHeader('Content-type', 'application/json');
         request.send(params);
+      },
+
+      // checks integrity - if a user that doesn't exist is in a group, he'll be removed
+      checkIntegrity: function() {
+        this.groups.user = []
+        var found = false
+        var arrIndex = -1
+        for (let i in this.groups.groupTmp.members) {
+          for (let j in this.users.user) {
+            if (this.groups.groupTmp.members[i].email == this.users.user[j].email) {
+              found = true
+              arrIndex = j
+            }
+          }
+          if (found) {
+            if (arrIndex > -1) this.groups.user.push(this.users.user[arrIndex]);
+          }
+          else {
+//            console.log('User ' + this.groups.groupTmp.members[i].email + ' existiert nicht!')
+          }
+          found = false
+        }
+        this.groupSaveChanges()
       },
 
       // adds or removes user to/from array to later add users to a group
@@ -235,6 +259,8 @@ Vue.component( 'settings-groups',
 //        self.groups.groupTmp = self.usersShow();
 //        console.log(self.groups);
 //      });
+      // Hack to enable multiple modals by making sure the .modal-open class
+      // is set to the <body> when there is at least one modal open left
 //    },
     computed: {
       user: function() {
