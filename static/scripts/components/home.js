@@ -17,6 +17,14 @@ Vue.component( 'home',
 //        console.log(this.groups)
       },
 
+      selectGroup: function(index) {
+        this.groups.select = index;
+        // because of error when trying to access array from modal
+        this.groups.selGroup = JSON.parse(JSON.stringify(this.groups.group[index]))
+        this.groups.groupName = this.groups.group[index].groupName
+        $("#group").modal();
+      },
+
       // remove all groups that the user isn't member of
       checkMembership: function() {
         var arrIndex = -1
@@ -53,8 +61,8 @@ Vue.component( 'home',
         groups: {
           group: {},
           groupTmp: [],
+          selGroup: [],
           select: -1,
-          user: [],
           groupName: ''
         }
       }
@@ -102,6 +110,52 @@ Vue.component( 'home',
         <hr style="max-width: 540px;">
         <br>
         <h3 class="text-center">Mitglied in diesen Gruppen</h3>
+
+        <!-- Modal for group options -->
+        <div class="modal fade" id="group" tabindex="-1" role="dialog" aria-labelledby="groupModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="groupOptionsLongTitle">Mitglieder von {{this.groups.selGroup.groupName}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="container-fluid">
+                  <div class="addScroll">
+                    <!-- loop over all members -->
+                    <div v-for="(member, index) in this.groups.selGroup.members" :class="{
+                                                                                   'card': true,
+                                                                                   'my-3': true,
+                                                                                   'mx-auto': true,
+                                                                                   'border-info': member.type == 'Ausbilder',
+                                                                                   'border-danger': member.type == 'Administrator',
+                                                                                   'border-success': member.type == 'Schüler/Azubi'
+                                                                                 }" style="max-width: 540px; border: 2px solid;" :id="'selUserG_'+index">
+                      <div class="row no-gutters">
+                        <div class="col-md-2 my-auto">
+                          <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user.svg" class="card-img p-3" alt="USER-LOGO">
+                        </div>
+                        <div class="col-md-10">
+                          <div class="card-body">
+                            <h5 class="card-title">{{member.email}}</h5>
+                            <p class="card-text">
+                              {{member.type}}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Schlie&szligen</button>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <!-- loop over all groups -->
         <div v-for="(group, index) in this.groups.groupTmp" class="card my-3 mx-auto" style="max-width: 540px;" @click="selectGroup(index)">
