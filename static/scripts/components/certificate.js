@@ -60,7 +60,7 @@ Vue.component( 'certificate',
         </div>
 
         <div class="px-3 text-success">
-          Zertifikat am {{certificate.date}} erhalten!
+          {{certificate.email}} hat das Zertifikat am {{certificate.date}} erhalten!
         </div>
 
       </div>`

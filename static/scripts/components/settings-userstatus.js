@@ -3,7 +3,14 @@ Vue.component( 'settings-userstatus',
     props:    ['model'],
     methods: {
       selectCert: function(profession) {
-        
+        for (var i = 0; i < this.model.certificates.length; i++) {
+          if (this.model.certificates[i].filename.includes('final-certificate-' + profession)) {
+            $('#certs').modal('hide')
+
+            this.model.certificate = i
+            this.model.mode = 'certificate'
+          }
+        }
       },
 
       selectUser: function(index) {
@@ -11,6 +18,7 @@ Vue.component( 'settings-userstatus',
         // because of error when trying to access array from modal
         this.users.emailSel = this.users.user[index].email;
         loadCerts(this.users.user[index].email);
+        loadCert(this.users.user[index].email);
         getProfessions();
         // show certs in modal
         $("#certs").modal();
@@ -29,6 +37,40 @@ Vue.component( 'settings-userstatus',
           if (this.model.certificates[i].filename.includes('certificate-' + profession)) counter++;
         }
 	var percent = (counter/total)*100
+
+        // if percent == 100%, final cert doesn't exist yet -> create it! (if final cert exists, percent is > 100 because there is one cert more than there're qualifications)
+        if (percent == 100) {
+          var request = new XMLHttpRequest();
+
+          // callback function to process the results
+          function saveCertificateCB() {
+            if (this.readyState == 4) {
+              // check status
+              if (this.status != 200) {
+                return
+              }
+            }
+          }
+
+          date = new Date()
+          var finalCert = {
+            profession:    profession,
+            qualification: -1,
+            date:          date.getDate() + "." + (date.getMonth()+1) + "." + date.getFullYear()
+          }
+
+          // issue request to server backend
+          var params  = JSON.stringify( { email: this.users.emailSel,  certs: finalCert } )
+
+          request.onreadystatechange = saveCertificateCB
+          request.open('POST', '/certificate', true);  // asynchronous request
+          request.setRequestHeader('Content-type', 'application/json');
+          request.send(params);
+        }
+
+        //correct percentage if necessary
+        if (percent > 100) percent = ((counter-1)/total)*100
+
         return Math.round((percent + Number.EPSILON) * 100) / 100
       }
     },

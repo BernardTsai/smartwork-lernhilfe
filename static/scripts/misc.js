@@ -59,10 +59,12 @@ function loadCerts(email) {
 //------------------------------------------------------------------------------
 
 // loadCert: load all certificates
-function loadCert() {
+function loadCert(email) {
+  var paramEmail  = email ? email : model.email
+
   var request = new XMLHttpRequest();
   for (var i = 0; i < this.model.certificates.length; i++) {
-    var params  = JSON.stringify( { cert: this.model.certificates[i].filename, email: model.email } )
+    var params  = JSON.stringify( { cert: this.model.certificates[i].filename, email: paramEmail } )
     this.model.certificates[i].certificate = loadData('POST', '/loadcertificate', params);
   }
 }
