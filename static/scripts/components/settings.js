@@ -47,6 +47,7 @@ Vue.component( 'settings',
           <settings-usercontrol     v-bind:model="model" v-if="model.submode == 'settings-usercontrol'"     ></settings-usercontrol>
           <settings-userstatus      v-bind:model="model" v-if="model.submode == 'settings-userstatus'"      ></settings-userstatus>
           <settings-groups          v-bind:model="model" v-if="model.submode == 'settings-groups'"          ></settings-groups>
+          <settings-editquiz        v-bind:model="model" v-if="model.submode == 'settings-editquiz'"        ></settings-editquiz>
 
         </div>
 

@@ -56,6 +56,22 @@ Vue.component( 'settings-instructorarea',
           </div>
         </div>
 
+        <div v-if="model.type=='Ausbilder' || model.type=='Administrator'" class="card my-3 mx-auto" style="max-width: 540px;" @click="this.model.submode='settings-editquiz'">
+          <div class="row no-gutters">
+            <div class="col-md-2 my-auto">
+              <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/stream.svg" class="card-img p-3" alt="LOGO">
+            </div>
+            <div class="col-md-10">
+              <div class="card-body">
+                <h5 class="card-title">Quiz bearbeiten</h5>
+                <p class="card-text">
+                  Erstellen von neuen Fragen sowie Bearbeitung der vorhandenen Quiz
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>`
   }
 )
