@@ -315,20 +315,8 @@ Vue.component( 'settings-groups',
                 <div class="form-group">
                   <label for="addToGroup">Nutzer hinzuf&uumlgen</label>
                   <button id="addToGroup" type="button" class="btn btn-primary" data-toggle="modal" data-target="#userSelect">Nutzer ausw&aumlhlen</button>
-                  <small id="addToGroupHelp" class="form-text text-muted">W&aumlhlen Sie aus der List die Nutzer aus, die der Gruppe hinzugef&uumlgt werden sollen.</small>
+                  <small id="addToGroupHelp" class="form-text text-muted">W&aumlhlen Sie aus der Liste die Nutzer aus, die der Gruppe hinzugef&uumlgt werden sollen.</small>
                 </div>
-
-                <!--
-                <div class="form-group">
-                  <label for="userType">Nutzerart</label>
-                  <select class="form-control" id="userType">
-                    <option>Sch&uumller/Azubi</option>
-                    <option>Ausbilder</option>
-                    <option>Administrator</option>
-                  </select>
-                  <small id="usertypeHelp" class="form-text text-muted">W&aumlhlen Sie aus, welchem Typ der neue Nutzer zugeordnet werden soll.</small>
-                </div>
-                -->
 
               </div>
               <div class="modal-footer">

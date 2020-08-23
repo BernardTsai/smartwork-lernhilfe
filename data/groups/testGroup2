@@ -1,6 +1,6 @@
-- email: "max@mustermann.de"
-  type:   "Administrator"
-- email: "user@test.de"
-  type:   "Ausbilder"
-- email: "test@bla.de"
-  type:   "Schüler/Azubi"
+- email: max@mustermann.de
+  type: Administrator
+- email: user@test.de
+  type: Ausbilder
+- email: test@bla.de
+  type: Schüler/Azubi

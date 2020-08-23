@@ -1,0 +1,63 @@
+# profession:    "Elektroniker/-in"
+# qualification: "Gebrauchte Weißgeräte testen und reparieren"
+# questions:
+- title: "Ohmsches Gesetz"
+  description: |
+    Das Ohmsche Gesetz beschreibt den Zusammenhang zwischen Spannnung und Stromstärke in einem Leiterkreis.
+  question: "Wie ist das Ohmsche Gesetz korrekt?"
+  options:
+    - "I = U/R"
+    - "U = R+I"
+    - "R = U*I"
+  answers:
+    - yes
+    - no
+    - no
+  explanation: |
+    Das Ohmsche Gesetz lautet U = R*I. Umgestellt nach I ergibt das I = U/R.
+  points: 5
+- title: "Messen mit dem Oszilloskop"
+  description: |
+    Ein Oszilloskop is in der Elektrotechnik ein wichtiges Messgerät. 
+  question: "Für welche Messung kann ein Oszilloskop verwendet werden?"
+  options:
+    - "Helligkeit einer LED"
+    - "elektrische Schwingungen"
+    - "Temperaturen unter 0°C"
+  answers:
+    - no
+    - yes
+    - no
+  explanation: |
+    Mit einem Oszilloskop können elektrische Signale sichtbar gemacht werden.
+  points: 5
+- title: "Bedienung elektrischer Geräte"
+  description: |
+    Bei der Bedienung elektrischer Geräte kann man viel falsch machen.
+  question: "Welche Aussage ist korrekt?"
+  options:
+    - "Bei der Bedienung passieren nie Fehler"
+    - "Geräte können nicht falsch bedient werden"
+    - "Jedes Gerät ist eine Nebelmaschine, wenn man es nur falsch genug bedient"
+  answers:
+    - no
+    - no
+    - yes
+  explanation: |
+    Elektrogeräte können erstaunlich viel Rauch produzieren. 
+    *hust* Elektrolytkondensator verpolt *hust*
+  points: 5
+- title: "Bobbycar"
+  description: |
+    Auch Kinderspielzeug kann heutzutage viel Elektronik beinhalten.
+  question: "Wie viele Elektromotoren befinden sich in einem billig Bobbycar?"
+  options:
+    - "0"
+    - "1"
+    - "3"
+  answers:
+    - yes
+    - no
+    - no
+  explanation: |
+    Billig Bobbycars haben keine Motoren!

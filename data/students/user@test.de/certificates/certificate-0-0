@@ -1,8 +1,8 @@
-profession: 2
+profession: 0
 qualification: 0
 date: 23.8.2020
-length: 3
-question: 2
+length: 4
+question: 3
 questions:
   - options:
       - 'yes'
@@ -26,6 +26,15 @@ questions:
       - 'no'
       - 'no'
       - 'yes'
+    answers:
+      - 'yes'
+      - 'yes'
+      - 'yes'
+    success: 'yes'
+  - options:
+      - 'yes'
+      - 'no'
+      - 'no'
     answers:
       - 'yes'
       - 'yes'
