@@ -3,14 +3,12 @@ Vue.component( 'settings-editquiz',
     props:    ['model'],
     methods: {
       selectProfession: function(index) {
-        // reset second dropdown menu if professionn selection changed
+        // reset dropdown menus if profession selection changed
         if (this.selected.professionIndex != -1){
-          this.selected.qualificationIndex = -1
-          this.selected.qualification = []
-          var button = document.getElementById("dropdownMenu2");
-          button.firstChild.data = "Qualifikation auswählen"
-          button.classList.remove("btn-primary");
-          button.classList.add("btn-secondary");
+          if (this.selected.questionIndex != -1){
+            this.initialStateQuestion()
+          }
+          this.initialStateQualification()
         }
 
         this.selected.professionIndex = index
@@ -21,6 +19,10 @@ Vue.component( 'settings-editquiz',
         button.classList.add("btn-primary");
       },
       selectQualification: function(index) {
+        if (this.selected.questionIndex != -1){
+          this.initialStateQuestion()
+        }
+
         this.selected.qualificationIndex = index
         this.selected.qualification = this.selected.profession.qualifications[index]
         var button = document.getElementById("dropdownMenu2");
@@ -31,6 +33,28 @@ Vue.component( 'settings-editquiz',
         // load questions
         var qualification = this.selected.qualificationIndex
         this.model.questionnaire = loadData( "GET", "/questionnaire/" + this.selected.professionIndex + "/" + qualification)
+      },
+      selectQuestion: function(index) {
+       this.selected.questionIndex = index
+        var button = document.getElementById("dropdownMenu3");
+        button.firstChild.data = this.model.questionnaire[index].title;
+        button.classList.remove("btn-secondary");
+        button.classList.add("btn-primary");
+      },
+      initialStateQualification: function() {
+        var button = document.getElementById("dropdownMenu2");
+        button.firstChild.data = "Qualifikation auswählen"
+        button.classList.remove("btn-primary");
+        button.classList.add("btn-secondary");
+        this.selected.qualificationIndex = -1
+        this.selected.qualification = []
+      },
+      initialStateQuestion: function() {
+        var button = document.getElementById("dropdownMenu3");
+        button.firstChild.data = "Frage auswählen"
+        button.classList.remove("btn-primary");
+        button.classList.add("btn-secondary");
+        this.selected.questionIndex = -1
       }
     },
     data() {
@@ -39,7 +63,8 @@ Vue.component( 'settings-editquiz',
           profession: [],
           professionIndex: -1,
           qualificationIndex: -1,
-          qualification: []
+          qualification: [],
+          questionIndex: -1
         }
       }
     },
@@ -145,8 +170,20 @@ Vue.component( 'settings-editquiz',
                 <label for="editQuestions"><u>Fragen bearbeiten:</u></label>
                 <div id="editQuestions" class="row">
                   <div class="col-md-12">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#userSelect">Fragen anzeigen</button>
+
+                    <!-- dropdown qualification selection -->
+                    <div class="dropdown">
+                      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Frage ausw&aumlhlen
+                      </button>
+                      <button v-if="this.selected.questionIndex != -1" type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#questionEditModal">Frage bearbeiten</button>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenu3">
+                        <button class="dropdown-item" type="button" v-for="(question, index) in this.model.questionnaire" @click="selectQuestion(index)">{{question.title}}</button>
+                      </div>
+                    </div>
+
                     <small class="form-text text-muted">Hier k&oumlnnen bereits vorhandene Fragen bearbeitet werden.</small>
+
                   </div>
                 </div>
 
@@ -164,6 +201,54 @@ Vue.component( 'settings-editquiz',
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal" @click="alert('save function missing')">Best&aumltigen</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal for question editing -->
+        <div v-if="this.selected.questionIndex != -1" class="modal fade" id="questionEditModal" tabindex="-1" role="dialog" aria-labelledby="questionEditModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="questionEditModalLongTitle">Optionen f&uumlr {{this.model.questionnaire[this.selected.questionIndex].title}}</h5>
+                <button type="button" class="close" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+
+                <div class="form-group">
+                  <label for="inputQuestionTitle">Fragentitel:</label>
+                  <input id="inputQuestionTitle" type="text" class="form-control" :value="this.model.questionnaire[this.selected.questionIndex].title">
+                  <small id="QuestionTitleHelp" class="form-text text-muted">Geben Sie einen Title f&uumlr die Quizfrage ein.</small>
+                </div>
+                <div class="form-group">
+                  <label for="inputQuestionDescription">Fragenbeschreibung:</label>
+                  <input id="inputQuestionDescription" type="text" class="form-control" :value="this.model.questionnaire[this.selected.questionIndex].description">
+                  <small id="QuestionDescriptionHelp" class="form-text text-muted">Geben Sie eine Beschreibung f&uumlr die Quizfrage ein.</small>
+                </div>
+                <div class="form-group">
+                  <label for="inputQuestion">Quizfrage:</label>
+                  <input id="inputQuestion" type="text" class="form-control" :value="this.model.questionnaire[this.selected.questionIndex].question">
+                  <small id="QuestionHelp" class="form-text text-muted">Geben Sie die Quizfrage ein.</small>
+                </div>
+                
+                <div class="form-group">
+                  <label for="inputQuestionExplanation">Erklärung:</label>
+                  <input id="inputQuestionExplanation" type="text" class="form-control" :value="this.model.questionnaire[this.selected.questionIndex].explanation">
+                  <small id="QuestionExplanationHelp" class="form-text text-muted">Geben Sie eine Erkl&aumlrung zur richtigen Antwort der Quizfrage ein.</small>
+                </div>
+                <div class="form-group">
+                  <label for="inputQuestionPoints">Punkte:</label>
+                  <input id="inputQuestionPoints" type="number" class="form-control" :value="this.model.questionnaire[this.selected.questionIndex].points">
+                  <small id="QuestionPointsHelp" class="form-text text-muted">Geben Sie ein, wie viele Punkte mit dieser Frage erreicht werden können.</small>
+                </div>
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal">Abbrechen</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal" @click="alert('save function missing')">Best&aumltigen</button>
               </div>
             </div>
           </div>
