@@ -1,0 +1,4 @@
+#settings-editquiz #questionEditModal .modal-body{
+    height: 500px;
+    overflow-y: auto;
+}

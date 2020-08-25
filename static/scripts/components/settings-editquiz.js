@@ -19,7 +19,7 @@ Vue.component( 'settings-editquiz',
         button.classList.add("btn-primary");
       },
       selectQualification: function(index) {
-        if (this.selected.questionIndex != -1){
+        if (this.model.quiz.question != -1){
           this.initialStateQuestion()
         }
 
@@ -35,11 +35,18 @@ Vue.component( 'settings-editquiz',
         this.model.questionnaire = loadData( "GET", "/questionnaire/" + this.selected.professionIndex + "/" + qualification)
       },
       selectQuestion: function(index) {
-       this.selected.questionIndex = index
+//        this.selected.questionIndex = index
+        this.model.quiz.question = index
         var button = document.getElementById("dropdownMenu3");
         button.firstChild.data = this.model.questionnaire[index].title;
         button.classList.remove("btn-secondary");
         button.classList.add("btn-primary");
+      },
+      question: function() {
+        return this.model.questionnaire[this.model.quiz.question]
+      },
+      checkedCheck: function(index) {
+        return this.model.questionnaire[this.model.quiz.question].answers[index] == "yes"
       },
       initialStateQualification: function() {
         var button = document.getElementById("dropdownMenu2");
@@ -54,7 +61,8 @@ Vue.component( 'settings-editquiz',
         button.firstChild.data = "Frage auswählen"
         button.classList.remove("btn-primary");
         button.classList.add("btn-secondary");
-        this.selected.questionIndex = -1
+//        this.selected.questionIndex = -1
+        this.model.quiz.question = -1
       }
     },
     data() {
@@ -63,8 +71,8 @@ Vue.component( 'settings-editquiz',
           profession: [],
           professionIndex: -1,
           qualificationIndex: -1,
-          qualification: [],
-          questionIndex: -1
+          qualification: []
+//          questionIndex: -1
         }
       }
     },
@@ -176,7 +184,7 @@ Vue.component( 'settings-editquiz',
                       <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Frage ausw&aumlhlen
                       </button>
-                      <button v-if="this.selected.questionIndex != -1" type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#questionEditModal">Frage bearbeiten</button>
+                      <button v-if="this.model.quiz.question != -1" type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#questionEditModal">Frage bearbeiten</button>
                       <div class="dropdown-menu" aria-labelledby="dropdownMenu3">
                         <button class="dropdown-item" type="button" v-for="(question, index) in this.model.questionnaire" @click="selectQuestion(index)">{{question.title}}</button>
                       </div>
@@ -207,11 +215,11 @@ Vue.component( 'settings-editquiz',
         </div>
 
         <!-- Modal for question editing -->
-        <div v-if="this.selected.questionIndex != -1" class="modal fade" id="questionEditModal" tabindex="-1" role="dialog" aria-labelledby="questionEditModalCenterTitle" aria-hidden="true">
+        <div v-if="this.model.quiz.question != -1" class="modal fade" id="questionEditModal" tabindex="-1" role="dialog" aria-labelledby="questionEditModalCenterTitle" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="questionEditModalLongTitle">Optionen f&uumlr {{this.model.questionnaire[this.selected.questionIndex].title}}</h5>
+                <h5 class="modal-title" id="questionEditModalLongTitle">Optionen f&uumlr {{this.model.questionnaire[this.model.quiz.question].title}}</h5>
                 <button type="button" class="close" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -220,28 +228,44 @@ Vue.component( 'settings-editquiz',
 
                 <div class="form-group">
                   <label for="inputQuestionTitle">Fragentitel:</label>
-                  <input id="inputQuestionTitle" type="text" class="form-control" :value="this.model.questionnaire[this.selected.questionIndex].title">
+                  <input id="inputQuestionTitle" type="text" class="form-control" :value="question().title">
                   <small id="QuestionTitleHelp" class="form-text text-muted">Geben Sie einen Title f&uumlr die Quizfrage ein.</small>
                 </div>
                 <div class="form-group">
                   <label for="inputQuestionDescription">Fragenbeschreibung:</label>
-                  <input id="inputQuestionDescription" type="text" class="form-control" :value="this.model.questionnaire[this.selected.questionIndex].description">
+                  <input id="inputQuestionDescription" type="text" class="form-control" :value="question().description">
                   <small id="QuestionDescriptionHelp" class="form-text text-muted">Geben Sie eine Beschreibung f&uumlr die Quizfrage ein.</small>
                 </div>
                 <div class="form-group">
                   <label for="inputQuestion">Quizfrage:</label>
-                  <input id="inputQuestion" type="text" class="form-control" :value="this.model.questionnaire[this.selected.questionIndex].question">
+                  <input id="inputQuestion" type="text" class="form-control" :value="question().question">
                   <small id="QuestionHelp" class="form-text text-muted">Geben Sie die Quizfrage ein.</small>
                 </div>
-                
+
+                <div class="form-group">
+                  <label for="questionOptions">Antworten:</label>
+                  <div id="questionOptions">
+                    <div class="row" v-for="(option,index) in question().options">
+                      <div class="col-md-2 radio">
+                        <input class="align-bottom" type="radio" :id="'option-' + index" name="customCheck" :checked="checkedCheck(index)">
+                      </div>
+                      <div class="col-md-10 ml-auto">
+                        <input :id="'inputQuestionOptionText-' + index" type="text" class="form-control" :value="option">
+                        <small :id="'inputQuestionOptionTextHelp' + index" class="form-text text-muted">Geben Sie hier die {{index+1}}. Antwortm&oumlglichkeit ein.</small>
+                      </div>
+                    </div>
+                  </div>
+                  <small id="questionOptionsHelp" class="form-text text-muted">Geben Sie die Antwortm&oumlglichkeiten ein und markieren Sie die richtige Antwort.</small>
+                </div>
+
                 <div class="form-group">
                   <label for="inputQuestionExplanation">Erklärung:</label>
-                  <input id="inputQuestionExplanation" type="text" class="form-control" :value="this.model.questionnaire[this.selected.questionIndex].explanation">
+                  <input id="inputQuestionExplanation" type="text" class="form-control" :value="question().explanation">
                   <small id="QuestionExplanationHelp" class="form-text text-muted">Geben Sie eine Erkl&aumlrung zur richtigen Antwort der Quizfrage ein.</small>
                 </div>
                 <div class="form-group">
                   <label for="inputQuestionPoints">Punkte:</label>
-                  <input id="inputQuestionPoints" type="number" class="form-control" :value="this.model.questionnaire[this.selected.questionIndex].points">
+                  <input id="inputQuestionPoints" type="number" class="form-control" :value="question().points">
                   <small id="QuestionPointsHelp" class="form-text text-muted">Geben Sie ein, wie viele Punkte mit dieser Frage erreicht werden können.</small>
                 </div>
 
