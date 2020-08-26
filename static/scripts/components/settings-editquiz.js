@@ -5,7 +5,7 @@ Vue.component( 'settings-editquiz',
       selectProfession: function(index) {
         // reset dropdown menus if profession selection changed
         if (this.selected.professionIndex != -1){
-          if (this.selected.questionIndex != -1){
+          if (this.model.quiz.question != -1){
             this.initialStateQuestion()
           }
           this.initialStateQualification()
@@ -47,6 +47,20 @@ Vue.component( 'settings-editquiz',
       },
       checkedCheck: function(index) {
         return this.model.questionnaire[this.model.quiz.question].answers[index] == "yes"
+      },
+      applyChanges: function() {
+        this.model.questionnaire[this.model.quiz.question].title = $("#inputQuestionTitle").val()
+        this.model.questionnaire[this.model.quiz.question].description = $("#inputQuestionDescription").val()
+        this.model.questionnaire[this.model.quiz.question].question = $("#inputQuestion").val()
+        for (let i in this.model.questionnaire[this.model.quiz.question].options) {
+          this.model.questionnaire[this.model.quiz.question].answers[i] = $("#option-" + i)[0].checked ? "yes" : "no"
+          this.model.questionnaire[this.model.quiz.question].options[i] = $("#inputQuestionOptionText-" + i).val()
+        }
+        this.model.questionnaire[this.model.quiz.question].explanation = $("#inputQuestionExplanation").val()
+        this.model.questionnaire[this.model.quiz.question].points = $("#inputQuestionPoints").val()
+      },
+      saveQuiz: function() {
+        alert("function not fully implemented yet!")
       },
       initialStateQualification: function() {
         var button = document.getElementById("dropdownMenu2");
@@ -99,7 +113,7 @@ Vue.component( 'settings-editquiz',
         <h3 class="text-center">Quizverwaltung</h3>
 
         <!-- trigger modal quiz creation-->
-        <div class="card my-3 mx-auto" style="max-width: 540px;" data-toggle="modal" data-target="#quizAddModal">
+        <div class="card my-3 mx-auto" style="max-width: 540px;" data-toggle="modal" data-target="#quizAddModal" @click="alert('function not implemented yet')">
           <div class="row no-gutters">
             <div class="col-md-2 my-auto">
               <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user-plus.svg" class="card-img p-3" alt="LOGO">
@@ -200,7 +214,7 @@ Vue.component( 'settings-editquiz',
                 <label for="addQuestions"><u>Frage hinzuf&uumlgen:</u></label>
                 <div id="addQuestions" class="row">
                   <div class="col-md-10">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirm-delete">Frage hinzuf&uumlgen</button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirm-delete" @click="alert('function not implemented yet')">Frage hinzuf&uumlgen</button>
                     <small class="form-text text-muted">Hier kann eine neue Frage zum Quiz hinzugef&uumlgt werden.</small>
                   </div>
                 </div>
@@ -208,7 +222,7 @@ Vue.component( 'settings-editquiz',
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" @click="alert('save function missing')">Best&aumltigen</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" @click="saveQuiz()">Speichern</button>
               </div>
             </div>
           </div>
@@ -272,7 +286,7 @@ Vue.component( 'settings-editquiz',
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal">Abbrechen</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal" @click="alert('save function missing')">Best&aumltigen</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal" @click="applyChanges()">Best&aumltigen</button>
               </div>
             </div>
           </div>
