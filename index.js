@@ -1095,6 +1095,88 @@ function loadCertificate(req, res) {
 
 //------------------------------------------------------------------------------
 
+function saveMaterials(req, res) {
+  var email         = req.body.email         ? req.body.email         : ""
+  var password      = req.body.password      ? req.body.password      : ""
+  var profession    = req.body.profession    ? req.body.profession    : ""
+  var qualification = req.body.qualification ? req.body.qualification : ""
+  var materials     = req.body.materials     ? req.body.materials     : ""
+  response = {
+    'success': false,
+    'msg':     ""
+  }
+
+
+  // check if email and quiz have been defined
+  if (email == "" || password == "" || email.includes('..') || email.includes('/') || profession == "" || qualification == "") {
+    writeResponse(res, {err: 'missing parameters'})
+    return
+  }
+
+  directory = './data/students/' + email
+  filename  = directory + '/password'
+
+  //check if user has permission
+  fs.readFile(filename,
+    // callback function that is called when reading file is done
+    function(err, data) {
+      // error will reading password file
+      if (!err) {
+        real_password = data.toString('utf8').trim()
+        validated = (password === real_password ? "yes" : "no")
+
+        // read file type-file
+        fs.readFile(directory + '/type',
+          // callback function that is called when reading file is done
+          function(err, data) {
+            // error will reading password file
+            if (!err) {
+              type = data.toString('utf8').trim()
+
+              if (validated == "no") {
+                response.msg = "not validated"
+                writeResponse(res, response)
+                return
+              }
+
+              if (type == "Schüler/Azubi") {
+                response.msg = "no permission"
+                writeResponse(res, response)
+                return
+              }
+
+              // check if directory exists
+              directory = './data/materials/profession-' + profession + '/qualification-' + qualification
+              filename  = directory + '/questions.yaml'
+
+              // check if directory exists
+              if (!fs.existsSync(directory)) {
+                // create directory
+                fs.mkdirSync(directory)
+              }
+
+              // write question.yaml file
+              try {
+                fs.writeFileSync(filename, yaml.safeDump(materials))
+              }
+              catch (e) {
+                writeResponse(res, {err: e.toString()})
+                return
+              }
+
+              response.success = true
+              writeResponse(res, response)
+              return
+            }
+          }
+        )
+      }
+    }
+  )
+}
+
+//------------------------------------------------------------------------------
+
 app.use( parser.json() )                         // support json encoded bodies
 app.use( parser.urlencoded({ extended: true }) ) // support encoded bodies
 app.use( express.static('./static') )            // static files from root
@@ -1114,6 +1196,7 @@ app.post('/getallgroups',                             getAllGroups)
 app.post('/creategroup',                              createGroup)
 app.post('/deletegroup',                              deleteGroup)
 app.post('/editGroup',                                editGroup)
+app.post('/savematerials',                            saveMaterials)
 
 server = app.listen(port, () => console.log(`Server listening on port ${port}!`))
 server.timeout = 5000

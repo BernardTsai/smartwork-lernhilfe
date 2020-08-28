@@ -59,23 +59,52 @@ Vue.component( 'settings-editquiz',
         this.model.questionnaire[this.model.quiz.question].explanation = $("#inputQuestionExplanation").val()
         this.model.questionnaire[this.model.quiz.question].points = $("#inputQuestionPoints").val()
       },
-      saveQuiz: function() {
-        alert("function not fully implemented yet!")
+      saveMaterials: function() {
+        var request = new XMLHttpRequest();
+        var self = this;
+
+        // callback function to process the results
+        function saveMaterialsCB() {
+          if (this.readyState == 4) {
+            // check status
+            if (this.status != 200) {
+              return
+            }
+            result = jsyaml.safeLoad(request.responseText)
+
+            if (result.success) {
+              self.selectQualification(self.selected.qualificationIndex)
+            }
+            else {
+              alert("Error!");
+              console.log("error: " + result.msg)
+            }
+          }
+        }
+
+        var params  = JSON.stringify( {email: this.model.email, password: this.model.password, profession: this.selected.professionIndex.toString(), qualification: this.selected.qualificationIndex.toString(), materials: this.model.questionnaire} )
+        request.onreadystatechange = saveMaterialsCB
+        request.open('POST', '/savematerials', true);  // asynchronous request
+        request.setRequestHeader('Content-type', 'application/json');
+        request.send(params);
       },
       initialStateQualification: function() {
         var button = document.getElementById("dropdownMenu2");
-        button.firstChild.data = "Qualifikation auswählen"
-        button.classList.remove("btn-primary");
-        button.classList.add("btn-secondary");
+        if (button != null) {
+          button.firstChild.data = "Qualifikation auswählen"
+          button.classList.remove("btn-primary");
+          button.classList.add("btn-secondary");
+        }
         this.selected.qualificationIndex = -1
         this.selected.qualification = []
       },
       initialStateQuestion: function() {
         var button = document.getElementById("dropdownMenu3");
-        button.firstChild.data = "Frage auswählen"
-        button.classList.remove("btn-primary");
-        button.classList.add("btn-secondary");
-//        this.selected.questionIndex = -1
+        if (button != null) {
+          button.firstChild.data = "Frage auswählen"
+          button.classList.remove("btn-primary");
+          button.classList.add("btn-secondary");
+        }
         this.model.quiz.question = -1
       }
     },
@@ -86,7 +115,6 @@ Vue.component( 'settings-editquiz',
           professionIndex: -1,
           qualificationIndex: -1,
           qualification: []
-//          questionIndex: -1
         }
       }
     },
@@ -222,7 +250,7 @@ Vue.component( 'settings-editquiz',
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" @click="saveQuiz()">Speichern</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" @click="saveMaterials()">Speichern</button>
               </div>
             </div>
           </div>
