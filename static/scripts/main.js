@@ -18,7 +18,7 @@ certificate:   -1
 profession:    -1
 qualification: -1
 question:      -1
-questionnaire: {}
+questionnaire: []
 quiz:
   profession:    -1
   qualification: -1

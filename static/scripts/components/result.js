@@ -16,7 +16,8 @@ Vue.component( 'result',
             return
           }
 
-//          console.log(request.responseText)
+          result = jsyaml.safeLoad(request.responseText)
+          if (result.success == 'no') console.log(result.err)
         }
       }
 
@@ -51,7 +52,7 @@ Vue.component( 'result',
       }
       this.model.quiz.success = success
 
-      this.saveCertificate()
+      if (success == "yes") this.saveCertificate()
 
       return this.model.quiz.success
     }

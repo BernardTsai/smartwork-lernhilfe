@@ -93,15 +93,20 @@ function saveQuiz(req, res) {
   directory = './data/students/' + email + '/certificates'
   filename  = directory + '/certificate-' + profession + "-" + qualification
 
+  if (fs.existsSync(filename)) {
+    writeResponse(res, {success: 'no', err: 'certificate already exists'})
+    return
+  }
+
   try {
     fs.writeFileSync(filename, yaml.safeDump(quiz))
   }
   catch (e) {
-    writeResponse(res, {err: e.toString()})
+    writeResponse(res, {success: 'no', err: e.toString()})
     return
   }
 
-  writeResponse(res, {err: ''})
+  writeResponse(res, {success: 'yes', err: ''})
 }
 
 //------------------------------------------------------------------------------

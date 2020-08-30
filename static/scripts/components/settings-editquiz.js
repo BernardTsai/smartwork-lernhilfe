@@ -33,9 +33,10 @@ Vue.component( 'settings-editquiz',
         // load questions
         var qualification = this.selected.qualificationIndex
         this.model.questionnaire = loadData( "GET", "/questionnaire/" + this.selected.professionIndex + "/" + qualification)
+        // if quiz doesnn't exist for selected qualification no array is returned so check for array to know if quiz exists
+        if (!Array.isArray(this.model.questionnaire)) this.model.questionnaire = []
       },
       selectQuestion: function(index) {
-//        this.selected.questionIndex = index
         this.model.quiz.question = index
         var button = document.getElementById("dropdownMenu3");
         button.firstChild.data = this.model.questionnaire[index].title;
@@ -87,6 +88,23 @@ Vue.component( 'settings-editquiz',
         request.open('POST', '/savematerials', true);  // asynchronous request
         request.setRequestHeader('Content-type', 'application/json');
         request.send(params);
+      },
+      addQuestion: function() {
+        var newQuestion = {
+          title:       'NEW TITLE',
+          description: 'NEW DESCRIPTION',
+          question:    'NEW QUESTION?',
+          options:     [ 'O1', 'O2', 'O3' ],
+          answers:     [ 'no', 'no', 'no' ],
+          explanation: 'NEW EXPLANATION',
+          points:      -1
+        }
+        this.model.questionnaire.push(newQuestion)
+        this.model.quiz.question = this.model.questionnaire.length - 1
+      },
+      rmQuestion: function() {
+        this.model.questionnaire.splice(this.model.quiz.question, 1)
+        this.initialStateQuestion()
       },
       initialStateQualification: function() {
         var button = document.getElementById("dropdownMenu2");
@@ -227,6 +245,7 @@ Vue.component( 'settings-editquiz',
                         Frage ausw&aumlhlen
                       </button>
                       <button v-if="this.model.quiz.question != -1" type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#questionEditModal">Frage bearbeiten</button>
+                      <button v-if="this.model.quiz.question != -1" type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#questionDeleteModal">Frage entfernen</button>
                       <div class="dropdown-menu" aria-labelledby="dropdownMenu3">
                         <button class="dropdown-item" type="button" v-for="(question, index) in this.model.questionnaire" @click="selectQuestion(index)">{{question.title}}</button>
                       </div>
@@ -242,7 +261,7 @@ Vue.component( 'settings-editquiz',
                 <label for="addQuestions"><u>Frage hinzuf&uumlgen:</u></label>
                 <div id="addQuestions" class="row">
                   <div class="col-md-10">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirm-delete" @click="alert('function not implemented yet')">Frage hinzuf&uumlgen</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#questionEditModal" @click="alert('function may not work correctly yet'); addQuestion()">Frage hinzuf&uumlgen</button>
                     <small class="form-text text-muted">Hier kann eine neue Frage zum Quiz hinzugef&uumlgt werden.</small>
                   </div>
                 </div>
@@ -315,6 +334,30 @@ Vue.component( 'settings-editquiz',
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal">Abbrechen</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal" @click="applyChanges()">Best&aumltigen</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- modal for delete confirmation -->
+        <div v-if="this.model.quiz.question != -1" class="modal fade" id="questionDeleteModal" tabindex="-1" role="dialog" aria-labelledby="questionDeleteModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="modalLongTitle">L&oumlschen von {{this.model.questionnaire[this.model.quiz.question].title}} best&aumltigen</h5>
+                <button type="button" class="close" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <div class="px-3 text-danger">
+                  <p class="font-weight-bold">ACHTUNG:</p>
+                  <p> Der Frage wird vollst&aumlndig gel&oumlscht. Diese Aktion kann nicht r&uumlckg&aumlngig gemacht werden!</p>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal">Abbrechen</button>
+                <a class="btn btn-danger btn-ok" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal" @click="rmQuestion()">L&oumlschen</a>
               </div>
             </div>
           </div>

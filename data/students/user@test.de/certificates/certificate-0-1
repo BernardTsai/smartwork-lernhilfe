@@ -1,0 +1,18 @@
+profession: 0
+qualification: 1
+date: 30.8.2020
+length: 1
+question: 0
+questions:
+  - options:
+      - 'no'
+      - 'yes'
+      - 'no'
+    answers:
+      - 'yes'
+      - 'yes'
+      - 'yes'
+    success: 'yes'
+success: 'yes'
+mode: answer
+status: new

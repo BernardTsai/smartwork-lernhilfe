@@ -56,4 +56,17 @@
     - 'no'
     - 'no'
   explanation: Billig Bobbycars haben keine Motoren!
+  points: 5
+- title: asdf
+  description: asdf!
+  question: asdf?
+  options:
+    - asdf
+    - asdf
+    - asdf
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: asdf!!!!!!!!!!
   points: '5'
