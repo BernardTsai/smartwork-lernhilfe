@@ -261,7 +261,7 @@ Vue.component( 'settings-editquiz',
                 <label for="addQuestions"><u>Frage hinzuf&uumlgen:</u></label>
                 <div id="addQuestions" class="row">
                   <div class="col-md-10">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#questionEditModal" @click="alert('function may not work correctly yet'); addQuestion()">Frage hinzuf&uumlgen</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#questionEditModal" @click="addQuestion()">Frage hinzuf&uumlgen</button>
                     <small class="form-text text-muted">Hier kann eine neue Frage zum Quiz hinzugef&uumlgt werden.</small>
                   </div>
                 </div>
