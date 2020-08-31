@@ -162,13 +162,13 @@ Vue.component( 'settings-editquiz',
         <div class="card my-3 mx-auto" style="max-width: 540px;" data-toggle="modal" data-target="#quizAddModal" @click="alert('function not implemented yet')">
           <div class="row no-gutters">
             <div class="col-md-2 my-auto">
-              <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user-plus.svg" class="card-img p-3" alt="LOGO">
+              <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/plus-circle.svg" class="card-img p-3" alt="LOGO">
             </div>
             <div class="col-md-10">
               <div class="card-body">
-                <h5 class="card-title">Neues Quiz erstellen</h5>
+                <h5 class="card-title">Neuen Qualifikationsbaustein erstellen</h5>
                 <p class="card-text">
-                  Erstellen eines neuen Quiz mit Zuweisung zu einem Qualifikationsbaustein
+                  Erstellen eines neuen Berufs und/oder Qualifikationsbausteins
                 </p>
               </div>
             </div>
@@ -247,7 +247,7 @@ Vue.component( 'settings-editquiz',
                       <button v-if="this.model.quiz.question != -1" type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#questionEditModal">Frage bearbeiten</button>
                       <button v-if="this.model.quiz.question != -1" type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#questionDeleteModal">Frage entfernen</button>
                       <div class="dropdown-menu" aria-labelledby="dropdownMenu3">
-                        <button class="dropdown-item" type="button" v-for="(question, index) in this.model.questionnaire" @click="selectQuestion(index)">{{question.title}}</button>
+                        <button v-if="this.model.questionnaire.length > 0" class="dropdown-item" type="button" v-for="(question, index) in this.model.questionnaire" @click="selectQuestion(index)">{{question.title}}</button>
                       </div>
                     </div>
 
