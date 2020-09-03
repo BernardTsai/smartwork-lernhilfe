@@ -33,7 +33,7 @@ Vue.component( 'settings-editquiz',
         // load questions
         var qualification = this.selected.qualificationIndex
         this.model.questionnaire = loadData( "GET", "/questionnaire/" + this.selected.professionIndex + "/" + qualification)
-        // if quiz doesnn't exist for selected qualification no array is returned so check for array to know if quiz exists
+        // if quiz doesn't exist for selected qualification no array is returned so check for array to know if quiz exists
         if (!Array.isArray(this.model.questionnaire)) this.model.questionnaire = []
       },
       selectQuestion: function(index) {
@@ -106,6 +106,36 @@ Vue.component( 'settings-editquiz',
         this.model.questionnaire.splice(this.model.quiz.question, 1)
         this.initialStateQuestion()
       },
+      // compose file on client and provide for download
+      downloadQuiz: function () {
+        var request = new XMLHttpRequest();
+        request.open("GET", "/questionnaire/" + this.selected.professionIndex + "/" + this.selected.qualificationIndex, false)  // synchronous request
+        request.send()
+        var filename = "questions-" + this.selected.professionIndex + "-" + this.selected.qualificationIndex + ".yaml"
+        var text = request.responseText
+
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+        element.setAttribute('download', filename);
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
+      },
+      loadFile: function() {
+        var self = this
+        document.getElementById('inputBackup').addEventListener('change', function() {
+          var fr = new FileReader();
+          fr.onload=function(){
+//            console.log(fr.result);
+            self.model.questionnaire = jsyaml.safeLoad(fr.result)
+          }
+          fr.readAsText(this.files[0]);
+        })
+      },
       initialStateQualification: function() {
         var button = document.getElementById("dropdownMenu2");
         if (button != null) {
@@ -137,10 +167,7 @@ Vue.component( 'settings-editquiz',
       }
     },
     beforeMount(){
-      // TODO: check if this.model.certificates is already populated and skip if it is
-//      loadCerts()
-//      loadCert();
-//      this.getCerts();
+      this.model.quiz.question = -1
     },
     mounted(){
       // display selection in dropdown-menu
@@ -148,6 +175,17 @@ Vue.component( 'settings-editquiz',
 //        $(".btn:first-child").text($(this).text());
 //        $(".btn:first-child").val($(this).text());
 //      });
+      // if file is selected
+//      if(this.selected.qualificationIndex != -1) {
+//        document.getElementById('inputBackup').addEventListener('change', function() {
+//          var fr = new FileReader();
+//          fr.onload=loadFile(fr.result)
+//          fr.onload=function(){
+//            console.log(fr.result);
+//          }
+//          fr.readAsText(this.files[0]);
+//        })
+//      }
     },
     computed: {
 //      details: function() {
@@ -156,10 +194,10 @@ Vue.component( 'settings-editquiz',
     },
     template: `
       <div id="settings-editquiz" class="container">
-        <h3 class="text-center">Quizverwaltung</h3>
+        <!-- <h3 class="text-center">Quizverwaltung</h3> -->
 
         <!-- trigger modal quiz creation-->
-        <div class="card my-3 mx-auto" style="max-width: 540px;" data-toggle="modal" data-target="#quizAddModal" @click="alert('function not implemented yet')">
+        <!-- <div class="card my-3 mx-auto" style="max-width: 540px;" data-toggle="modal" data-target="#quizAddModal" @click="alert('function not implemented yet')">
           <div class="row no-gutters">
             <div class="col-md-2 my-auto">
               <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/plus-circle.svg" class="card-img p-3" alt="LOGO">
@@ -177,7 +215,7 @@ Vue.component( 'settings-editquiz',
 
         <br>
         <hr style="max-width: 540px;">
-        <br>
+        <br> -->
         <h3 class="text-center">Quiz bearbeiten</h3>
 
         <!-- dropdown profession selection -->
@@ -221,6 +259,11 @@ Vue.component( 'settings-editquiz',
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- download button for quiz backup -->
+        <div v-if="this.selected.qualificationIndex != -1" class="text-center">
+          <button type="button" class="btn btn-dark" @click="downloadQuiz()">Download: Backup von diesem Quiz</button>
         </div>
 
         <!-- Modal for quiz details and options -->
@@ -268,7 +311,12 @@ Vue.component( 'settings-editquiz',
 
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
+
+                <label class="btn btn-dark col-auto mr-auto" @click="loadFile()">
+                  Lade Backup<input type="file" id="inputBackup" accept=".yaml" hidden>
+                </label>
+
+                <button type="button" class="btn btn-secondary col-auto" data-dismiss="modal">Abbrechen</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal" @click="saveMaterials()">Speichern</button>
               </div>
             </div>
