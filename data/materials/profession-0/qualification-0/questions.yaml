@@ -57,3 +57,16 @@
     - 'no'
   explanation: Billig Bobbycars haben keine Motoren!
   points: 5
+- title: Testfrage
+  description: Da gibbet nüscht zu beschreiben. Ist eben eine Testfrage zum testen
+  question: Ist dies ein Test?
+  options:
+    - Ja
+    - Nein
+    - Vielleicht
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: 'Wie schon sogar der Titel verrät, ist dies einfach nur eine Testfrage'
+  points: '5'

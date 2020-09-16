@@ -6,6 +6,18 @@ Vue.component( 'certificate',
         model.qualification = index
         model.question      = -1
         model.mode          = "questionnaire"
+      },
+
+      printCert: function() {
+        alert("Ohne Funktion")
+//        var printContents = document.getElementById('certificate').innerHTML;
+//        var originalContents = document.body.innerHTML;
+
+//        document.body.innerHTML = printContents;
+
+//        window.print();
+
+//        document.body.innerHTML = originalContents;
       }
     },
     beforeMount(){
@@ -26,6 +38,24 @@ Vue.component( 'certificate',
         }
       }
     },
+    mounted() {
+      $('#certificate').on('contextmenu', function(e) {
+        var top = e.pageY - 10;
+        var left = e.pageX - 90;
+        $("#context-menu").css({
+          display: "block",
+          top: top,
+          left: left
+        }).addClass("show");
+        return false; //blocks default Webbrowser right click menu
+      }).on("click", function() {
+        $("#context-menu").removeClass("show").hide();
+      });
+
+      $("#context-menu a").on("click", function() {
+        $(this).parent().removeClass("show").hide();
+      });
+    },
     computed: {
       certificate: function() {
         return this.model.certificates[this.model.certificate].certificate
@@ -35,7 +65,7 @@ Vue.component( 'certificate',
       }
     },
     template: `
-      <div id="certificate" class="mt-3 shadow p-3 mb-5 mx-3 bg-white rounded" @click="model.mode='home'"">
+      <div id="certificate" class="mt-3 shadow p-3 mb-5 mx-3 bg-white rounded">
         <div class="bg-light px-3 d-flex">
           <a class="navbar-brand" @click="home()">
             <img src="images/logo.png" width="30" height="30" alt="">
@@ -61,6 +91,11 @@ Vue.component( 'certificate',
 
         <div class="px-3 text-success">
           {{certificate.email}} hat das Zertifikat am {{certificate.date}} erhalten!
+        </div>
+
+        <div class="dropdown-menu dropdown-menu-sm" id="context-menu">
+          <a class="dropdown-item" href="#" @click="model.mode='home'">Zur Startseite</a>
+          <a class="dropdown-item" href="#" @click="printCert()">Zertifikat drucken</a>
         </div>
 
       </div>`

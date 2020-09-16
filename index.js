@@ -5,6 +5,39 @@ const fs      = require('fs')
 const del     = require('del')
 const app     = express()
 const port    = 8080
+//------------------------------------------------------------------------------
+
+function getDateOb() {
+  // current timestamp in milliseconds
+  var ts = Date.now();
+  var date_ob = new Date(ts);
+  return date_ob
+}
+
+//------------------------------------------------------------------------------
+
+var log = fs.createWriteStream('./logs/log_' + getDateOb().getFullYear() + '-' + (getDateOb().getMonth()+1) + '-' + getDateOb().getDate(), {
+  flags: 'a' // 'a' means appending (old data will be preserved)
+})
+
+//------------------------------------------------------------------------------
+
+function appendToLog(line) {
+  // current timestamp in milliseconds
+  var ts = Date.now();
+
+  var date_ob = new Date(ts);
+  var date = date_ob.getDate();
+  var month = date_ob.getMonth() + 1;
+  var year = date_ob.getFullYear();
+  var hours = date_ob.getHours();
+  var minutes = date_ob.getMinutes();
+  var seconds = date_ob.getSeconds();
+
+  formattedTime = year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds
+
+  log.write(formattedTime + '  ' + line + '\n')
+}
 
 //------------------------------------------------------------------------------
 
@@ -30,6 +63,10 @@ function questionnaire(req, res) {
     function(err, data) {
       if (err) {
         console.log(err)
+
+        var logLine = 'ERROR: Questionnaire load questions: ' + err.toString()
+        appendToLog(logLine)
+
         writeResponse(res, {err: err.toString()})
         return
       }
@@ -58,6 +95,10 @@ function overview(req, res) {
     function(err, data) {
       if (err) {
         console.log(err)
+
+        var logLine = 'ERROR: Overview load materials: ' + err.toString()
+        appendToLog(logLine)
+
         writeResponse(res, {err: err.toString()})
         return
       }
@@ -94,6 +135,9 @@ function saveQuiz(req, res) {
   filename  = directory + '/certificate-' + profession + "-" + qualification
 
   if (fs.existsSync(filename)) {
+    var logLine = 'Unable to save certificate-' + profession + "-" + qualification + ' for user ' + email + '. Certificate already exists'
+    appendToLog(logLine)
+
     writeResponse(res, {success: 'no', err: 'certificate already exists'})
     return
   }
@@ -102,6 +146,9 @@ function saveQuiz(req, res) {
     fs.writeFileSync(filename, yaml.safeDump(quiz))
   }
   catch (e) {
+    var logLine = 'ERROR: saveQuiz unable to save certificate-' + profession + "-" + qualification + ' for user ' + email + '. Err: ' + e.toString()
+    appendToLog(logLine)
+
     writeResponse(res, {success: 'no', err: e.toString()})
     return
   }
@@ -162,18 +209,27 @@ function createAccount(req, res) {
               check.type = type
 
               if (check.validated == "no") {
+                var logLine = 'Possible manipulation attempt detected: CreateAccount requesting user and wrong password is not possible. Requesting user: ' + email + ' tried to create ' + emailNew
+                appendToLog(logLine)
+
                 response.msg = "don't mess with me"
                 writeResponse(res, response)
                 return
               }
 
               if (check.type == "Schüler/Azubi") {
+                var logLine = 'Possible manipulation attempt detected: CreateAccount requesting user does not have permission. Requesting user: ' + email + ' tried to create ' + emailNew + ' user type is Schüler/Azubi'
+                appendToLog(logLine)
+
                 response.msg = "no permission"
                 writeResponse(res, response)
                 return
               }
 
               if (check.type == "Ausbilder" && typeNew == "Administrator") {
+                var logLine = 'Account creation denied: CreateAccount requesting user (type: Ausbilder) tried to create an admin account. Requesting user: ' + email + ' tried to create ' + emailNew
+                appendToLog(logLine)
+
                 response.msg = "no permission"
                 writeResponse(res, response)
                 return
@@ -198,6 +254,9 @@ function createAccount(req, res) {
                 writeStream = fs.createWriteStream(directory + '/type')
                 writeStream.write(typeNew)
                 writeStream.end()
+
+                var logLine = 'INFO: CreateAccount new account created ' + emailNew + '. Requesting user: ' + email
+                appendToLog(logLine)
 
                 response.msg = "account created"
                 response.email = emailNew
@@ -258,6 +317,11 @@ function login(req, res) {
         real_password = data.toString('utf8').trim()
         response.validated = (password === real_password ? "yes" : "no")
 
+        if (response.validated != "yes") {
+          var logLine = 'Login attempt failed: wrong password - ' + email
+          appendToLog(logLine)
+        }
+
         // read type-file
         fs.readFile(directory + '/type',
           // callback function that is called when reading file is done
@@ -311,6 +375,10 @@ function changePassword(req, res) {
   // check if directory exists
   if (!fs.existsSync(directory)) {
     // maybe some messing around because this shouldn't happen -> deauth
+
+    var logLine = 'Possible manipulation attempt detected: changePassword user does not exist'
+    appendToLog(logLine)
+
     //console.log(`Directory (i.e. user) doesn't exist!`)
     response.validated = "no"
     response.success = "no"
@@ -332,6 +400,9 @@ function changePassword(req, res) {
           // just to make sure..
           //console.log(`validated: no!`)
 
+          var logLine = 'Possible manipulation attempt detected: changePassword requesting user and wrong password is not possible. Requesting user: ' + email
+          appendToLog(logLine)
+
           response.validated = "no"
           response.success = "no"
           writeResponse(res, response)
@@ -345,6 +416,9 @@ function changePassword(req, res) {
             fs.writeFileSync(filename, newPassword)
           }
           catch (e) {
+            var logLine = 'ERROR: changePassword unable to write file. Requesting user: ' + email
+            appendToLog(logLine)
+
             writeResponse(res, {err: e.toString()})
             return
           }
@@ -573,12 +647,15 @@ function deleteAccount(req, res) {
                             response.email = ""
                             response.password = ""
 
-                            writeResponse(res, response)
-                            return
+//                            writeResponse(res, response)
+//                            return
                           }
                           catch (err) {
                             console.error(`Error while deleting ${directory}.`);
                             console.error({err: err.toString()});
+
+                            var logLine = 'ERROR: deleteAccount failed to remove user ' + emailTar + '. Requesting user: ' + emailReq + '. Err: ' + err.toString()
+                            appendToLog(logLine)
 
                             response.msg = "failed"
                             response.email = ""
@@ -587,6 +664,11 @@ function deleteAccount(req, res) {
                             writeResponse(res, response)
                             return
                           }
+                          var logLine = 'INFO: deleteAccount removed user ' + emailTar + ' successfully. Requesting user: ' + emailReq
+                          appendToLog(logLine)
+
+                          writeResponse(res, response)
+                          return
                         })();
 
                       }
@@ -775,9 +857,15 @@ function createGroup(req, res) {
                   fs.writeFileSync(filename, yaml.safeDump(members))
                 }
                 catch (e) {
+                  var logLine = 'ERROR: createGroup Err: ' + e.toString()
+                  appendToLog(logLine)
+
                   writeResponse(res, {err: e.toString()})
                   return
                 }
+
+                var logLine = 'INFO: createGroup added group ' + groupName + ' successfully. Requesting user: ' + email
+                appendToLog(logLine)
 
                 response.msg = "success"
                 response.groupName = groupName
@@ -871,14 +959,23 @@ function deleteGroup(req, res) {
                 try {
                   fs.unlinkSync(filename)
 
-                  response.msg = "success"
-                  writeResponse(res, response)
-                  return
+//                  response.msg = "success"
+//                  writeResponse(res, response)
+//                  return
                 } catch(err) {
+                   var logLine = 'ERROR: deleteGroup failed to remove group ' + groupName + '. Requesting user: ' + emailReq + ' Err: ' + err.toString()
+                   appendToLog(logLine)
+
                   console.error(err)
                   writeResponse(res, {err: err.toString()})
                   return
                 }
+                var logLine = 'INFO: deleteGroup removed group ' + groupName + ' successfully. Requesting user: ' + emailReq
+                appendToLog(logLine)
+
+                response.msg = "success"
+                writeResponse(res, response)
+                return
               }
               else {
                 response.msg = "error: groups doesn't exist"
@@ -973,10 +1070,16 @@ function editGroup(req, res) {
                         response.success = "yes"
                       }
                       catch (e) {
+                        var logLine = 'ERROR: editGroup failed to save file for group ' + groupName + '. Requesting user: ' + email + 'Err: ' + e.toString()
+                        appendToLog(logLine)
+
                         writeResponse(res, {err: e.toString()})
                         return
                       }
                     }
+                    var logLine = 'INFO: editGroup edited group ' + groupName + ' successfully. Requesting user: ' + email
+                    appendToLog(logLine)
+
                     writeResponse(res, response)
                   }
                 )
@@ -1021,9 +1124,15 @@ function saveCertificate(req, res) {
     fs.writeFileSync(filename, yaml.safeDump(certs))
   }
   catch (e) {
+    var logLine = 'ERROR: saveCertificate failed to write file certificate-' + certs.profession + ' for user: ' + email + '. Err: ' + e.toString()
+    appendToLog(logLine)
+
     writeResponse(res, {err: e.toString()})
     return
   }
+
+   var logLine = 'INFO: saveCertificate final certificate-' + certs.profession + ' created successfully for user: ' + email
+   appendToLog(logLine)
 
   writeResponse(res, {err: ''})
 }
@@ -1165,9 +1274,14 @@ function saveMaterials(req, res) {
                 fs.writeFileSync(filename, yaml.safeDump(materials))
               }
               catch (e) {
+                var logLine = 'ERROR: saveMaterials failed to write file ' + filename + '. Requesting user: ' + email + '. Err: ' + e.toString()
+                appendToLog(logLine)
+
                 writeResponse(res, {err: e.toString()})
                 return
               }
+              var logLine = 'INFO: saveMaterials saved ' + filename + ' successfully. Requesting user: ' + email
+              appendToLog(logLine)
 
               response.success = true
               writeResponse(res, response)
@@ -1189,7 +1303,7 @@ app.use( express.static('./static') )            // static files from root
 app.post('/login',                                    login)
 app.get( '/overview',                                 overview)
 app.get( '/questionnaire/:profession/:qualification', questionnaire)
-app.post( '/quiz',                                    saveQuiz)
+app.post('/quiz',                                     saveQuiz)
 app.post('/certificate',                              saveCertificate)
 app.post('/loadcertificate',                          loadCertificate)
 app.post('/changepassword',                           changePassword)

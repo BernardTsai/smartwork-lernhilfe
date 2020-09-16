@@ -49,6 +49,14 @@ Vue.component( 'home',
 //            console.log(this.groups.group[i].groupName)
 //          }
         }
+      },
+
+      openStatus: function(index) {
+        // find index of user in complete user list
+        // because index is from this.groups.selGroup.members
+        // change model.mode
+        // change model.submode
+        // open modal for user(index)
       }
     },
     data() {
@@ -70,6 +78,12 @@ Vue.component( 'home',
     beforeMount() {
       this.getUsers();
       this.getGroups();
+
+//      window.history.pushState("object or string", "Home", "/home")
+
+//      let uri = window.location.search.substring(1);
+//      let params1 = new URLSearchParams(uri);
+//      console.log(params1.get("test"));
     },
     template: `
       <div id="home" class="container">
@@ -111,12 +125,12 @@ Vue.component( 'home',
         <br>
         <h3 class="text-center">Mitglied in diesen Gruppen</h3>
 
-        <!-- Modal for group options -->
+        <!-- Modal for group view -->
         <div class="modal fade" id="group" tabindex="-1" role="dialog" aria-labelledby="groupModalCenterTitle" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="groupOptionsLongTitle">Mitglieder von {{this.groups.selGroup.groupName}}</h5>
+                <h5 class="modal-title" id="groupLongTitle">Mitglieder von {{this.groups.selGroup.groupName}}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -132,7 +146,7 @@ Vue.component( 'home',
                                                                                    'border-info': member.type == 'Ausbilder',
                                                                                    'border-danger': member.type == 'Administrator',
                                                                                    'border-success': member.type == 'Schüler/Azubi'
-                                                                                 }" style="max-width: 540px; border: 2px solid;" :id="'selUserG_'+index">
+                                                                                 }" style="max-width: 540px; border: 2px solid;" :id="'selUserG_'+index" @click="openStatus(index)">
                       <div class="row no-gutters">
                         <div class="col-md-2 my-auto">
                           <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user.svg" class="card-img p-3" alt="USER-LOGO">

@@ -42,7 +42,7 @@ Vue.component( 'login',
           </a>
           <!-- Login Form -->
           <input type="text" id="email"    name="email"    v-model="model.email"    placeholder="E-Mail">
-          <input type="text" id="password" name="password" v-model="model.password" placeholder="Passwort">
+          <input type="password" id="password" name="password" v-model="model.password" placeholder="Passwort">
           <button type="button" class="btn btn-info" @click="login">Anmelden</button>
 
           <!-- Remind Passowrd -->

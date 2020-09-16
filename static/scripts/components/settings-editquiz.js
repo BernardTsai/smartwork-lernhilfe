@@ -74,6 +74,7 @@ Vue.component( 'settings-editquiz',
             result = jsyaml.safeLoad(request.responseText)
 
             if (result.success) {
+              // reload questions
               self.selectQualification(self.selected.qualificationIndex)
             }
             else {
@@ -272,7 +273,7 @@ Vue.component( 'settings-editquiz',
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="quizEditModalLongTitle">Optionen f&uumlr {{this.selected.profession.qualifications[this.selected.qualificationIndex].qualification}}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="selectQualification(selected.qualificationIndex)">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
@@ -316,7 +317,7 @@ Vue.component( 'settings-editquiz',
                   Lade Backup<input type="file" id="inputBackup" accept=".yaml" hidden>
                 </label>
 
-                <button type="button" class="btn btn-secondary col-auto" data-dismiss="modal">Abbrechen</button>
+                <button type="button" class="btn btn-secondary col-auto" data-dismiss="modal" @click="selectQualification(selected.qualificationIndex)">Abbrechen</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal" @click="saveMaterials()">Speichern</button>
               </div>
             </div>

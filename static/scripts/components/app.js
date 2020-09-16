@@ -19,6 +19,37 @@ Vue.component( 'app',
         model.mode = 'certs_details'
       }
     },
+
+//    mounted() {
+//      setInterval(function(){
+//        if (this.path != "/" && !(model.validated === 'yes')) {
+//          window.location.href = window.location.origin
+//        }
+//        if (this.path != window.location.pathname) {
+//          this.path = window.location.pathname
+//          console.log(path)
+//        }
+//      }, 10);
+//    },
+
+//    data: function() {
+//      return {
+//         path: window.location.pathname
+//      }
+//    },
+
+//    watch: {
+//      url: function(){
+//        this.page = window.location.href;
+//        console.log(this.page)
+
+//        let uri = window.location.search.substring(1);
+//        console.log(uri)
+//        let params1 = new URLSearchParams(uri);
+//        console.log(params1)
+//        console.log(params1.get("test"));
+//      }
+//    },
     template: `
       <div id="app">
 
