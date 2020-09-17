@@ -1,1 +1,12 @@
 2020-9-17 0:8:24  Login attempt failed: wrong password - user@test.de
+2020-9-17 12:30:47  WARNING: |saveQuiz| Unable to save certificate-0-0 for user user@test.de. Certificate already exists
+2020-9-17 12:34:18  INFO: |createAccount| new account created logedilog@server.stamm. Requesting user: user@test.de
+2020-9-17 12:34:31  INFO: |deleteAccount| removed user logedilog@server.stamm successfully. Requesting user: user@test.de
+2020-9-17 12:34:58  INFO: |editGroup| edited group testGroup1 successfully. Requesting user: user@test.de
+2020-9-17 12:35:13  INFO: |createGroup| added group asdf successfully. Requesting user: user@test.de
+2020-9-17 12:35:14  INFO: |editGroup| edited group asdf successfully. Requesting user: user@test.de
+2020-9-17 12:35:21  INFO: |editGroup| edited group asdf successfully. Requesting user: user@test.de
+2020-9-17 12:35:22  INFO: |editGroup| edited group asdf successfully. Requesting user: user@test.de
+2020-9-17 12:35:26  INFO: |deleteGroup| removed group asdf successfully. Requesting user: user@test.de
+2020-9-17 12:35:44  INFO: |saveMaterials| saved ./data/materials/profession-0/qualification-0/questions.yaml successfully. Requesting user: user@test.de
+2020-9-17 12:35:55  INFO: |saveMaterials| saved ./data/materials/profession-0/qualification-0/questions.yaml successfully. Requesting user: user@test.de

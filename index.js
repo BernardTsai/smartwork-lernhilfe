@@ -178,7 +178,7 @@ function questionnaire(req, res) {
       if (err) {
         console.log(err)
 
-        var logLine = 'ERROR: Questionnaire load questions: ' + err.toString()
+        var logLine = 'ERROR: |Questionnaire| load questions Err: ' + err.toString()
         appendToLog(logLine)
 
         writeResponse(res, {err: err.toString()})
@@ -210,7 +210,7 @@ function overview(req, res) {
       if (err) {
         console.log(err)
 
-        var logLine = 'ERROR: Overview load materials: ' + err.toString()
+        var logLine = 'ERROR: |Overview| load materials Err: ' + err.toString()
         appendToLog(logLine)
 
         writeResponse(res, {err: err.toString()})
@@ -249,7 +249,7 @@ function saveQuiz(req, res) {
   filename  = directory + '/certificate-' + profession + "-" + qualification
 
   if (fs.existsSync(filename)) {
-    var logLine = 'Unable to save certificate-' + profession + "-" + qualification + ' for user ' + email + '. Certificate already exists'
+    var logLine = 'WARNING: |saveQuiz| Unable to save certificate-' + profession + "-" + qualification + ' for user ' + email + '. Certificate already exists'
     appendToLog(logLine)
 
     writeResponse(res, {success: 'no', err: 'certificate already exists'})
@@ -260,7 +260,7 @@ function saveQuiz(req, res) {
     fs.writeFileSync(filename, yaml.safeDump(quiz))
   }
   catch (e) {
-    var logLine = 'ERROR: saveQuiz unable to save certificate-' + profession + "-" + qualification + ' for user ' + email + '. Err: ' + e.toString()
+    var logLine = 'ERROR: |saveQuiz| unable to save certificate-' + profession + "-" + qualification + ' for user ' + email + '. Err: ' + e.toString()
     appendToLog(logLine)
 
     writeResponse(res, {success: 'no', err: e.toString()})
@@ -286,12 +286,18 @@ function createAccount(req, res) {
 
   // check if email is valid and password has been defined
   if (email == '' || password == '' || email.includes('..') || email.includes('/')) {
+    var logLine = 'WARNING: |createAccount| Possible manipulation attempt detected: requesting user includes cd command (../) or is empty. Requesting user: ' + email + ' tried to create ' + emailNew
+    appendToLog(logLine)
+
     writeResponse(res, response)
     return
   }
 
   // check if emailNew is valid and passwordNew has been defined
   if (emailNew == '' || passwordNew == '' || typeNew == ''  || emailNew.includes('..') || emailNew.includes('/')) {
+    var logLine = 'WARNING: |createAccount| Possible manipulation attempt detected: User to create includes cd command (../) or is empty. Requesting user: ' + email + ' tried to create ' + emailNew
+    appendToLog(logLine)
+
     writeResponse(res, response)
     return
   }
@@ -323,7 +329,7 @@ function createAccount(req, res) {
               check.type = type
 
               if (check.validated == "no") {
-                var logLine = 'Possible manipulation attempt detected: CreateAccount requesting user and wrong password is not possible. Requesting user: ' + email + ' tried to create ' + emailNew
+                var logLine = 'WARNING: |createAccount| Possible manipulation attempt detected: requesting user and wrong password is not possible. Requesting user: ' + email + ' tried to create ' + emailNew
                 appendToLog(logLine)
 
                 response.msg = "don't mess with me"
@@ -332,7 +338,7 @@ function createAccount(req, res) {
               }
 
               if (check.type == "Schüler/Azubi") {
-                var logLine = 'Possible manipulation attempt detected: CreateAccount requesting user does not have permission. Requesting user: ' + email + ' tried to create ' + emailNew + ' user type is Schüler/Azubi'
+                var logLine = 'WARNING: |createAccount| Possible manipulation attempt detected: requesting user does not have permission. Requesting user: ' + email + ' tried to create ' + emailNew + ' user type is Schüler/Azubi'
                 appendToLog(logLine)
 
                 response.msg = "no permission"
@@ -341,7 +347,7 @@ function createAccount(req, res) {
               }
 
               if (check.type == "Ausbilder" && typeNew == "Administrator") {
-                var logLine = 'Account creation denied: CreateAccount requesting user (type: Ausbilder) tried to create an admin account. Requesting user: ' + email + ' tried to create ' + emailNew
+                var logLine = 'WARNING: |createAccount| Account creation denied: requesting user (type: Ausbilder) tried to create an admin account. Requesting user: ' + email + ' tried to create ' + emailNew
                 appendToLog(logLine)
 
                 response.msg = "no permission"
@@ -369,7 +375,7 @@ function createAccount(req, res) {
                 writeStream.write(typeNew)
                 writeStream.end()
 
-                var logLine = 'INFO: CreateAccount new account created ' + emailNew + '. Requesting user: ' + email
+                var logLine = 'INFO: |createAccount| new account created ' + emailNew + '. Requesting user: ' + email
                 appendToLog(logLine)
 
                 response.msg = "account created"
@@ -380,6 +386,9 @@ function createAccount(req, res) {
               }
               // if account already exists
               else {
+                var logLine = 'WARNING: |createAccount| Account created denied: ' + emailNew + 'already exists. Requesting user: ' + email
+                appendToLog(logLine)
+
                 response.msg = "account already exists"
                 writeResponse(res, response)
                 return
@@ -406,6 +415,9 @@ function login(req, res) {
 
   // check if email is valid and password has been defined
   if (email == '' || password == '' || email.includes('..') || email.includes('/')) {
+    var logLine = 'WARNING: |login| possible manipulation attempt detected! ' + email + ' includes cd command (../) or is empty.'
+    appendToLog(logLine)
+
     writeResponse(res, response)
     return
   }
@@ -432,7 +444,7 @@ function login(req, res) {
         response.validated = (password === real_password ? "yes" : "no")
 
         if (response.validated != "yes") {
-          var logLine = 'Login attempt failed: wrong password - ' + email
+          var logLine = 'INFO: |login| Login attempt failed: wrong password for user ' + email
           appendToLog(logLine)
         }
 
@@ -441,6 +453,9 @@ function login(req, res) {
           // callback function that is called when reading file is done
           function(err, data) {
             if (err) {
+              var logLine = 'WARNING: |login| failed to read type file for user ' + email
+              appendToLog(logLine)
+
               console.log(err)
               writeResponse(res, {err: err.toString()})
               return
@@ -474,10 +489,9 @@ function changePassword(req, res) {
 
   // check if email is valid and password has been defined
   if (email == '' || oldPassword == '' || newPassword == '' || email.includes('..') || email.includes('/')) {
-    //console.log(`email, old or new password ist empty or invalid`)
-    //console.log(email)
-    //console.log(oldPassword)
-    //console.log(newPassword)
+    var logLine = 'WARNING: |changePassword| ' + email + ' includes cd command (../) or is empty or passsword is empty.'
+    appendToLog(logLine)
+
     writeResponse(res, response)
     return
   }
@@ -489,8 +503,7 @@ function changePassword(req, res) {
   // check if directory exists
   if (!fs.existsSync(directory)) {
     // maybe some messing around because this shouldn't happen -> deauth
-
-    var logLine = 'Possible manipulation attempt detected: changePassword user does not exist'
+    var logLine = 'WARNING: |changePassword| Possible manipulation attempt detected: user ' + email + ' does not exist'
     appendToLog(logLine)
 
     //console.log(`Directory (i.e. user) doesn't exist!`)
@@ -514,7 +527,7 @@ function changePassword(req, res) {
           // just to make sure..
           //console.log(`validated: no!`)
 
-          var logLine = 'Possible manipulation attempt detected: changePassword requesting user and wrong password is not possible. Requesting user: ' + email
+          var logLine = 'WARNING: |changePassword| Possible manipulation attempt detected: requesting user and wrong password is not possible. Requesting user: ' + email
           appendToLog(logLine)
 
           response.validated = "no"
@@ -530,7 +543,7 @@ function changePassword(req, res) {
             fs.writeFileSync(filename, newPassword)
           }
           catch (e) {
-            var logLine = 'ERROR: changePassword unable to write file. Requesting user: ' + email
+            var logLine = 'ERROR: |changePassword| unable to write file. Requesting user: ' + email
             appendToLog(logLine)
 
             writeResponse(res, {err: e.toString()})
@@ -562,12 +575,18 @@ function passwordReset(req, res) {
 
   // check if email is valid and password has been defined
   if (emailReq == '' || passwordReq == '' || emailReq.includes('..') || emailReq.includes('/')) {
+    var logLine = 'WARNING: |passwordReset| Requesting user ' + emailReq + 'includes cd command (../) or is empty or passsword is empty.'
+    appendToLog(logLine)
+
     writeResponse(res, response)
     return
   }
 
   // check if emailNew is valid and passwordNew has been defined
   if (emailTar == '' || passwordTar == '' || emailTar.includes('..') || emailTar.includes('/')) {
+    var logLine = 'WARNING: |passwordReset| Target user ' + emailTar + 'includes cd command (../) or is empty or passsword is empty. Requesting user: ' + emailReq
+    appendToLog(logLine)
+
     writeResponse(res, response)
     return
   }
@@ -599,6 +618,9 @@ function passwordReset(req, res) {
               check.type = type
 
               if (check.validated == "no") {
+                var logLine = 'WARNING: |passwordReset| possible manipulation attempt detected: requesting user ' + emailReq + 'does not use the correct password.'
+                appendToLog(logLine)
+
                 response.msg = "don't mess with me!"
                 writeResponse(res, response)
                 return
@@ -617,6 +639,9 @@ function passwordReset(req, res) {
 
                     // stop others from resetting Admin passwords
                     if (tarType == "Administrator" && check.type == "Ausbilder") {
+                      var logLine = 'WARNING: |passwordReset| reset denied. Requesting user ' + emailReq + 'with type Ausbilder tried to reset admin password of ' + emailTar
+                      appendToLog(logLine)
+
                       response.msg = "no permission"
                       writeResponse(res, response)
                       return
@@ -644,12 +669,18 @@ function passwordReset(req, res) {
                       }
                       // if account doesn't exist
                       else {
+                        var logLine = 'ERROR: |passwordReset| failed. Requesting user ' + emailReq + 'tried to reset password of non existing account ' + emailTar
+                        appendToLog(logLine)
+
                         response.msg = "error: Account not found!"
                         writeResponse(res, response)
                         return
                       }
                     }
                     else {
+                      var logLine = 'WARNING: |passwordReset| Requesting user ' + emailReq + 'does not have permission to reset passwords!'
+                      appendToLog(logLine)
+
                       response.msg = "no permission"
                       writeResponse(res, response)
                       return
@@ -679,12 +710,18 @@ function deleteAccount(req, res) {
 
   // check if email is valid and password has been defined
   if (emailReq == '' || passwordReq == '' || emailReq.includes('..') || emailReq.includes('/')) {
+    var logLine = 'WARNING: |deleteAccount| Requesting user ' + emailReq + 'includes cd command (../) or is empty or passsword is empty.'
+    appendToLog(logLine)
+
     writeResponse(res, response)
     return
   }
 
   // check if emailNew is valid and passwordNew has been defined
   if (emailTar == '' || emailTar.includes('..') || emailTar.includes('/')) {
+    var logLine = 'WARNING: |deleteAccount| target user ' + emailTar + 'includes cd command (../) or is empty.'
+    appendToLog(logLine)
+
     writeResponse(res, response)
     return
   }
@@ -716,6 +753,9 @@ function deleteAccount(req, res) {
               check.type = type
 
               if (check.validated == "no") {
+                var logLine = 'WARNING: |deleteAccount| denied! Requesting user ' + emailReq + 'does not use correct password.'
+                appendToLog(logLine)
+
                 response.msg = "don't mess with me!"
                 writeResponse(res, response)
                 return
@@ -736,6 +776,9 @@ function deleteAccount(req, res) {
 
                     // stop others from deleting an Admin account
                     if (tarType == "Administrator" && check.type == "Ausbilder") {
+                      var logLine = 'WARNING: |deleteAccount| denied. Requesting user ' + emailReq + 'tried to delete admin account: ' + emailTar
+                      appendToLog(logLine)
+
                       response.msg = "no permission"
                       writeResponse(res, response)
                       return
@@ -768,7 +811,7 @@ function deleteAccount(req, res) {
                             console.error(`Error while deleting ${directory}.`);
                             console.error({err: err.toString()});
 
-                            var logLine = 'ERROR: deleteAccount failed to remove user ' + emailTar + '. Requesting user: ' + emailReq + '. Err: ' + err.toString()
+                            var logLine = 'ERROR: |deleteAccount| failed to remove user ' + emailTar + '. Requesting user: ' + emailReq + '. Err: ' + err.toString()
                             appendToLog(logLine)
 
                             response.msg = "failed"
@@ -778,7 +821,7 @@ function deleteAccount(req, res) {
                             writeResponse(res, response)
                             return
                           }
-                          var logLine = 'INFO: deleteAccount removed user ' + emailTar + ' successfully. Requesting user: ' + emailReq
+                          var logLine = 'INFO: |deleteAccount| removed user ' + emailTar + ' successfully. Requesting user: ' + emailReq
                           appendToLog(logLine)
 
                           writeResponse(res, response)
@@ -788,12 +831,18 @@ function deleteAccount(req, res) {
                       }
                       // if account doesn't exist
                       else {
+                        var logLine = 'ERROR: |deleteAccount| Requesting user ' + emailReq + 'tried to remove non existing account: ' + emailTar
+                        appendToLog(logLine)
+
                         response.msg = "error: Account not found!"
                         writeResponse(res, response)
                         return
                       }
                     }
                     else {
+                      var logLine = 'WARNING: |deleteAccount| Requesting user ' + emailReq + 'does not have permission to delete accounts'
+                      appendToLog(logLine)
+
                       response.msg = "no permission"
                       writeResponse(res, response)
                       return
@@ -821,6 +870,9 @@ function getAllUsers(req, res) {
   fs.readdir(directory,
     function (err, files) {
       if (err) {
+        var logLine = 'ERROR: |getAllUsers| failed to read directory ' + directory + ' Err: ' + err.toString()
+        appendToLog(logLine)
+
         console.log('Unable to scan directory: ' + err)
         writeResponse(res, {err: err.toString()})
         return
@@ -862,6 +914,9 @@ function getAllGroups(req, res) {
   fs.readdir(directory,
     function (err, files) {
       if (err) {
+        var logLine = 'ERROR: |getAllGroups| failed to read directory ' + directory + ' Err: ' + err.toString()
+        appendToLog(logLine)
+
         console.log('Unable to scan directory: ' + err)
         writeResponse(res, {err: err.toString()})
         return
@@ -906,12 +961,18 @@ function createGroup(req, res) {
 
   // check if email is valid and password has been defined
   if (email == '' || password == '' || email.includes('..') || email.includes('/')) {
+    var logLine = 'WARNING: |createGroup| possible manipulation attempt detected. User ' + email + ' includes cd command (../) or is empty or password is empty.'
+    appendToLog(logLine)
+
     writeResponse(res, response)
     return
   }
 
   // check if groupName is valid has been defined
   if (members == '' || groupName == ''  || groupName.includes('..') || groupName.includes('/')) {
+    var logLine = 'ERROR: |createGroup| no groupName and/or members defined and/or groupName includes cd command (../)'
+    appendToLog(logLine)
+
     writeResponse(res, response)
     return
   }
@@ -943,12 +1004,18 @@ function createGroup(req, res) {
               check.type = type
 
               if (check.validated == "no") {
+                var logLine = 'WARNING: |createGroup| possible manipulation attempt detected. User ' + email + ' does not use correct password.'
+                appendToLog(logLine)
+
                 response.msg = "don't mess with me"
                 writeResponse(res, response)
                 return
               }
 
               if (check.type == "Schüler/Azubi") {
+                var logLine = 'WARNING: |createGroup| possible manipulation attempt detected. User ' + email + ' does not have permission.'
+                appendToLog(logLine)
+
                 response.msg = "no permission"
                 writeResponse(res, response)
                 return
@@ -971,14 +1038,14 @@ function createGroup(req, res) {
                   fs.writeFileSync(filename, yaml.safeDump(members))
                 }
                 catch (e) {
-                  var logLine = 'ERROR: createGroup Err: ' + e.toString()
+                  var logLine = 'ERROR: |createGroup| failed to write file. Err: ' + e.toString()
                   appendToLog(logLine)
 
                   writeResponse(res, {err: e.toString()})
                   return
                 }
 
-                var logLine = 'INFO: createGroup added group ' + groupName + ' successfully. Requesting user: ' + email
+                var logLine = 'INFO: |createGroup| added group ' + groupName + ' successfully. Requesting user: ' + email
                 appendToLog(logLine)
 
                 response.msg = "success"
@@ -989,6 +1056,9 @@ function createGroup(req, res) {
               }
               // if group already exists
               else {
+                var logLine = 'WARNING: |createGroup| denied. Group ' + groupName + ' already exists.'
+                appendToLog(logLine)
+
                 response.msg = "group already exists"
                 writeResponse(res, response)
                 return
@@ -1015,12 +1085,18 @@ function deleteGroup(req, res) {
 
   // check if email is valid and password has been defined
   if (emailReq == '' || passwordReq == '' || emailReq.includes('..') || emailReq.includes('/')) {
+    var logLine = 'WARNING: |deleteGroup| possible manipulation attempt detected. User ' + emailReq + ' contains cd command (../) or is empty and/or password is empty.'
+    appendToLog(logLine)
+
     writeResponse(res, response)
     return
   }
 
   // check if emailNew is valid and passwordNew has been defined
   if (groupName == '' || groupName.includes('..') || groupName.includes('/')) {
+    var logLine = 'WARNING: |deleteGroup| possible manipulation attempt detected. GroupName ' + groupName + ' contains cd command (../) or is empty.'
+    appendToLog(logLine)
+
     writeResponse(res, response)
     return
   }
@@ -1052,12 +1128,18 @@ function deleteGroup(req, res) {
               check.type = type
 
               if (check.validated == "no") {
+                var logLine = 'WARNING: |deleteGroup| possible manipulation attempt detected. User ' + emailReq + ' does not use correct password.'
+                appendToLog(logLine)
+
                 response.msg = "don't mess with me!"
                 writeResponse(res, response)
                 return
               }
 
               if (check.type == "Schüler/Azubi") {
+                var logLine = 'WARNING: |deleteGroup| possible manipulation attempt detected. User ' + emailReq + ' does not have permission to delete groups.'
+                appendToLog(logLine)
+
                 response.msg = "no permission"
                 writeResponse(res, response)
                 return
@@ -1077,14 +1159,14 @@ function deleteGroup(req, res) {
 //                  writeResponse(res, response)
 //                  return
                 } catch(err) {
-                   var logLine = 'ERROR: deleteGroup failed to remove group ' + groupName + '. Requesting user: ' + emailReq + ' Err: ' + err.toString()
+                   var logLine = 'ERROR: |deleteGroup| failed to remove group ' + groupName + '. Requesting user: ' + emailReq + ' Err: ' + err.toString()
                    appendToLog(logLine)
 
                   console.error(err)
                   writeResponse(res, {err: err.toString()})
                   return
                 }
-                var logLine = 'INFO: deleteGroup removed group ' + groupName + ' successfully. Requesting user: ' + emailReq
+                var logLine = 'INFO: |deleteGroup| removed group ' + groupName + ' successfully. Requesting user: ' + emailReq
                 appendToLog(logLine)
 
                 response.msg = "success"
@@ -1092,6 +1174,9 @@ function deleteGroup(req, res) {
                 return
               }
               else {
+                var logLine = 'ERROR: |deleteGroup| group ' + groupName + ' does not exist. Requesting user: ' + emailReq
+                appendToLog(logLine)
+
                 response.msg = "error: groups doesn't exist"
                 writeResponse(res, response)
                 return
@@ -1118,12 +1203,18 @@ function editGroup(req, res) {
 
   // check if email is valid and password has been defined
   if (email == '' || password == '' || email.includes('..') || email.includes('/')) {
+    var logLine = 'WARNING: |editGroup| possible manipulation attempt detected. User ' + email + ' contains cd command (../) or is empty and/or password is empty.'
+    appendToLog(logLine)
+
     writeResponse(res, response)
     return
   }
 
   // check if groupName is valid and has been defined
   if (groupName == '' || groupName.includes('..') || groupName.includes('/')) {
+    var logLine = 'WARNING: |editGroup| possible manipulation attempt detected. Group ' + groupName + ' contains cd command (../) or is empty.'
+    appendToLog(logLine)
+
     writeResponse(res, response)
     return
   }
@@ -1154,6 +1245,9 @@ function editGroup(req, res) {
               type = data.toString('utf8').trim()
 
               if (type == "Schüler/Azubi") {
+                var logLine = 'WARNING: |editGroup| possible manipulation attempt detected. User ' + email + ' does not have permission.'
+                appendToLog(logLine)
+
                 response.msg = "no permission"
                 writeResponse(res, response)
                 return
@@ -1184,14 +1278,14 @@ function editGroup(req, res) {
                         response.success = "yes"
                       }
                       catch (e) {
-                        var logLine = 'ERROR: editGroup failed to save file for group ' + groupName + '. Requesting user: ' + email + 'Err: ' + e.toString()
+                        var logLine = 'ERROR: |editGroup| failed to save file for group ' + groupName + '. Requesting user: ' + email + 'Err: ' + e.toString()
                         appendToLog(logLine)
 
                         writeResponse(res, {err: e.toString()})
                         return
                       }
                     }
-                    var logLine = 'INFO: editGroup edited group ' + groupName + ' successfully. Requesting user: ' + email
+                    var logLine = 'INFO: |editGroup| edited group ' + groupName + ' successfully. Requesting user: ' + email
                     appendToLog(logLine)
 
                     writeResponse(res, response)
@@ -1215,6 +1309,9 @@ function saveCertificate(req, res) {
 
   // check if email and certs have been defined
   if (email == "" || certs == "") {
+    var logLine = 'WARNING: |saveCertificate| possible manipulation attempt detected. User ' + email + ' or certs is empty.'
+    appendToLog(logLine)
+
     writeResponse(res, {err: 'missing parameters'})
     return
   }
@@ -1238,14 +1335,14 @@ function saveCertificate(req, res) {
     fs.writeFileSync(filename, yaml.safeDump(certs))
   }
   catch (e) {
-    var logLine = 'ERROR: saveCertificate failed to write file certificate-' + certs.profession + ' for user: ' + email + '. Err: ' + e.toString()
+    var logLine = 'ERROR: |saveCertificate| failed to write file certificate-' + certs.profession + ' for user: ' + email + '. Err: ' + e.toString()
     appendToLog(logLine)
 
     writeResponse(res, {err: e.toString()})
     return
   }
 
-   var logLine = 'INFO: saveCertificate final certificate-' + certs.profession + ' created successfully for user: ' + email
+   var logLine = 'INFO: |saveCertificate| final certificate-' + certs.profession + ' created successfully for user: ' + email
    appendToLog(logLine)
 
   writeResponse(res, {err: ''})
@@ -1259,12 +1356,18 @@ function loadCertificate(req, res) {
 
   // check if email has been defined
   if (email == "") {
+    var logLine = 'WARNING: |loadCertificate| possible manipulation attempt detected. User ' + email + ' is empty.'
+    appendToLog(logLine)
+
     writeResponse(res, {err: 'missing parameter'})
     return
   }
 
   // check cert for change dir i.e. if cert includes '../' and abort if true
   if (cert.includes('../')) {
+    var logLine = 'WARNING: |loadCertificate| possible manipulation attempt detected. cert ' + cert + ' includes cd command (../).'
+    appendToLog(logLine)
+
     writeResponse(res, {err: 'manipulation detected'})
     return
   }
@@ -1282,6 +1385,9 @@ function loadCertificate(req, res) {
       // callback function that is called when reading file is done
       function(err, data) {
         if (err) {
+           var logLine = 'ERROR: |loadCertificate| Err: ' + err.toString()
+           appendToLog(logLine)
+
           console.log(err)
           writeResponse(res, {err: err.toString()})
           return
@@ -1303,6 +1409,9 @@ function loadCertificate(req, res) {
     fs.readdir(directory,
       function (err, files) {
         if (err) {
+           var logLine = 'ERROR: |loadCertificate| failed to scan directory. Err: ' + err.toString()
+           appendToLog(logLine)
+
           console.log('Unable to scan directory: ' + err)
 	  writeResponse(res, {err: err.toString()})
 	  return
@@ -1337,6 +1446,9 @@ function saveMaterials(req, res) {
 
   // check if email and quiz have been defined
   if (email == "" || password == "" || email.includes('..') || email.includes('/') || profession == "" || qualification == "") {
+    var logLine = 'WARNING: |saveMaterials| possible manipulation attempt detected. User ' + email + ' includes cd command (../) or is empty and/or password/professsion/qualification is empty.'
+    appendToLog(logLine)
+
     writeResponse(res, {err: 'missing parameters'})
     return
   }
@@ -1362,12 +1474,18 @@ function saveMaterials(req, res) {
               type = data.toString('utf8').trim()
 
               if (validated == "no") {
+                var logLine = 'WARNING: |saveMaterials| possible manipulation attempt detected. User ' + email + ' does not use correct password.'
+                appendToLog(logLine)
+
                 response.msg = "not validated"
                 writeResponse(res, response)
                 return
               }
 
               if (type == "Schüler/Azubi") {
+                var logLine = 'WARNING: |saveMaterials| possible manipulation attempt detected. User ' + email + ' does not have permission.'
+                appendToLog(logLine)
+
                 response.msg = "no permission"
                 writeResponse(res, response)
                 return
@@ -1388,13 +1506,13 @@ function saveMaterials(req, res) {
                 fs.writeFileSync(filename, yaml.safeDump(materials))
               }
               catch (e) {
-                var logLine = 'ERROR: saveMaterials failed to write file ' + filename + '. Requesting user: ' + email + '. Err: ' + e.toString()
+                var logLine = 'ERROR: |saveMaterials| failed to write file ' + filename + '. Requesting user: ' + email + '. Err: ' + e.toString()
                 appendToLog(logLine)
 
                 writeResponse(res, {err: e.toString()})
                 return
               }
-              var logLine = 'INFO: saveMaterials saved ' + filename + ' successfully. Requesting user: ' + email
+              var logLine = 'INFO: |saveMaterials| saved ' + filename + ' successfully. Requesting user: ' + email
               appendToLog(logLine)
 
               response.success = true
