@@ -1,3 +1,7 @@
 2020-9-16 15:10:0  ERROR: Questionnaire load questions: Error: ENOENT: no such file or directory, open './data/materials/profession-1/qualification-0/questions.yaml'
 2020-9-16 15:10:6  INFO: saveMaterials saved ./data/materials/profession-1/qualification-0/questions.yaml successfully. Requesting user: user@test.de
 2020-9-16 15:10:14  INFO: saveMaterials saved ./data/materials/profession-1/qualification-0/questions.yaml successfully. Requesting user: user@test.de
+2020-9-16 23:6:16  Login attempt failed: wrong password - user@test.de
+2020-9-16 23:27:19  INFO: createGroup added group asdf successfully. Requesting user: user@test.de
+2020-9-16 23:27:21  INFO: editGroup edited group asdf successfully. Requesting user: user@test.de
+2020-9-16 23:27:26  INFO: deleteGroup removed group asdf successfully. Requesting user: user@test.de

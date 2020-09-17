@@ -14,13 +14,9 @@ function getDateOb() {
   return date_ob
 }
 
-//------------------------------------------------------------------------------
-
 var log = fs.createWriteStream('./logs/log_' + getDateOb().getFullYear() + '-' + (getDateOb().getMonth()+1) + '-' + getDateOb().getDate(), {
   flags: 'a' // 'a' means appending (old data will be preserved)
 })
-
-//------------------------------------------------------------------------------
 
 function appendToLog(line) {
   // current timestamp in milliseconds
@@ -37,6 +33,124 @@ function appendToLog(line) {
   formattedTime = year + "-" + month + "-" + date + " " + hours + ":" + minutes + ":" + seconds
 
   log.write(formattedTime + '  ' + line + '\n')
+}
+
+//------------------------------------------------------------------------------
+
+function loadLogs(req, res) {
+  var log      = req.body.log      ? req.body.log      : ""
+  var email    = req.body.email    ? req.body.email    : ""
+  var password = req.body.password ? req.body.password : ""
+
+  // check if email has been defined
+  if (email == "" || password == "") {
+    writeResponse(res, {err: 'missing parameter'})
+    return
+  }
+
+  // check cert for change dir i.e. if cert includes '../' and abort if true
+  if (log.includes('../' || email.includes('../'))) {
+    writeResponse(res, {err: 'manipulation detected'})
+    return
+  }
+
+
+
+  // check if directory exists
+  directory = './data/students/' + email
+  filename  = directory + '/password'
+  check = {
+    'validated': "no",
+    'type':      ""
+  }
+
+  // read file password-file of requesting user
+  fs.readFile(filename,
+    // callback function that is called when reading file is done
+    function(err, data) {
+      // error will reading password file
+      if (!err) {
+        real_password = data.toString('utf8').trim()
+        check.validated = (password === real_password ? "yes" : "no")
+
+        // read file type-file of requesting user
+        fs.readFile(directory + '/type',
+          // callback function that is called when reading file is done
+          function(err, data) {
+            // error will reading type file
+            if (!err) {
+              type = data.toString('utf8').trim()
+              check.type = type
+
+              if (check.validated == "no") {
+                response = "don't mess with me!"
+                writeResponse(res, response)
+                return
+              }
+
+              if (check.type != "Administrator") {
+                response = "no permission!"
+                writeResponse(res, response)
+                return
+              }
+
+              directory = './logs/'
+
+              // if a log was requested
+              if (log != "") {
+
+                filename  = directory + log
+                response  = {}
+
+                // read log
+                fs.readFile(filename,
+                  // callback function that is called when reading file is done
+                  function(err, data) {
+                    if (err) {
+                      console.log(err)
+                      writeResponse(res, {err: err.toString()})
+                      return
+                    }
+
+                    if (data) {
+                      information = data.toString('utf8')
+
+                      response = information
+//                      response = yaml.safeLoad(information)
+                    }
+
+                    writeResponse(res, response)
+                  }
+                )
+              }
+              // if no log was requested - return list of existing logs
+              else {
+                // get list of all files
+                fs.readdir(directory,
+                  function (err, files) {
+                    if (err) {
+                      console.log('Unable to scan directory: ' + err)
+                      writeResponse(res, {err: err.toString()})
+                      return
+                    }
+                    if (files.length == 0) { files = "no logs found" }
+                    else if (files) {
+                      //listing all files using forEach
+                      files.forEach(function (file) {
+                        // ToDo:
+                        // Maybe check certificate or something..
+                      })
+                    }
+                    writeResponse(res, files)
+                  }
+                )
+              }
+            }
+          }
+        )
+      }
+    }
+  )
 }
 
 //------------------------------------------------------------------------------
@@ -1316,6 +1430,7 @@ app.post('/creategroup',                              createGroup)
 app.post('/deletegroup',                              deleteGroup)
 app.post('/editGroup',                                editGroup)
 app.post('/savematerials',                            saveMaterials)
+app.post('/loadlogs',                                 loadLogs)
 
 server = app.listen(port, () => console.log(`Server listening on port ${port}!`))
 server.timeout = 5000
