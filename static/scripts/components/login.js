@@ -33,6 +33,20 @@ Vue.component( 'login',
         request.send(params);
       }
     },
+    mounted() {
+      var form = document.getElementById("formContent");
+
+      // Execute a function when the user releases a key on the keyboard
+      form.addEventListener("keyup", function(event) {
+        // Number 13 is the "Enter" key on the keyboard
+        if (event.keyCode === 13) {
+          // Cancel the default action, if needed
+          event.preventDefault();
+          // Trigger the button element with a click
+          document.getElementById("submitBtn").click();
+        }
+      });
+    },
     template: `
       <div id="login" class="wrapper">
         <div id="formContent">
@@ -43,7 +57,7 @@ Vue.component( 'login',
           <!-- Login Form -->
           <input type="text" id="email"    name="email"    v-model="model.email"    placeholder="E-Mail">
           <input type="password" id="password" name="password" v-model="model.password" placeholder="Passwort">
-          <button type="button" class="btn btn-info" @click="login">Anmelden</button>
+          <button type="button" id="submitBtn" class="btn btn-info" @click="login">Anmelden</button>
 
           <!-- Remind Passowrd -->
           <div id="formFooter">
