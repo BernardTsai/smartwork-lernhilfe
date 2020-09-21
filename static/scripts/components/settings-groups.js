@@ -238,6 +238,9 @@ Vue.component( 'settings-groups',
           select: -1,
           user: [],
           groupName: ''
+        },
+        control: {
+          prevModal: ''
         }
       }
     },
@@ -273,7 +276,7 @@ Vue.component( 'settings-groups',
         <h3 class="text-center">Gruppenverwaltung</h3>
 
         <!-- trigger modal group creation-->
-        <div class="card my-3 mx-auto" style="max-width: 540px;" data-toggle="modal" data-target="#groupAddModalCenter" @click="initialState()">
+        <div class="card my-3 mx-auto" style="max-width: 540px;" data-toggle="modal" data-target="#groupAddModalCenter" @click="initialState(); control.prevModal = 'groupAddModalCenter'">
           <div class="row no-gutters">
             <div class="col-md-2 my-auto">
               <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user-plus.svg" class="card-img p-3" alt="LOGO">
@@ -314,7 +317,7 @@ Vue.component( 'settings-groups',
 
                 <div class="form-group">
                   <label for="addToGroup">Nutzer hinzuf&uumlgen</label>
-                  <button id="addToGroup" type="button" class="btn btn-primary" data-toggle="modal" data-target="#userSelect">Nutzer ausw&aumlhlen</button>
+                  <button id="addToGroup" type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#userSelect">Nutzer ausw&aumlhlen</button>
                   <small id="addToGroupHelp" class="form-text text-muted">W&aumlhlen Sie aus der Liste die Nutzer aus, die der Gruppe hinzugef&uumlgt werden sollen.</small>
                 </div>
 
@@ -372,7 +375,7 @@ Vue.component( 'settings-groups',
                   <label for="pwReset"><u>Gruppenmitglieder bearbeiten:</u></label>
                   <div id="pwReset" class="row">
                     <div class="col-md-12">
-                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#userSelect"  @click="groupEditMarkMembers()">Gruppenmitglieder ausw&aumlhlen</button>
+                      <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#userSelect"  @click="groupEditMarkMembers()">Gruppenmitglieder ausw&aumlhlen</button>
                       <small class="form-text text-muted">Die ausgewählten Nutzer werden nach einem Klick auf Best&aumltigen hinzugef&uumlgt.</small>
                     </div>
                   </div>
@@ -403,7 +406,7 @@ Vue.component( 'settings-groups',
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle">Nutzer ausw&aumlhlen</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-dismiss="modal" data-toggle="modal" :data-target="'#' + control.prevModal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
@@ -439,7 +442,7 @@ Vue.component( 'settings-groups',
               </div>
               <div class="modal-footer">
                <!--<button type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>-->
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Auswahl best&aumltigen</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" :data-target="'#' + control.prevModal">Auswahl best&aumltigen</button>
               </div>
             </div>
           </div>
@@ -472,7 +475,7 @@ Vue.component( 'settings-groups',
         </div>
 
         <!-- loop over all groups -->
-        <div v-for="(group, index) in this.groups.group" class="card my-3 mx-auto" style="max-width: 540px;" @click="selectGroup(index)">
+        <div v-for="(group, index) in this.groups.group" class="card my-3 mx-auto" style="max-width: 540px;" @click="selectGroup(index); control.prevModal = 'groupOptions'">
           <div class="row no-gutters">
             <div class="col-md-2 my-auto">
               <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user.svg" class="card-img p-3" alt="USER-LOGO">
