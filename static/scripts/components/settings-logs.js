@@ -9,8 +9,8 @@ Vue.component( 'settings-logs',
         this.logs = loadData('POST', '/loadlogs', params);
         if (this.logs.includes("no permission")) {
           this.logs = []
+          alert("You do not have permission for this action! This incident is logged!")
         }
-//        console.log(this.logs)
       },
       selectLog: function(index) {
         this.indexLog = index
@@ -20,7 +20,6 @@ Vue.component( 'settings-logs',
         var params  = JSON.stringify( { log: this.logs[index], email: this.model.email, password: this.model.password } )
         this.log = loadData('POST', '/loadlogs', params);
         $("#logDetails").modal();
-//        console.log(this.log)
       },
       downloadLog: function() {
         var filename = this.logs[this.indexLog] + ".log"

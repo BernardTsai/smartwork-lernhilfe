@@ -45,7 +45,6 @@ Vue.component( 'settings-groups',
             if (this.status != 200) {
               return
             }
-//            console.log(request.responseText)
             result = jsyaml.safeLoad(request.responseText)
 
             if (result.msg == "success") {
@@ -169,7 +168,7 @@ Vue.component( 'settings-groups',
             if (arrIndex > -1) this.groups.user.push(this.users.user[arrIndex]);
           }
           else {
-//            console.log('User ' + this.groups.groupTmp.members[i].email + ' existiert nicht!')
+//            console.log('User ' + this.groups.groupTmp.members[i].email + ' does not exist!')
           }
           found = false
         }

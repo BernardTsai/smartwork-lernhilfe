@@ -2,6 +2,7 @@ Vue.component( 'settings-editquiz',
   {
     props:    ['model'],
     methods: {
+      // save selection in dropdown menu for profession
       selectProfession: function(index) {
         // reset dropdown menus if profession selection changed
         if (this.selected.professionIndex != -1){
@@ -18,6 +19,7 @@ Vue.component( 'settings-editquiz',
         button.classList.remove("btn-secondary");
         button.classList.add("btn-primary");
       },
+      // save selection in dropdown menu for qualification
       selectQualification: function(index) {
         if (this.model.quiz.question != -1){
           this.initialStateQuestion()
@@ -33,7 +35,7 @@ Vue.component( 'settings-editquiz',
         // load questions
         var qualification = this.selected.qualificationIndex
         this.model.questionnaire = loadData( "GET", "/questionnaire/" + this.selected.professionIndex + "/" + qualification)
-        // if quiz doesn't exist for selected qualification no array is returned so check for array to know if quiz exists
+        // if quiz doesn't exist for selected qualification no array is returned -> check for array to know if quiz exists
         if (!Array.isArray(this.model.questionnaire)) this.model.questionnaire = []
       },
       selectQuestion: function(index) {
@@ -49,6 +51,7 @@ Vue.component( 'settings-editquiz',
       checkedCheck: function(index) {
         return this.model.questionnaire[this.model.quiz.question].answers[index] == "yes"
       },
+      // apply changes in data model on client
       applyChanges: function() {
         this.model.questionnaire[this.model.quiz.question].title = $("#inputQuestionTitle").val()
         this.model.questionnaire[this.model.quiz.question].description = $("#inputQuestionDescription").val()
@@ -60,6 +63,7 @@ Vue.component( 'settings-editquiz',
         this.model.questionnaire[this.model.quiz.question].explanation = $("#inputQuestionExplanation").val()
         this.model.questionnaire[this.model.quiz.question].points = $("#inputQuestionPoints").val()
       },
+      // save changes in backend
       saveMaterials: function() {
         var request = new XMLHttpRequest();
         var self = this;
@@ -90,19 +94,21 @@ Vue.component( 'settings-editquiz',
         request.setRequestHeader('Content-type', 'application/json');
         request.send(params);
       },
+      // generate new question on client
       addQuestion: function() {
         var newQuestion = {
-          title:       'NEW TITLE',
-          description: 'NEW DESCRIPTION',
-          question:    'NEW QUESTION?',
-          options:     [ 'O1', 'O2', 'O3' ],
-          answers:     [ 'no', 'no', 'no' ],
-          explanation: 'NEW EXPLANATION',
+          title:       '',
+          description: '',
+          question:    '',
+          options:     [ '', '', '' ],
+          answers:     [ '', '', '' ],
+          explanation: '',
           points:      -1
         }
         this.model.questionnaire.push(newQuestion)
         this.model.quiz.question = this.model.questionnaire.length - 1
       },
+      // remove question on client
       rmQuestion: function() {
         this.model.questionnaire.splice(this.model.quiz.question, 1)
         this.initialStateQuestion()
@@ -126,12 +132,12 @@ Vue.component( 'settings-editquiz',
 
         document.body.removeChild(element);
       },
+      // load question backup from client to replace current data on client with backup
       loadFile: function() {
         var self = this
         document.getElementById('inputBackup').addEventListener('change', function() {
           var fr = new FileReader();
           fr.onload=function(){
-//            console.log(fr.result);
             self.model.questionnaire = jsyaml.safeLoad(fr.result)
           }
           fr.readAsText(this.files[0]);
@@ -189,9 +195,6 @@ Vue.component( 'settings-editquiz',
 //      }
     },
     computed: {
-//      details: function() {
-//        return this.model.materials.professions
-//      }
     },
     template: `
       <div id="settings-editquiz" class="container">
@@ -338,17 +341,17 @@ Vue.component( 'settings-editquiz',
 
                 <div class="form-group">
                   <label for="inputQuestionTitle">Fragentitel:</label>
-                  <input id="inputQuestionTitle" type="text" class="form-control" :value="question().title">
+                  <input id="inputQuestionTitle" type="text" class="form-control" placeholder="Geben Sie einen kurzen Fragentitel ein" :value="question().title">
                   <small id="QuestionTitleHelp" class="form-text text-muted">Geben Sie einen Title f&uumlr die Quizfrage ein.</small>
                 </div>
                 <div class="form-group">
                   <label for="inputQuestionDescription">Fragenbeschreibung:</label>
-                  <input id="inputQuestionDescription" type="text" class="form-control" :value="question().description">
+                  <input id="inputQuestionDescription" type="text" class="form-control" placeholder="Geben Sie eine einleitende Beschreibung ein" :value="question().description">
                   <small id="QuestionDescriptionHelp" class="form-text text-muted">Geben Sie eine Beschreibung f&uumlr die Quizfrage ein.</small>
                 </div>
                 <div class="form-group">
                   <label for="inputQuestion">Quizfrage:</label>
-                  <input id="inputQuestion" type="text" class="form-control" :value="question().question">
+                  <input id="inputQuestion" type="text" class="form-control" placeholder="Geben Sie die Quizfrage ein" :value="question().question">
                   <small id="QuestionHelp" class="form-text text-muted">Geben Sie die Quizfrage ein.</small>
                 </div>
 
@@ -360,7 +363,7 @@ Vue.component( 'settings-editquiz',
                         <input class="align-bottom" type="radio" :id="'option-' + index" name="customCheck" :checked="checkedCheck(index)">
                       </div>
                       <div class="col-md-10 ml-auto">
-                        <input :id="'inputQuestionOptionText-' + index" type="text" class="form-control" :value="option">
+                        <input :id="'inputQuestionOptionText-' + index" type="text" class="form-control" placeholder="Geben Sie eine Antwortmöglichkeit ein" :value="option">
                         <small :id="'inputQuestionOptionTextHelp' + index" class="form-text text-muted">Geben Sie hier die {{index+1}}. Antwortm&oumlglichkeit ein.</small>
                       </div>
                     </div>
@@ -370,7 +373,7 @@ Vue.component( 'settings-editquiz',
 
                 <div class="form-group">
                   <label for="inputQuestionExplanation">Erklärung:</label>
-                  <input id="inputQuestionExplanation" type="text" class="form-control" :value="question().explanation">
+                  <input id="inputQuestionExplanation" type="text" class="form-control" placeholder="Geben Sie eine Erklährung für die richtige Antwort ein" :value="question().explanation">
                   <small id="QuestionExplanationHelp" class="form-text text-muted">Geben Sie eine Erkl&aumlrung zur richtigen Antwort der Quizfrage ein.</small>
                 </div>
                 <div class="form-group">
@@ -401,7 +404,7 @@ Vue.component( 'settings-editquiz',
               <div class="modal-body">
                 <div class="px-3 text-danger">
                   <p class="font-weight-bold">ACHTUNG:</p>
-                  <p> Der Frage wird vollst&aumlndig gel&oumlscht. Diese Aktion kann nicht r&uumlckg&aumlngig gemacht werden!</p>
+                  <p> Nach dem speichern wird diese Frage vollst&aumlndig gel&oumlscht. Die Aktion kann danach nicht mehr r&uumlckg&aumlngig gemacht werden!</p>
                 </div>
               </div>
               <div class="modal-footer">

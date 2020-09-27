@@ -1,0 +1,9 @@
+2020-9-27 9:9:27  INFO: |editGroup| edited group testGroup1 successfully. Requesting user: user@test.de
+2020-9-27 9:9:39  INFO: |createGroup| added group test successfully. Requesting user: user@test.de
+2020-9-27 9:9:42  INFO: |editGroup| edited group test successfully. Requesting user: user@test.de
+2020-9-27 9:9:47  INFO: |editGroup| edited group test successfully. Requesting user: user@test.de
+2020-9-27 9:9:48  INFO: |editGroup| edited group test successfully. Requesting user: user@test.de
+2020-9-27 9:10:2  INFO: |deleteGroup| removed group test successfully. Requesting user: user@test.de
+2020-9-27 9:44:49  INFO: |saveMaterials| saved ./data/materials/profession-0/qualification-0/questions.yaml successfully. Requesting user: user@test.de
+2020-9-27 9:49:12  INFO: |saveMaterials| saved ./data/materials/profession-0/qualification-0/questions.yaml successfully. Requesting user: user@test.de
+2020-9-27 10:23:1  WARNING: |loadLogs| user user@test.de tried to view logs without permission

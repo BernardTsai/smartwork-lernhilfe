@@ -44,12 +44,18 @@ function loadLogs(req, res) {
 
   // check if email has been defined
   if (email == "" || password == "") {
+    var logLine = 'ERROR: |loadLogs| missing parameters (email || password)'
+    appendToLog(logLine)
+
     writeResponse(res, {err: 'missing parameter'})
     return
   }
 
   // check cert for change dir i.e. if cert includes '../' and abort if true
   if (log.includes('../' || email.includes('../'))) {
+    var logLine = 'WARNING: |loadLogs| Possible manipulation attempt detected: requesting user ' + email + ' includes cd command (../)'>
+    appendToLog(logLine)
+
     writeResponse(res, {err: 'manipulation detected'})
     return
   }
@@ -83,12 +89,18 @@ function loadLogs(req, res) {
               check.type = type
 
               if (check.validated == "no") {
+                var logLine = 'WARNING: |loadLogs| user ' + email + ' did not use the correct password'
+                appendToLog(logLine)
+
                 response = "don't mess with me!"
                 writeResponse(res, response)
                 return
               }
 
               if (check.type != "Administrator") {
+                var logLine = 'WARNING: |loadLogs| user ' + email + ' tried to view logs without permission'
+                appendToLog(logLine)
+
                 response = "no permission!"
                 writeResponse(res, response)
                 return
@@ -107,6 +119,9 @@ function loadLogs(req, res) {
                   // callback function that is called when reading file is done
                   function(err, data) {
                     if (err) {
+                      var logLine = 'ERROR: |loadLogs| unable to read File. Err: ' + err.toString()
+                      appendToLog(logLine)
+
                       console.log(err)
                       writeResponse(res, {err: err.toString()})
                       return
@@ -129,6 +144,9 @@ function loadLogs(req, res) {
                 fs.readdir(directory,
                   function (err, files) {
                     if (err) {
+                      var logLine = 'ERROR: |loadLogs| unable to read directory. Err: ' + err.toString()
+                      appendToLog(logLine)
+
                       console.log('Unable to scan directory: ' + err)
                       writeResponse(res, {err: err.toString()})
                       return
@@ -178,7 +196,7 @@ function questionnaire(req, res) {
       if (err) {
         console.log(err)
 
-        var logLine = 'ERROR: |Questionnaire| load questions Err: ' + err.toString()
+        var logLine = 'ERROR: |questionnaire| load questions Err: ' + err.toString()
         appendToLog(logLine)
 
         writeResponse(res, {err: err.toString()})
