@@ -17,7 +17,7 @@ body {
   background-color: #f1f1f1;
   width: 100%;
 }
-#settings-usercontrol input[type=submit] {
+#settings-usercontrol #userSearchAutocomplete input[type=button] {
   background-color: DodgerBlue;
   color: #fff;
 }

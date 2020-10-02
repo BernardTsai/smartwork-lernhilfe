@@ -7,6 +7,8 @@ Vue.component( 'settings-usercontrol',
 //        needed for authentication (not working yet)
 //        var params  = JSON.stringify( { email: model.email, password: model.password } )
         this.users.user = loadData('POST', '/getallusers'/*, params*/);
+        //refresh autocomplete (only when mounted to prevent errors while component is loading)
+        if (this.mountedCheck) this.autocomplete(document.getElementById("searchUser"), this.users.user);
       },
 
       // generate password function
@@ -90,6 +92,30 @@ Vue.component( 'settings-usercontrol',
         $("#userOptions").modal();
       },
 
+      selectUserSearch: function() {
+        var user = document.getElementById('searchUser').value
+        var found = false
+
+        for (var i = 0; i < this.users.user.length; ++i) {
+          if (user === this.users.user[i].email) {
+            found = true
+          }
+        }
+        if (found) {
+          this.users.select = i
+          this.users.emailSel = user
+          $("#userOptions").modal()
+        }
+        else {
+// Doesn't work.......
+//          $("#searchUser").tooltip({trigger: 'manual'})
+//          $("#searchUser").tooltip({
+//            title: "This will show in absence of title attribute."
+//          });
+//          $("#searchUser").tooltip('toggle')
+        }
+      },
+
       // create new user
       addUser: function() {
         this.form.email = $("#inputEmail").val();
@@ -128,10 +154,7 @@ Vue.component( 'settings-usercontrol',
         request.send(params);
       },
 
-
-
-
-
+      // autocomplete for search function
       autocomplete: function(inp, arr) {
         /*the autocomplete function takes two arguments,
         the text field element and an array of possible autocompleted values:*/
@@ -228,11 +251,6 @@ Vue.component( 'settings-usercontrol',
             closeAllLists(e.target);
         });
       }
-
-
-
-
-
     },
     data() {
       return {
@@ -245,13 +263,15 @@ Vue.component( 'settings-usercontrol',
           user: {},
           select: -1,
           emailSel: ''
-        }
+        },
+        mountedCheck: false
       }
     },
     beforeMount() {
       this.getUsers()
     },
     mounted() {
+      this.mountedCheck = true
       this.autocomplete(document.getElementById("searchUser"), this.users.user);
     },
     computed: {
@@ -288,12 +308,11 @@ Vue.component( 'settings-usercontrol',
 
         <div id="userSearchAutocomplete" class="text-center">
           <!--Make sure the form has the autocomplete function switched off:-->
-          <form autocomplete="off" action="/action_page.php">
+          <form autocomplete="off">
             <div class="autocomplete" style="width:300px;">
-              <input id="searchUser" type="text" name="user" placeholder="Suche Benutzer">
+              <input id="searchUser" type="text" name="user" placeholder="Suche Benutzer" data-toggle="tooltip" data-placement="auto">
             </div>
-            <button type="button" class="btn btn-primary">Bearbeiten</button>
-            <!-- <input type="submit"> -->
+            <input type="button" value="Bearbeiten" @click="selectUserSearch()">
           </form>
         </div>
 
