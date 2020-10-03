@@ -11,6 +11,31 @@ Vue.component( 'settings-logs',
           this.logs = []
           alert("You do not have permission for this action! This incident is logged!")
         }
+
+        // get log date from filename
+//        for (var i = 0; i < this.logs.length; i++) {
+//          var year = parseInt(this.logs[i].substr(4, 4), 10);
+//          var month = parseInt(this.logs[i].substr(this.logs[i].indexOf('-') + 1, this.logs[i].lastIndexOf('-') - this.logs[i].indexOf('-') - 1), 10);
+//          var day = parseInt(this.logs[i].substr(this.logs[i].lastIndexOf('-') + 1), 10);
+//          console.log(year + ' ' + month + ' ' + day);
+//        }
+
+        // sort logs - latest on top
+        this.logs.sort(function(a, b){
+          var year_a = parseInt(a.substr(4, 4), 10);
+          var month_a = parseInt(a.substr(a.indexOf('-') + 1, a.lastIndexOf('-') - a.indexOf('-') - 1), 10);
+          var day_a = parseInt(a.substr(a.lastIndexOf('-') + 1), 10);
+
+          var year_b = parseInt(b.substr(4, 4), 10);
+          var month_b = parseInt(b.substr(b.indexOf('-') + 1, b.lastIndexOf('-') - b.indexOf('-') - 1), 10);
+          var day_b = parseInt(b.substr(b.lastIndexOf('-') + 1), 10);
+
+          if (year_a != year_b) return year_b - year_a
+          else if (month_a != month_b) return month_b - month_a
+          else if (day_a != day_b) return day_b - day_a
+
+          return 0
+        });
       },
       selectLog: function(index) {
         this.indexLog = index
