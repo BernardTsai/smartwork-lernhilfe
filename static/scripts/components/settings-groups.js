@@ -277,7 +277,7 @@ Vue.component( 'settings-groups',
         <!-- trigger modal group creation-->
         <div class="card my-3 mx-auto" style="max-width: 540px;" data-toggle="modal" data-target="#groupAddModalCenter" @click="initialState(); control.prevModal = 'groupAddModalCenter'">
           <div class="row no-gutters">
-            <div class="col-md-2 my-auto">
+            <div class="col-md-2 my-auto d-none d-md-block">
               <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user-plus.svg" class="card-img p-3" alt="LOGO">
             </div>
             <div class="col-md-10">
@@ -423,7 +423,7 @@ Vue.component( 'settings-groups',
                                                                 'border-success': user.type == 'Schüler/Azubi'
                                                               }" style="max-width: 540px; border: 2px solid;" @click="selectUser(index)" :id="'selUser_'+index">
                   <div class="row no-gutters">
-                    <div class="col-md-2 my-auto">
+                    <div class="col-md-2 my-auto d-none d-md-block">
                       <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user.svg" class="card-img p-3" alt="USER-LOGO">
                     </div>
                     <div class="col-md-10">
@@ -476,7 +476,7 @@ Vue.component( 'settings-groups',
         <!-- loop over all groups -->
         <div v-for="(group, index) in this.groups.group" class="card my-3 mx-auto" style="max-width: 540px;" @click="selectGroup(index); control.prevModal = 'groupOptions'">
           <div class="row no-gutters">
-            <div class="col-md-2 my-auto">
+            <div class="col-md-2 my-auto d-none d-md-block">
               <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user.svg" class="card-img p-3" alt="USER-LOGO">
             </div>
             <div class="col-md-10">
