@@ -10,7 +10,7 @@ Vue.component( 'settings-instructorarea',
 
         <div class="card my-3 mx-auto" style="max-width: 540px;" @click="this.model.submode='settings-usercontrol'">
           <div class="row no-gutters">
-            <div class="col-md-2 my-auto">
+            <div class="col-md-2 my-auto d-none d-md-block">
               <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/users-cog.svg" class="card-img p-3" alt="LOGO">
             </div>
             <div class="col-md-10">
@@ -26,7 +26,7 @@ Vue.component( 'settings-instructorarea',
 
         <div class="card my-3 mx-auto" style="max-width: 540px;" @click="this.model.submode='settings-userstatus'">
           <div class="row no-gutters">
-            <div class="col-md-2 my-auto">
+            <div class="col-md-2 my-auto d-none d-md-block">
               <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/chart-area.svg" class="card-img p-3" alt="LOGO">
             </div>
             <div class="col-md-10">
@@ -42,7 +42,7 @@ Vue.component( 'settings-instructorarea',
 
         <div v-if="model.type=='Ausbilder' || model.type=='Administrator'" class="card my-3 mx-auto" style="max-width: 540px;" @click="this.model.submode='settings-groups'">
           <div class="row no-gutters">
-            <div class="col-md-2 my-auto">
+            <div class="col-md-2 my-auto d-none d-md-block">
               <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/bars.svg" class="card-img p-3" alt="LOGO">
             </div>
             <div class="col-md-10">
@@ -58,7 +58,7 @@ Vue.component( 'settings-instructorarea',
 
         <div v-if="model.type=='Ausbilder' || model.type=='Administrator'" class="card my-3 mx-auto" style="max-width: 540px;" @click="this.model.submode='settings-editquiz'">
           <div class="row no-gutters">
-            <div class="col-md-2 my-auto">
+            <div class="col-md-2 my-auto d-none d-md-block">
               <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/stream.svg" class="card-img p-3" alt="LOGO">
             </div>
             <div class="col-md-10">
