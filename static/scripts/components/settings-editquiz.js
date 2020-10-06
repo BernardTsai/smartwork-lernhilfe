@@ -247,7 +247,7 @@ Vue.component( 'settings-editquiz',
         <!-- quiz details -->
         <div v-if="this.selected.qualificationIndex != -1"  class="card my-3 mx-auto" style="max-width: 540px;" data-toggle="modal" data-target="#quizEditModal">
           <div class="row no-gutters">
-            <div class="col-md-2 my-auto">
+            <div class="col-md-2 my-auto d-none d-md-block">
               <img :src="'../../images/' + this.selected.profession.image" class="card-img p-1" :alt="this.selected.profession.profession">
             </div>
             <div class="col-md-10">
