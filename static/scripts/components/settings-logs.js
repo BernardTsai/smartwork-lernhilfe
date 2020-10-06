@@ -79,7 +79,7 @@ Vue.component( 'settings-logs',
 
         <h3 class="text-center">Serverlogs</h3>
 
-        <!-- Modal for user certs -->
+        <!-- Modal for logs -->
         <div class="modal fade" id="logDetails" tabindex="-1" role="dialog" aria-labelledby="logDetailsModalCenterTitle" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
@@ -102,10 +102,10 @@ Vue.component( 'settings-logs',
           </div>
         </div>
 
-        <!-- loop over all professions -->
+        <!-- loop over all logs -->
         <div v-for="(log, index) in this.logs" class="card my-3 mx-auto" style="max-width: 540px;" @click="selectLog(index)">
           <div class="row no-gutters">
-            <div class="col-md-2 my-auto">
+            <div class="col-md-2 my-auto d-none d-md-block">
               <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/file-code.svg" class="card-img p-1" alt="file-code">
             </div>
             <div class="col-md-10">
