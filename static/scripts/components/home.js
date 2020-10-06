@@ -174,7 +174,7 @@ Vue.component( 'home',
         <!-- loop over all groups -->
         <div v-for="(group, index) in this.groups.groupTmp" class="card my-3 mx-auto" style="max-width: 540px;" @click="selectGroup(index)">
           <div class="row no-gutters">
-            <div class="col-md-2 my-auto hidden-xs-down">
+            <div class="col-md-2 my-auto d-none d-md-block">
               <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user.svg" class="card-img p-3" alt="USER-LOGO">
             </div>
             <div class="col-md-10">
