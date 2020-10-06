@@ -111,7 +111,7 @@ Vue.component( 'settings-userstatus',
                 <!-- loop over all professions -->
                 <div v-for="(profession, index) in model.certs_p" class="card my-3 mx-auto" style="max-width: 540px;" @click="selectCert(this.model.certs_p[index])">
                   <div class="row no-gutters">
-                    <div class="col-md-2 my-auto">
+                    <div class="col-md-2 my-auto d-none d-md-block">
                       <img :src="'../../images/' + details[profession].image" class="card-img p-1" :alt="details[profession].profession">
                     </div>
                     <div class="col-md-10">
@@ -143,7 +143,7 @@ Vue.component( 'settings-userstatus',
                                                         'border-success': user.type == 'Schüler/Azubi'
                                                       }" style="max-width: 540px; border: 2px solid;" @click="selectUser(index)">
           <div class="row no-gutters">
-            <div class="col-md-2 my-auto">
+            <div class="col-md-2 my-auto d-none d-md-block">
               <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user.svg" class="card-img p-3" alt="USER-LOGO">
             </div>
             <div class="col-md-10">
