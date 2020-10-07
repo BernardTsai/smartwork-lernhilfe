@@ -354,7 +354,7 @@ Vue.component( 'settings-groups',
                                                                                    'border-success': member.type == 'Schüler/Azubi'
                                                                                  }" style="max-width: 540px; border: 2px solid;" :id="'selUserG_'+index">
                       <div class="row no-gutters">
-                        <div class="col-md-2 my-auto">
+                        <div class="col-md-2 my-auto d-none d-md-block">
                           <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user.svg" class="card-img p-3" alt="USER-LOGO">
                         </div>
                         <div class="col-md-10">
