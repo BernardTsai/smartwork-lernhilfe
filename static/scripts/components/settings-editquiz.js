@@ -161,7 +161,81 @@ Vue.component( 'settings-editquiz',
           button.classList.add("btn-secondary");
         }
         this.model.quiz.question = -1
+      },
+
+
+      // following function control multi step form
+      showTab: function(n) {
+        // This function will display the specified tab of the form ...
+        var x = document.getElementsByClassName("tab");
+        x[n].style.display = "block";
+        // ... and fix the Previous/Next buttons:
+        if (n == 0) {
+          document.getElementById("prevBtn").style.display = "none";
+        } else {
+          document.getElementById("prevBtn").style.display = "inline";
+        }
+        if (n == (x.length - 1)) {
+          document.getElementById("nextBtn").innerHTML = "Submit";
+        } else {
+          document.getElementById("nextBtn").innerHTML = "Next";
+        }
+        // ... and run a function that displays the correct step indicator:
+        this.fixStepIndicator(n)
+      },
+
+      nextPrev: function(n) {
+        // This function will figure out which tab to display
+        var x = document.getElementsByClassName("tab");
+        // Exit the function if any field in the current tab is invalid:
+        if (n == 1 && !this.validateForm()) return false;
+        // Hide the current tab:
+        x[this.currentTab].style.display = "none";
+        // Increase or decrease the current tab by 1:
+        this.currentTab = this.currentTab + n;
+        // if you have reached the end of the form... :
+        if (this.currentTab >= x.length) {
+          //...the form gets submitted:
+          document.getElementById("regForm").submit();
+          return false;
+        }
+        // Otherwise, display the correct tab:
+        this.showTab(this.currentTab);
+      },
+
+      validateForm: function() {
+        // This function deals with validation of the form fields
+        var x, y, i, valid = true;
+        x = document.getElementsByClassName("tab");
+        y = x[this.currentTab].getElementsByTagName("input");
+        // A loop that checks every input field in the current tab:
+        for (i = 0; i < y.length; i++) {
+          // If a field is empty...
+          if (y[i].value == "") {
+            // add an "invalid" class to the field:
+            y[i].className += " invalid";
+            // and set the current valid status to false:
+            valid = false;
+          }
+        }
+        // If the valid status is true, mark the step as finished and valid:
+        if (valid) {
+          document.getElementsByClassName("step")[this.currentTab].className += " finish";
+        }
+        return valid; // return the valid status
+      },
+
+      fixStepIndicator: function(n) {
+        // This function removes the "active" class of all steps...
+        var i, x = document.getElementsByClassName("step");
+        for (i = 0; i < x.length; i++) {
+          x[i].className = x[i].className.replace(" active", "");
+        }
+        //... and adds the "active" class to the current step:
+        x[n].className += " active";
       }
+
+
     },
     data() {
       return {
@@ -170,7 +244,8 @@ Vue.component( 'settings-editquiz',
           professionIndex: -1,
           qualificationIndex: -1,
           qualification: []
-        }
+        },
+        currentTab: 0
       }
     },
     beforeMount(){
@@ -276,6 +351,7 @@ Vue.component( 'settings-editquiz',
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="quizEditModalLongTitle">Optionen f&uumlr {{this.selected.profession.qualifications[this.selected.qualificationIndex].qualification}}</h5>
+                <!-- TODO: REPLACE FULL RELOAD ON CANCEL WITH ADDITIONAL VAR -->
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="selectQualification(selected.qualificationIndex)">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -286,7 +362,7 @@ Vue.component( 'settings-editquiz',
                 <div id="editQuestions" class="row">
                   <div class="col-md-12">
 
-                    <!-- dropdown qualification selection -->
+                    <!-- dropdown question selection -->
                     <div class="dropdown">
                       <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Frage ausw&aumlhlen
@@ -310,6 +386,9 @@ Vue.component( 'settings-editquiz',
                   <div class="col-md-10">
                     <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#questionEditModal" @click="addQuestion()">Frage hinzuf&uumlgen</button>
                     <small class="form-text text-muted">Hier kann eine neue Frage zum Quiz hinzugef&uumlgt werden.</small>
+
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" data-toggle="modal" data-target="#questionCreation" @click="addQuestion()">TEST!!!</button>
+                    <small class="form-text text-muted">Test eines neuen Formulars zur Fragenbearbeitung. Speicherfunktion hier deaktiviert! </small>
                   </div>
                 </div>
 
@@ -320,6 +399,7 @@ Vue.component( 'settings-editquiz',
                   Lade Backup<input type="file" id="inputBackup" accept=".yaml" hidden>
                 </label>
 
+                <!-- TODO: REPLACE FULL RELOAD ON CANCEL WITH ADDITIONAL VAR -->
                 <button type="button" class="btn btn-secondary col-auto" data-dismiss="modal" @click="selectQualification(selected.qualificationIndex)">Abbrechen</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal" @click="saveMaterials()">Speichern</button>
               </div>
@@ -333,7 +413,8 @@ Vue.component( 'settings-editquiz',
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="questionEditModalLongTitle">Optionen f&uumlr {{this.model.questionnaire[this.model.quiz.question].title}}</h5>
-                <button type="button" class="close" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal" aria-label="Close">
+                <!-- TODO: REPLACE FULL RELOAD ON CANCEL WITH ADDITIONAL VAR -->
+                <button type="button" class="close" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal" @click="selectQualification(selected.qualificationIndex)" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
@@ -384,12 +465,90 @@ Vue.component( 'settings-editquiz',
 
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal">Abbrechen</button>
+                <!-- TODO: REPLACE FULL RELOAD ON CANCEL WITH ADDITIONAL VAR -->
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal" @click="selectQualification(selected.qualificationIndex)">Abbrechen</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal" @click="applyChanges()">Best&aumltigen</button>
               </div>
             </div>
           </div>
         </div>
+
+
+
+
+
+        <!-- Modal for question creation (test) -->
+        <div v-if="this.model.quiz.question != -1" class="modal fade" id="questionCreation" tabindex="-1" role="dialog" aria-labelledby="questionCreationModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="questionCreationLongTitle">Optionen f&uumlr {{this.selected.profession.qualifications[this.selected.qualificationIndex].qualification}}</h5>
+                <!-- TODO: REPLACE FULL RELOAD ON CANCEL WITH ADDITIONAL VAR -->
+                <button type="button" class="close" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal" @click="selectQualification(selected.qualificationIndex)" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+
+                <button type="button" class="btn btn-danger" @click="showTab(currentTab)">START</button>
+
+                <form id="questionForm" action="">
+
+                  <h1>Register:</h1>
+
+                  <!-- One "tab" for each step in the form: -->
+                  <div class="tab">Name:
+                    <p><input placeholder="First name..." oninput="this.className = ''"></p>
+                    <p><input placeholder="Last name..." oninput="this.className = ''"></p>
+                  </div>
+
+                  <div class="tab">Contact Info:
+                    <p><input placeholder="E-mail..." oninput="this.className = ''"></p>
+                    <p><input placeholder="Phone..." oninput="this.className = ''"></p>
+                  </div>
+
+                  <div class="tab">Birthday:
+                    <p><input placeholder="dd" oninput="this.className = ''"></p>
+                    <p><input placeholder="mm" oninput="this.className = ''"></p>
+                    <p><input placeholder="yyyy" oninput="this.className = ''"></p>
+                  </div>
+
+                  <div class="tab">Login Info:
+                    <p><input placeholder="Username..." oninput="this.className = ''"></p>
+                    <p><input placeholder="Password..." oninput="this.className = ''"></p>
+                  </div>
+
+                  <div style="overflow:auto;">
+                    <div style="float:right;">
+                      <button type="button" id="prevBtn" @click="nextPrev(-1)">Previous</button>
+                      <button type="button" id="nextBtn" @click="nextPrev(1)">Next</button>
+                    </div>
+                  </div>
+
+                  <!-- Circles which indicates the steps of the form: -->
+                  <div style="text-align:center;margin-top:40px;">
+                    <span class="step"></span>
+                    <span class="step"></span>
+                    <span class="step"></span>
+                    <span class="step"></span>
+                  </div>
+
+                </form>
+
+
+              </div>
+              <div class="modal-footer">
+                <!-- TODO: REPLACE FULL RELOAD ON CANCEL WITH ADDITIONAL VAR -->
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal" @click="selectQualification(selected.qualificationIndex)">Abbrechen</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal" @click="alert('applyChanges ()')">Best&aumltigen</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+
 
         <!-- modal for delete confirmation -->
         <div v-if="this.model.quiz.question != -1" class="modal fade" id="questionDeleteModal" tabindex="-1" role="dialog" aria-labelledby="questionDeleteModalLabel" aria-hidden="true">
