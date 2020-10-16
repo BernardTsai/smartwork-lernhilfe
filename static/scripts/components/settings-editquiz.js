@@ -176,8 +176,10 @@ Vue.component( 'settings-editquiz',
           document.getElementById("prevBtn").style.display = "inline";
         }
         if (n == (x.length - 1)) {
+//          document.getElementById("nextBtn").style.display = "none"
           document.getElementById("nextBtn").innerHTML = "Submit";
         } else {
+//          document.getElementById("nextBtn").style.display = "inline"
           document.getElementById("nextBtn").innerHTML = "Next";
         }
         // ... and run a function that displays the correct step indicator:
@@ -490,43 +492,81 @@ Vue.component( 'settings-editquiz',
               </div>
               <div class="modal-body">
 
-                <button type="button" class="btn btn-danger" @click="showTab(currentTab)">START</button>
+                <button type="button" class="btn btn-danger" @click="currentTab = 0; showTab(currentTab)">START</button>
 
                 <form id="questionForm" action="">
 
-                  <h1>Register:</h1>
-
                   <!-- One "tab" for each step in the form: -->
-                  <div class="tab">Name:
-                    <p><input placeholder="First name..." oninput="this.className = ''"></p>
-                    <p><input placeholder="Last name..." oninput="this.className = ''"></p>
+                  <div class="tab">
+                    <p><label for="inputQuestionTitle">Fragentitel:</label></p>
+                    <p>
+                      <input id="inputQuestionTitle" type="text" class="form-control" placeholder="Geben Sie einen kurzen Fragentitel ein" oninput="this.className = 'form-control'" :value="question().title">
+                      <small id="QuestionTitleHelp" class="form-text text-muted">Geben Sie einen Titel f&uumlr die Quizfrage ein.</small>
+                    </p>
                   </div>
 
-                  <div class="tab">Contact Info:
-                    <p><input placeholder="E-mail..." oninput="this.className = ''"></p>
-                    <p><input placeholder="Phone..." oninput="this.className = ''"></p>
+                  <div class="tab">
+                    <p><label for="inputQuestionDescription">Fragenbeschreibung:</label></p>
+                    <p>
+                      <input id="inputQuestionDescription" type="text" class="form-control" placeholder="Geben Sie eine einleitende Beschreibung ein" oninput="this.className = 'form-control'" :value="question().description">
+                      <small id="QuestionDescriptionHelp" class="form-text text-muted">Geben Sie eine Beschreibung f&uumlr die Quizfrage ein.</small>
+                    </p>
                   </div>
 
-                  <div class="tab">Birthday:
-                    <p><input placeholder="dd" oninput="this.className = ''"></p>
-                    <p><input placeholder="mm" oninput="this.className = ''"></p>
-                    <p><input placeholder="yyyy" oninput="this.className = ''"></p>
+                  <div class="tab">
+                    <p><label for="inputQuestion">Quizfrage:</label></p>
+                    <p>
+                      <input id="inputQuestion" type="text" class="form-control" placeholder="Geben Sie die Quizfrage ein" oninput="this.className = 'form-control'" :value="question().question">
+                      <small id="QuestionHelp" class="form-text text-muted">Geben Sie die Quizfrage ein.</small>
+                    </p>
                   </div>
 
-                  <div class="tab">Login Info:
-                    <p><input placeholder="Username..." oninput="this.className = ''"></p>
-                    <p><input placeholder="Password..." oninput="this.className = ''"></p>
+                  <div class="tab">
+                    <p><label for="questionOptions">Antworten:</label></p>
+                    <p>
+                      <div id="questionOptions">
+                        <div class="row" v-for="(option,index) in question().options">
+                          <div class="col-md-2 radio">
+                            <input class="align-bottom" type="radio" :id="'option-' + index" name="customCheck" :checked="checkedCheck(index)">
+                          </div>
+                          <div class="col-md-10 ml-auto">
+                            <input :id="'inputQuestionOptionText-' + index" type="text" class="form-control" placeholder="Geben Sie eine Antwortmöglichkeit ein" oninput="this.className = 'form-control'" :value="option">
+                            <small :id="'inputQuestionOptionTextHelp' + index" class="form-text text-muted">Geben Sie hier die {{index+1}}. Antwortm&oumlglichkeit ein.</small>
+                          </div>
+                        </div>
+                      </div>
+                      <small id="questionOptionsHelp" class="form-text text-muted">Geben Sie die Antwortm&oumlglichkeiten ein und markieren Sie die richtige Antwort.</small>
+                    </p>
                   </div>
 
+                  <div class="tab">
+                    <p><label for="inputQuestionExplanation">Erklärung:</label></p>
+                    <p>
+                      <input id="inputQuestionExplanation" type="text" class="form-control" placeholder="Geben Sie eine Erklährung für die richtige Antwort ein" oninput="this.className = 'form-control'" :value="question().explanation">
+                      <small id="QuestionExplanationHelp" class="form-text text-muted">Geben Sie eine Erkl&aumlrung zur richtigen Antwort der Quizfrage ein.</small>
+                    </p>
+                  </div>
+
+                  <div class="tab">
+                    <p><label for="inputQuestionPoints">Punkte:</label></p>
+                    <p>
+                      <input id="inputQuestionPoints" type="number" class="form-control" oninput="this.className = 'form-control'" :value="question().points">
+                      <small id="QuestionPointsHelp" class="form-text text-muted">Geben Sie ein, wie viele Punkte mit dieser Frage erreicht werden können.</small>
+                    </p>
+                  </div>
+
+                  <!-- TODO: Put these buttons in modal footer -->
                   <div style="overflow:auto;">
                     <div style="float:right;">
-                      <button type="button" id="prevBtn" @click="nextPrev(-1)">Previous</button>
-                      <button type="button" id="nextBtn" @click="nextPrev(1)">Next</button>
+                      <button type="button" class="btn btn-secondary btn-sm" id="prevBtn" @click="nextPrev(-1)">Zur&uumlck</button>
+                      <button type="button" class="btn btn-secondary btn-sm" id="nextBtn" @click="nextPrev(1)">Weiter</button>
                     </div>
                   </div>
 
                   <!-- Circles which indicates the steps of the form: -->
                   <div style="text-align:center;margin-top:40px;">
+                    <span class="step"></span>
+                    <span class="step"></span>
                     <span class="step"></span>
                     <span class="step"></span>
                     <span class="step"></span>
