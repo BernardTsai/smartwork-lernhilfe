@@ -33,10 +33,13 @@ Vue.component( 'questionnaire',
 
         question = this.model.questionnaire[this.model.quiz.question]
 
-        // loop over all answers and check each option
-        for (var index in question.answers) {
-          $("#option-" + index)[0].checked = false
-        }
+        // wait till entire view is rerendered to prevent js error
+        this.$nextTick(function () {
+          // loop over all answers and check each option
+          for (var index in question.answers) {
+            $("#option-" + index)[0].checked = false
+          }
+        })
 
         this.model.quiz.mode = "question"
       },

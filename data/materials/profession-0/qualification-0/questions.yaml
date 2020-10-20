@@ -70,3 +70,28 @@
     - 'no'
   explanation: 'Wie schon sogar der Titel verrät, ist dies einfach nur eine Testfrage'
   points: '5'
+- title: asdf
+  description: asdf
+  question: asdf
+  options:
+    - asdf
+    - asdf
+    - asdfasdf
+    - asdf
+    - asfd
+    - asfd
+    - asdf
+    - asdf
+    - asdf
+  answers:
+    - 'no'
+    - 'no'
+    - 'yes'
+    - 'no'
+    - 'no'
+    - 'no'
+    - 'no'
+    - 'no'
+    - 'no'
+  explanation: asdf
+  points: '5'

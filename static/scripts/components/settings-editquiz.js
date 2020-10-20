@@ -177,10 +177,10 @@ Vue.component( 'settings-editquiz',
         }
         if (n == (x.length - 1)) {
 //          document.getElementById("nextBtn").style.display = "none"
-          document.getElementById("nextBtn").innerHTML = "Submit";
+          document.getElementById("nextBtn").innerHTML = "Abschließen";
         } else {
 //          document.getElementById("nextBtn").style.display = "inline"
-          document.getElementById("nextBtn").innerHTML = "Next";
+          document.getElementById("nextBtn").innerHTML = "Weiter";
         }
         // ... and run a function that displays the correct step indicator:
         this.fixStepIndicator(n)
@@ -198,7 +198,11 @@ Vue.component( 'settings-editquiz',
         // if you have reached the end of the form... :
         if (this.currentTab >= x.length) {
           //...the form gets submitted:
-          document.getElementById("regForm").submit();
+//          document.getElementById("regForm").submit();
+          alert("no save function!");
+
+          $("#questionCreation").modal("hide");
+          $("#quizEditModal").modal();
           return false;
         }
         // Otherwise, display the correct tab:
@@ -484,7 +488,7 @@ Vue.component( 'settings-editquiz',
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="questionCreationLongTitle">Optionen f&uumlr {{this.selected.profession.qualifications[this.selected.qualificationIndex].qualification}}</h5>
+                <h5 class="modal-title" id="questionCreationLongTitle">Dialog f&uumlr {{this.selected.profession.qualifications[this.selected.qualificationIndex].qualification}}</h5>
                 <!-- TODO: REPLACE FULL RELOAD ON CANCEL WITH ADDITIONAL VAR -->
                 <button type="button" class="close" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal" @click="selectQualification(selected.qualificationIndex)" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
@@ -526,12 +530,18 @@ Vue.component( 'settings-editquiz',
                     <p>
                       <div id="questionOptions">
                         <div class="row" v-for="(option,index) in question().options">
-                          <div class="col-md-2 radio">
-                            <input class="align-bottom" type="radio" :id="'option-' + index" name="customCheck" :checked="checkedCheck(index)">
+                          <div class="col-md-1 pl-0 radio" style="position:relative; top:10px">
+                            <input type="radio" :id="'option-' + index" name="customCheck" :checked="checkedCheck(index)">
                           </div>
-                          <div class="col-md-10 ml-auto">
+                          <div class="col-md pl-0">
                             <input :id="'inputQuestionOptionText-' + index" type="text" class="form-control" placeholder="Geben Sie eine Antwortmöglichkeit ein" oninput="this.className = 'form-control'" :value="option">
                             <small :id="'inputQuestionOptionTextHelp' + index" class="form-text text-muted">Geben Sie hier die {{index+1}}. Antwortm&oumlglichkeit ein.</small>
+                          </div>
+                          <div class="col-md-0 pr-1" style="position:relative; top:7px">
+                            <span class="border rounded fas fa-trash-alt" style="font-size: 150%; background: inherit; background: #dddddd;" title="Frage entfernen"></span>
+                          </div>
+                          <div v-if="index == (question().options.length - 1)" class="col-md-0 px-0" style="position:relative; top:7px">
+                            <span class="border rounded fas fa-plus" style="font-size: 150%; background: inherit; background: #dddddd;" @click="question().options.push(''); question().answers.push('')" title="Frage hinzufügen"></span>
                           </div>
                         </div>
                       </div>
@@ -555,13 +565,13 @@ Vue.component( 'settings-editquiz',
                     </p>
                   </div>
 
-                  <!-- TODO: Put these buttons in modal footer -->
+                  <!-- TODO: Put these buttons in modal footer
                   <div style="overflow:auto;">
                     <div style="float:right;">
                       <button type="button" class="btn btn-secondary btn-sm" id="prevBtn" @click="nextPrev(-1)">Zur&uumlck</button>
                       <button type="button" class="btn btn-secondary btn-sm" id="nextBtn" @click="nextPrev(1)">Weiter</button>
                     </div>
-                  </div>
+                  </div> -->
 
                   <!-- Circles which indicates the steps of the form: -->
                   <div style="text-align:center;margin-top:40px;">
@@ -579,8 +589,12 @@ Vue.component( 'settings-editquiz',
               </div>
               <div class="modal-footer">
                 <!-- TODO: REPLACE FULL RELOAD ON CANCEL WITH ADDITIONAL VAR -->
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal" @click="selectQualification(selected.qualificationIndex)">Abbrechen</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal" @click="alert('applyChanges ()')">Best&aumltigen</button>
+                <button type="button" class="btn btn-secondary col-auto mr-auto" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal" @click="selectQualification(selected.qualificationIndex)">Abbrechen</button>
+
+                <button type="button" class="btn btn-dark btn-sm" id="prevBtn" @click="nextPrev(-1)">Zur&uumlck</button>
+                <button type="button" class="btn btn-dark btn-sm" id="nextBtn" @click="nextPrev(1)">Weiter</button>
+
+                <!-- <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal" @click="alert('applyChanges ()')">Best&aumltigen</button> -->
               </div>
             </div>
           </div>
