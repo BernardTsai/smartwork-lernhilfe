@@ -52,16 +52,18 @@ Vue.component( 'settings-editquiz',
         return this.model.questionnaire[this.model.quiz.question].answers[index] == "yes"
       },
       // apply changes in data model on client
-      applyChanges: function() {
-        this.model.questionnaire[this.model.quiz.question].title = $("#inputQuestionTitle").val()
-        this.model.questionnaire[this.model.quiz.question].description = $("#inputQuestionDescription").val()
-        this.model.questionnaire[this.model.quiz.question].question = $("#inputQuestion").val()
+      applyChanges: function(index) {
+        var modalIndex = index ? index : ''
+
+        if ($("#inputQuestionTitle" + modalIndex).val()) this.model.questionnaire[this.model.quiz.question].title = $("#inputQuestionTitle" + modalIndex).val()
+        if ($("#inputQuestionDescription" + modalIndex).val()) this.model.questionnaire[this.model.quiz.question].description = $("#inputQuestionDescription" + modalIndex).val()
+        if ($("#inputQuestion" + modalIndex).val()) this.model.questionnaire[this.model.quiz.question].question = $("#inputQuestion" + modalIndex).val()
         for (let i in this.model.questionnaire[this.model.quiz.question].options) {
-          this.model.questionnaire[this.model.quiz.question].answers[i] = $("#option-" + i)[0].checked ? "yes" : "no"
-          this.model.questionnaire[this.model.quiz.question].options[i] = $("#inputQuestionOptionText-" + i).val()
+          if ($("#option" + modalIndex + "-" + i)[0]) this.model.questionnaire[this.model.quiz.question].answers[i] = $("#option" + modalIndex + "-" + i)[0].checked ? "yes" : "no"
+          if ($("#inputQuestionOptionText" + modalIndex + "-" + i).val()) this.model.questionnaire[this.model.quiz.question].options[i] = $("#inputQuestionOptionText" + modalIndex + "-" + i).val()
         }
-        this.model.questionnaire[this.model.quiz.question].explanation = $("#inputQuestionExplanation").val()
-        this.model.questionnaire[this.model.quiz.question].points = $("#inputQuestionPoints").val()
+        if ($("#inputQuestionExplanation" + modalIndex).val()) this.model.questionnaire[this.model.quiz.question].explanation = $("#inputQuestionExplanation" + modalIndex).val()
+        if ($("#inputQuestionPoints" + modalIndex).val()) this.model.questionnaire[this.model.quiz.question].points = $("#inputQuestionPoints" + modalIndex).val()
       },
       // save changes in backend
       saveMaterials: function() {
@@ -195,11 +197,13 @@ Vue.component( 'settings-editquiz',
         x[this.currentTab].style.display = "none";
         // Increase or decrease the current tab by 1:
         this.currentTab = this.currentTab + n;
+        // apply changes
+        this.applyChanges(1);
         // if you have reached the end of the form... :
         if (this.currentTab >= x.length) {
           //...the form gets submitted:
 //          document.getElementById("regForm").submit();
-          alert("no save function!");
+          //this.applyChanges(1);
 
           $("#questionCreation").modal("hide");
           $("#quizEditModal").modal();
@@ -239,9 +243,13 @@ Vue.component( 'settings-editquiz',
         }
         //... and adds the "active" class to the current step:
         x[n].className += " active";
+      },
+
+      // remove question option
+      removeQuestionOption: function(index) {
+        this.question().options.splice(index, 1);
+        this.question().answers.splice(index, 1);
       }
-
-
     },
     data() {
       return {
@@ -502,66 +510,66 @@ Vue.component( 'settings-editquiz',
 
                   <!-- One "tab" for each step in the form: -->
                   <div class="tab">
-                    <p><label for="inputQuestionTitle">Fragentitel:</label></p>
+                    <p><label for="inputQuestionTitle1">Fragentitel:</label></p>
                     <p>
-                      <input id="inputQuestionTitle" type="text" class="form-control" placeholder="Geben Sie einen kurzen Fragentitel ein" oninput="this.className = 'form-control'" :value="question().title">
-                      <small id="QuestionTitleHelp" class="form-text text-muted">Geben Sie einen Titel f&uumlr die Quizfrage ein.</small>
+                      <input id="inputQuestionTitle1" type="text" class="form-control" placeholder="Geben Sie einen kurzen Fragentitel ein" oninput="this.className = 'form-control'" :value="question().title">
+                      <small id="QuestionTitleHelp1" class="form-text text-muted">Geben Sie einen Titel f&uumlr die Quizfrage ein.</small>
                     </p>
                   </div>
 
                   <div class="tab">
-                    <p><label for="inputQuestionDescription">Fragenbeschreibung:</label></p>
+                    <p><label for="inputQuestionDescription1">Fragenbeschreibung:</label></p>
                     <p>
-                      <input id="inputQuestionDescription" type="text" class="form-control" placeholder="Geben Sie eine einleitende Beschreibung ein" oninput="this.className = 'form-control'" :value="question().description">
-                      <small id="QuestionDescriptionHelp" class="form-text text-muted">Geben Sie eine Beschreibung f&uumlr die Quizfrage ein.</small>
+                      <input id="inputQuestionDescription1" type="text" class="form-control" placeholder="Geben Sie eine einleitende Beschreibung ein" oninput="this.className = 'form-control'" :value="question().description">
+                      <small id="QuestionDescriptionHelp1" class="form-text text-muted">Geben Sie eine Beschreibung f&uumlr die Quizfrage ein.</small>
                     </p>
                   </div>
 
                   <div class="tab">
-                    <p><label for="inputQuestion">Quizfrage:</label></p>
+                    <p><label for="inputQuestion1">Quizfrage:</label></p>
                     <p>
-                      <input id="inputQuestion" type="text" class="form-control" placeholder="Geben Sie die Quizfrage ein" oninput="this.className = 'form-control'" :value="question().question">
-                      <small id="QuestionHelp" class="form-text text-muted">Geben Sie die Quizfrage ein.</small>
+                      <input id="inputQuestion1" type="text" class="form-control" placeholder="Geben Sie die Quizfrage ein" oninput="this.className = 'form-control'" :value="question().question">
+                      <small id="QuestionHelp1" class="form-text text-muted">Geben Sie die Quizfrage ein.</small>
                     </p>
                   </div>
 
                   <div class="tab">
-                    <p><label for="questionOptions">Antworten:</label></p>
+                    <p><label for="questionOptions1">Antworten:</label></p>
                     <p>
-                      <div id="questionOptions">
+                      <div id="questionOptions1">
                         <div class="row" v-for="(option,index) in question().options">
                           <div class="col-md-1 pl-0 radio" style="position:relative; top:10px">
-                            <input type="radio" :id="'option-' + index" name="customCheck" :checked="checkedCheck(index)">
+                            <input type="radio" :id="'option1-' + index" name="customCheck" :checked="checkedCheck(index)">
                           </div>
                           <div class="col-md pl-0">
-                            <input :id="'inputQuestionOptionText-' + index" type="text" class="form-control" placeholder="Geben Sie eine Antwortmöglichkeit ein" oninput="this.className = 'form-control'" :value="option">
-                            <small :id="'inputQuestionOptionTextHelp' + index" class="form-text text-muted">Geben Sie hier die {{index+1}}. Antwortm&oumlglichkeit ein.</small>
+                            <input :id="'inputQuestionOptionText1-' + index" type="text" class="form-control" placeholder="Geben Sie eine Antwortmöglichkeit ein" oninput="this.className = 'form-control'" :value="option">
+                            <small :id="'inputQuestionOptionTextHelp1' + index" class="form-text text-muted">Geben Sie hier die {{index+1}}. Antwortm&oumlglichkeit ein.</small>
                           </div>
                           <div class="col-md-0 pr-1" style="position:relative; top:7px">
-                            <span class="border rounded fas fa-trash-alt" style="font-size: 150%; background: inherit; background: #dddddd;" title="Frage entfernen"></span>
+                            <span class="border rounded fas fa-trash-alt" style="font-size: 150%; background: inherit; background: #dddddd;" @click="applyChanges(1); removeQuestionOption(index)" title="Frage entfernen"></span>
                           </div>
                           <div v-if="index == (question().options.length - 1)" class="col-md-0 px-0" style="position:relative; top:7px">
-                            <span class="border rounded fas fa-plus" style="font-size: 150%; background: inherit; background: #dddddd;" @click="question().options.push(''); question().answers.push('')" title="Frage hinzufügen"></span>
+                            <span class="border rounded fas fa-plus" style="font-size: 150%; background: inherit; background: #dddddd;" @click="applyChanges(1); question().options.push(''); question().answers.push('')" title="Frage hinzufügen"></span>
                           </div>
                         </div>
                       </div>
-                      <small id="questionOptionsHelp" class="form-text text-muted">Geben Sie die Antwortm&oumlglichkeiten ein und markieren Sie die richtige Antwort.</small>
+                      <small id="questionOptionsHelp1" class="form-text text-muted">Geben Sie die Antwortm&oumlglichkeiten ein und markieren Sie die richtige Antwort.</small>
                     </p>
                   </div>
 
                   <div class="tab">
-                    <p><label for="inputQuestionExplanation">Erklärung:</label></p>
+                    <p><label for="inputQuestionExplanation1">Erklärung:</label></p>
                     <p>
-                      <input id="inputQuestionExplanation" type="text" class="form-control" placeholder="Geben Sie eine Erklährung für die richtige Antwort ein" oninput="this.className = 'form-control'" :value="question().explanation">
-                      <small id="QuestionExplanationHelp" class="form-text text-muted">Geben Sie eine Erkl&aumlrung zur richtigen Antwort der Quizfrage ein.</small>
+                      <input id="inputQuestionExplanation1" type="text" class="form-control" placeholder="Geben Sie eine Erklährung für die richtige Antwort ein" oninput="this.className = 'form-control'" :value="question().explanation">
+                      <small id="QuestionExplanationHelp1" class="form-text text-muted">Geben Sie eine Erkl&aumlrung zur richtigen Antwort der Quizfrage ein.</small>
                     </p>
                   </div>
 
                   <div class="tab">
-                    <p><label for="inputQuestionPoints">Punkte:</label></p>
+                    <p><label for="inputQuestionPoints1">Punkte:</label></p>
                     <p>
-                      <input id="inputQuestionPoints" type="number" class="form-control" oninput="this.className = 'form-control'" :value="question().points">
-                      <small id="QuestionPointsHelp" class="form-text text-muted">Geben Sie ein, wie viele Punkte mit dieser Frage erreicht werden können.</small>
+                      <input id="inputQuestionPoints1" type="number" class="form-control" oninput="this.className = 'form-control'" :value="question().points">
+                      <small id="QuestionPointsHelp1" class="form-text text-muted">Geben Sie ein, wie viele Punkte mit dieser Frage erreicht werden können.</small>
                     </p>
                   </div>
 
