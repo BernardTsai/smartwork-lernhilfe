@@ -166,6 +166,7 @@ Vue.component( 'settings-editquiz',
       },
 
 
+
       // following function control multi step form
       showTab: function(n) {
         // This function will display the specified tab of the form ...
@@ -207,6 +208,7 @@ Vue.component( 'settings-editquiz',
 
           $("#questionCreation").modal("hide");
           $("#quizEditModal").modal();
+          // TODO: maybe save here again because if created question is edited before saving and then editing is canceled - question is removed because of reload..
           return false;
         }
         // Otherwise, display the correct tab:
@@ -266,6 +268,13 @@ Vue.component( 'settings-editquiz',
       this.model.quiz.question = -1
     },
     mounted(){
+      // when modal is rendered - show first tab of the form
+      self = this;
+      $(document).on('shown.bs.modal','#questionCreation', function () {
+        self.currentTab = 0;
+        self.showTab(self.currentTab);
+      });
+
       // display selection in dropdown-menu
 //      $(".dropdown-menu").on('click', 'button', function(){
 //        $(".btn:first-child").text($(this).text());
@@ -398,11 +407,11 @@ Vue.component( 'settings-editquiz',
                 <label for="addQuestions"><u>Frage hinzuf&uumlgen:</u></label>
                 <div id="addQuestions" class="row">
                   <div class="col-md-10">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#questionEditModal" @click="addQuestion()">Frage hinzuf&uumlgen</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#questionCreation" @click="addQuestion()">Frage hinzuf&uumlgen</button>
                     <small class="form-text text-muted">Hier kann eine neue Frage zum Quiz hinzugef&uumlgt werden.</small>
 
-                    <button type="button" class="btn btn-danger" data-dismiss="modal" data-toggle="modal" data-target="#questionCreation" @click="addQuestion()">TEST!!!</button>
-                    <small class="form-text text-muted">Test eines neuen Formulars zur Fragenbearbeitung. Speicherfunktion hier deaktiviert! </small>
+                    <!-- <button type="button" class="btn btn-danger" data-dismiss="modal" data-toggle="modal" data-target="#questionCreation" @click="addQuestion()">TEST!!!</button>
+                    <small class="form-text text-muted">Test eines neuen Formulars zur Fragenbearbeitung. Speicherfunktion hier deaktiviert! </small> -->
                   </div>
                 </div>
 
@@ -503,8 +512,6 @@ Vue.component( 'settings-editquiz',
                 </button>
               </div>
               <div class="modal-body">
-
-                <button type="button" class="btn btn-danger" @click="currentTab = 0; showTab(currentTab)">START</button>
 
                 <form id="questionForm" action="">
 
