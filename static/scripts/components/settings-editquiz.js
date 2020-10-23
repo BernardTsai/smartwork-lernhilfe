@@ -204,11 +204,11 @@ Vue.component( 'settings-editquiz',
         if (this.currentTab >= x.length) {
           //...the form gets submitted:
 //          document.getElementById("regForm").submit();
-          //this.applyChanges(1);
 
           $("#questionCreation").modal("hide");
           $("#quizEditModal").modal();
-          // TODO: maybe save here again because if created question is edited before saving and then editing is canceled - question is removed because of reload..
+          // save here already because if created question is edited before saving and then editing is canceled - question is removed because of reload..
+          this.saveMaterials();
           return false;
         }
         // Otherwise, display the correct tab:
@@ -247,6 +247,15 @@ Vue.component( 'settings-editquiz',
         x[n].className += " active";
       },
 
+      selectQuestionType: function(index) {
+        this.selected.questionType = index;
+        var button = document.getElementById("dropdownMenu4");
+        if (index == 0) button.firstChild.data = 'Textfrage';
+        if (index == 1) button.firstChild.data = 'Bildfrage';
+        button.classList.remove("btn-secondary");
+        button.classList.add("btn-primary");
+      },
+
       // remove question option
       removeQuestionOption: function(index) {
         this.question().options.splice(index, 1);
@@ -259,7 +268,9 @@ Vue.component( 'settings-editquiz',
           profession: [],
           professionIndex: -1,
           qualificationIndex: -1,
-          qualification: []
+          qualification: [],
+          questionType: -1,
+          answerType: -1
         },
         currentTab: 0
       }
@@ -535,8 +546,29 @@ Vue.component( 'settings-editquiz',
                   <div class="tab">
                     <p><label for="inputQuestion1">Quizfrage:</label></p>
                     <p>
-                      <input id="inputQuestion1" type="text" class="form-control" placeholder="Geben Sie die Quizfrage ein" oninput="this.className = 'form-control'" :value="question().question">
-                      <small id="QuestionHelp1" class="form-text text-muted">Geben Sie die Quizfrage ein.</small>
+
+                      <!-- dropdown question-type selection -->
+                      <div class="dropdown text-center">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Art der Frage ausw&aumlhlen
+                        </button>
+                        <small class="form-text text-muted">Ausw&aumlhlen der der Fragenart um fortzufahren</small>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenu4">
+                          <button class="dropdown-item" type="button" @click="selectQuestionType(0)">Textfrage</button>
+                          <button class="dropdown-item" type="button" @click="selectQuestionType(1)">Bildfrage</button>
+                        </div>
+                      </div>
+
+                      <br><br>
+
+                      <input v-if="selected.questionType == 0" id="inputQuestion1" type="text" class="form-control" placeholder="Geben Sie die Quizfrage ein" oninput="this.className = 'form-control'" :value="question().question">
+                      <small v-if="selected.questionType == 0" id="QuestionHelp1" class="form-text text-muted">Geben Sie die Quizfrage ein.</small>
+                      <input v-if="selected.questionType == 1" id="inputQuestion1" type="text" class="form-control" placeholder="Geben Sie die Frage zum Bild ein" oninput="this.className = 'form-control'" :value="question().question">
+                      <br>
+                      <label v-if="selected.questionType == 1" class="btn btn-dark" @click="alert('loadPicture()')">
+                        Lade Bild<input type="file" id="inputPicture" accept="image/*" hidden>
+                      </label>
+                      <small v-if="selected.questionType == 1" id="QuestionHelp1" class="form-text text-muted">Geben Sie die Bildfrage ein und laden das Bild zu der Frage hoch.</small>
                     </p>
                   </div>
 
