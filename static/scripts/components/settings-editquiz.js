@@ -256,6 +256,34 @@ Vue.component( 'settings-editquiz',
         button.classList.add("btn-primary");
       },
 
+      loadPicture: function(input) {
+//        if (input.files && input.files[0]) {
+//          var reader = new FileReader();
+
+//          reader.onload = function (e) {
+//            $('#imgPreview').attr('src', e.target.result);
+//          };
+//          reader.readAsDataURL(input.files[0]);
+//        }
+
+        var self = this
+        document.getElementById('inputPicture').addEventListener('change', function() {
+          var fr = new FileReader();
+
+          fr.onload = function (e) {
+            $('#imgPreview').attr('src', e.target.result);
+          };
+          fr.readAsDataURL(this.files[0]);
+
+          //TODO: save picture on server
+
+//          fr.onload=function(){
+//            self.model.questionnaire = jsyaml.safeLoad(fr.result)
+//          }
+//          fr.readAsText(this.files[0]);
+        })
+      },
+
       // remove question option
       removeQuestionOption: function(index) {
         this.question().options.splice(index, 1);
@@ -559,16 +587,25 @@ Vue.component( 'settings-editquiz',
                         </div>
                       </div>
 
-                      <br><br>
+                      <div v-if="selected.questionType != -1">
+                        <br>
+                        <hr>
 
-                      <input v-if="selected.questionType == 0" id="inputQuestion1" type="text" class="form-control" placeholder="Geben Sie die Quizfrage ein" oninput="this.className = 'form-control'" :value="question().question">
-                      <small v-if="selected.questionType == 0" id="QuestionHelp1" class="form-text text-muted">Geben Sie die Quizfrage ein.</small>
-                      <input v-if="selected.questionType == 1" id="inputQuestion1" type="text" class="form-control" placeholder="Geben Sie die Frage zum Bild ein" oninput="this.className = 'form-control'" :value="question().question">
-                      <br>
-                      <label v-if="selected.questionType == 1" class="btn btn-dark" @click="alert('loadPicture()')">
-                        Lade Bild<input type="file" id="inputPicture" accept="image/*" hidden>
-                      </label>
-                      <small v-if="selected.questionType == 1" id="QuestionHelp1" class="form-text text-muted">Geben Sie die Bildfrage ein und laden das Bild zu der Frage hoch.</small>
+                        <input v-if="selected.questionType == 0" id="inputQuestion1" type="text" class="form-control" placeholder="Geben Sie die Quizfrage ein" oninput="this.className = 'form-control'" :value="question().question">
+                        <small v-if="selected.questionType == 0" id="QuestionHelp1" class="form-text text-muted">Geben Sie die Quizfrage ein.</small>
+                        <input v-if="selected.questionType == 1" id="inputQuestion1" type="text" class="form-control" placeholder="Geben Sie die Frage zum Bild ein" oninput="this.className = 'form-control'" :value="question().question">
+                        <br>
+                        <div v-if="selected.questionType == 1" class="text-center">
+                          <label class="btn btn-dark" @click="loadPicture()">
+                            Bild hochladen<input type="file" id="inputPicture" accept="image/*" hidden>
+                          </label>
+                          <p><img id="imgPreview" style="max-width: 180px;" src="http://placehold.it/180" alt="uploaded image" /></p>
+                          <small id="imgPreviewHelp" class="form-text text-muted">Bildvorschau</small>
+                        </div>
+                        <br>
+                        <small v-if="selected.questionType == 1" id="QuestionHelp1" class="form-text text-muted">Geben Sie die Bildfrage ein und laden das Bild zu der Frage hoch.</small>
+                        <hr>
+                      </div>
                     </p>
                   </div>
 
