@@ -3,8 +3,10 @@ const express = require('express')
 const parser  = require('body-parser')
 const fs      = require('fs')
 const del     = require('del')
+const multer  = require('multer')
 const app     = express()
 const port    = 8080
+
 //------------------------------------------------------------------------------
 
 function getDateOb() {
@@ -1546,6 +1548,21 @@ function saveMaterials(req, res) {
 
 //------------------------------------------------------------------------------
 
+function saveUpload(req, res, next) {
+  console.log(req.body)
+  console.log(req.file)
+
+  const file = req.file
+  if (!file) {
+    const error = new Error('Please upload a file')
+    error.httpStatusCode = 400
+    return next(error)
+  }
+    res.send(file)
+}
+
+//------------------------------------------------------------------------------
+
 app.use( parser.json() )                         // support json encoded bodies
 app.use( parser.urlencoded({ extended: true }) ) // support encoded bodies
 app.use( express.static('./static') )            // static files from root
@@ -1567,6 +1584,7 @@ app.post('/deletegroup',                              deleteGroup)
 app.post('/editGroup',                                editGroup)
 app.post('/savematerials',                            saveMaterials)
 app.post('/loadlogs',                                 loadLogs)
+app.post('/upload', multer({ dest: './tmp/uploaded' }).single('image'), saveUpload)
 
 server = app.listen(port, () => console.log(`Server listening on port ${port}!`))
 server.timeout = 5000

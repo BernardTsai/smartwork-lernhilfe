@@ -95,3 +95,16 @@
     - 'no'
   explanation: asdf
   points: '5'
+- title: asdffffdsa
+  description: fdsa
+  question: asdf
+  options:
+    - fd
+    - s
+    - a
+  answers:
+    - 'no'
+    - 'no'
+    - 'no'
+  explanation: fdsa
+  points: '-1'

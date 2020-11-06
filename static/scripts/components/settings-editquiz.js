@@ -209,6 +209,25 @@ Vue.component( 'settings-editquiz',
           $("#quizEditModal").modal();
           // save here already because if created question is edited before saving and then editing is canceled - question is removed because of reload..
           this.saveMaterials();
+          if (document.getElementById("dropdownMenu4").firstChild.data == 'Bildfrage') {
+            //upload picture
+//            let user = { email: model.user, password: model.password };
+            let formData = new FormData();
+            let image = document.getElementById('inputPicture').files[0];
+
+            formData.append("image", image);
+
+            let req = new XMLHttpRequest();
+
+            req.open("POST", '/upload');
+            req.send(formData);
+
+//            formData.append("user", JSON.stringify(user))
+
+//            console.log(formData);
+
+//            fetch('/upload', {method: "POST", body: formData});
+          }
           return false;
         }
         // Otherwise, display the correct tab:
@@ -277,6 +296,8 @@ Vue.component( 'settings-editquiz',
 
           //TODO: save picture on server
 
+
+
 //          fr.onload=function(){
 //            self.model.questionnaire = jsyaml.safeLoad(fr.result)
 //          }
@@ -288,6 +309,71 @@ Vue.component( 'settings-editquiz',
       removeQuestionOption: function(index) {
         this.question().options.splice(index, 1);
         this.question().answers.splice(index, 1);
+      },
+
+
+
+      fileChange: function() {
+        //FileList Objekt aus dem Input Element mit der ID "fileA"
+        var fileList = document.getElementById("fileA").files;
+
+        //File Objekt (erstes Element der FileList)
+        var file = fileList[0];
+
+        //File Objekt nicht vorhanden = keine Datei ausgewählt oder vom Browser nicht unterstützt
+        if(!file) return;
+
+        document.getElementById("fileName").innerHTML = 'Dateiname: ' + file.name;
+        document.getElementById("fileSize").innerHTML = 'Dateigröße: ' + file.size + ' B';
+        document.getElementById("fileType").innerHTML = 'Dateitype: ' + file.type;
+        document.getElementById("progress").value = 0;
+        document.getElementById("prozent").innerHTML = "0%";
+      },
+      uploadFile: function() {
+        //Wieder unser File Objekt
+        var file = document.getElementById("fileA").files[0];
+        //FormData Objekt erzeugen
+        var formData = new FormData();
+        //XMLHttpRequest Objekt erzeugen
+        this.client = new XMLHttpRequest();
+
+        var prog = document.getElementById("progress");
+
+        if(!file) return;
+
+        prog.value = 0;
+        prog.max = 100;
+
+        //Fügt dem formData Objekt unser File Objekt hinzu
+        formData.append("image", file);
+
+        this.client.onerror = function(e) {
+          alert("onError");
+        };
+
+        this.client.onload = function(e) {
+          document.getElementById("prozent").innerHTML = "100%";
+          prog.value = prog.max;
+        };
+
+        this.client.upload.onprogress = function(e) {
+          var p = Math.round(100 / e.total * e.loaded);
+          document.getElementById("progress").value = p;
+          document.getElementById("prozent").innerHTML = p + "%";
+        };
+
+        this.client.onabort = function(e) {
+          alert("Upload abgebrochen");
+        };
+
+        this.client.open("POST", "/upload");
+        this.client.send(formData);
+      },
+      uploadAbort: function() {
+        if(this.client instanceof XMLHttpRequest) {
+          //Briecht die aktuelle Übertragung ab
+          this.client.abort();
+        }
       }
     },
     data() {
@@ -300,7 +386,8 @@ Vue.component( 'settings-editquiz',
           questionType: -1,
           answerType: -1
         },
-        currentTab: 0
+        currentTab: 0,
+        client: null
       }
     },
     beforeMount(){
@@ -335,6 +422,20 @@ Vue.component( 'settings-editquiz',
     },
     template: `
       <div id="settings-editquiz" class="container">
+
+        <form action="" method="post" enctype="multipart/form-data">
+          <input name="file" type="file" id="fileA" @change="fileChange()"/>
+          <input name="upload" value="Upload" type="button" @click="uploadFile();" />
+          <input name="abort" value="Abbrechen" type="button" @click="uploadAbort();" />
+        </form>
+        <div>
+          <div id="fileName"></div>
+          <div id="fileSize"></div>
+          <div id="fileType"></div>
+          <progress id="progress" style="margin-top:10px"></progress> <span id="prozent"></span>
+        </div>
+
+
         <!-- <h3 class="text-center">Quizverwaltung</h3> -->
 
         <!-- trigger modal quiz creation-->
