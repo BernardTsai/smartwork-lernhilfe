@@ -1549,16 +1549,51 @@ function saveMaterials(req, res) {
 //------------------------------------------------------------------------------
 
 function saveUpload(req, res, next) {
-  console.log(req.body)
-  console.log(req.file)
+  var user = yaml.safeLoad(req.body.user);
+  var quiz = yaml.safeLoad(req.body.quiz);
+//  console.log(user);
+//  console.log(quiz);
 
-  const file = req.file
-  if (!file) {
-    const error = new Error('Please upload a file')
-    error.httpStatusCode = 400
-    return next(error)
-  }
-    res.send(file)
+  //TODO: authentication before continuing
+
+//  console.log(req.file)
+
+  const tempPath = req.file.path;
+  const targetPath = './data/materials/profession-' + quiz.profession + '/qualification-' + quiz.qualification + '/' + req.file.originalname;
+//  const targetPath = './tmp/uploaded/' + req.file.originalname;
+
+//  if (path.extname(req.file.originalname).toLowerCase() === ".png") {
+    fs.rename(tempPath, targetPath, err => {
+//      if (err) return handleError(err, res);
+
+      res
+        .status(200)
+        .contentType("text/plain")
+        .end("File uploaded!");
+    });
+//  } else {
+//    fs.unlink(tempPath, err => {
+//      if (err) return handleError(err, res);
+
+//      res
+//        .status(403)
+//        .contentType("text/plain")
+//        .end("Only .png files are allowed!");
+//    });
+//  }
+}
+//------------------------------------------------------------------------------
+
+function getImage(req, res) {
+  profession    = req.params["profession"]
+  qualification = req.params["qualification"]
+  fileName      = req.params["filename"]
+
+  //TODO: make sure only the image can be requested
+  // maybe only allow png and jpg to be uploaded and check if either .jpg or .png is in the fileName. If not abort. 
+
+  const path = '/data/materials/profession-' + profession + '/qualification-' + qualification + '/' + fileName;
+  res.sendFile(__dirname + path);
 }
 
 //------------------------------------------------------------------------------
@@ -1567,24 +1602,25 @@ app.use( parser.json() )                         // support json encoded bodies
 app.use( parser.urlencoded({ extended: true }) ) // support encoded bodies
 app.use( express.static('./static') )            // static files from root
 
-app.post('/login',                                    login)
-app.get( '/overview',                                 overview)
-app.get( '/questionnaire/:profession/:qualification', questionnaire)
-app.post('/quiz',                                     saveQuiz)
-app.post('/certificate',                              saveCertificate)
-app.post('/loadcertificate',                          loadCertificate)
-app.post('/changepassword',                           changePassword)
-app.post('/createaccount',                            createAccount)
-app.post('/getallusers',                              getAllUsers)
-app.post('/passwordreset',                            passwordReset)
-app.post('/deleteaccount',                            deleteAccount)
-app.post('/getallgroups',                             getAllGroups)
-app.post('/creategroup',                              createGroup)
-app.post('/deletegroup',                              deleteGroup)
-app.post('/editGroup',                                editGroup)
-app.post('/savematerials',                            saveMaterials)
-app.post('/loadlogs',                                 loadLogs)
+app.post('/login',                                                      login)
+app.get( '/overview',                                                   overview)
+app.get( '/questionnaire/:profession/:qualification',                   questionnaire)
+app.post('/quiz',                                                       saveQuiz)
+app.post('/certificate',                                                saveCertificate)
+app.post('/loadcertificate',                                            loadCertificate)
+app.post('/changepassword',                                             changePassword)
+app.post('/createaccount',                                              createAccount)
+app.post('/getallusers',                                                getAllUsers)
+app.post('/passwordreset',                                              passwordReset)
+app.post('/deleteaccount',                                              deleteAccount)
+app.post('/getallgroups',                                               getAllGroups)
+app.post('/creategroup',                                                createGroup)
+app.post('/deletegroup',                                                deleteGroup)
+app.post('/editGroup',                                                  editGroup)
+app.post('/savematerials',                                              saveMaterials)
+app.post('/loadlogs',                                                   loadLogs)
 app.post('/upload', multer({ dest: './tmp/uploaded' }).single('image'), saveUpload)
+app.get( '/getimage/:profession/:qualification/:filename',              getImage)
 
 server = app.listen(port, () => console.log(`Server listening on port ${port}!`))
 server.timeout = 5000

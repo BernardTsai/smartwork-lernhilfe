@@ -57,6 +57,7 @@ Vue.component( 'settings-editquiz',
 
         if ($("#inputQuestionTitle" + modalIndex).val()) this.model.questionnaire[this.model.quiz.question].title = $("#inputQuestionTitle" + modalIndex).val()
         if ($("#inputQuestionDescription" + modalIndex).val()) this.model.questionnaire[this.model.quiz.question].description = $("#inputQuestionDescription" + modalIndex).val()
+        if (document.getElementById("inputPicture") && document.getElementById("inputPicture").files[0]) this.model.questionnaire[this.model.quiz.question].imageName = document.getElementById('inputPicture').files[0].name
         if ($("#inputQuestion" + modalIndex).val()) this.model.questionnaire[this.model.quiz.question].question = $("#inputQuestion" + modalIndex).val()
         for (let i in this.model.questionnaire[this.model.quiz.question].options) {
           if ($("#option" + modalIndex + "-" + i)[0]) this.model.questionnaire[this.model.quiz.question].answers[i] = $("#option" + modalIndex + "-" + i)[0].checked ? "yes" : "no"
@@ -95,6 +96,9 @@ Vue.component( 'settings-editquiz',
         request.open('POST', '/savematerials', true);  // asynchronous request
         request.setRequestHeader('Content-type', 'application/json');
         request.send(params);
+
+        // if this.selected.questionType == Bildfrage -> save image with this.uploadFile('inputPicture')
+//        if (this.selected.questionType == 1) alert("save Image!");
       },
       // generate new question on client
       addQuestion: function() {
@@ -102,13 +106,16 @@ Vue.component( 'settings-editquiz',
           title:       '',
           description: '',
           question:    '',
+          imageName:   '',
           options:     [ '', '', '' ],
           answers:     [ '', '', '' ],
           explanation: '',
           points:      -1
         }
-        this.model.questionnaire.push(newQuestion)
-        this.model.quiz.question = this.model.questionnaire.length - 1
+        this.model.questionnaire.push(newQuestion);
+        this.model.quiz.question = this.model.questionnaire.length - 1;
+        this.selected.questionType = -1;
+        this.imageSrc = 'http://placehold.it/180';
       },
       // remove question on client
       rmQuestion: function() {
@@ -212,21 +219,42 @@ Vue.component( 'settings-editquiz',
           if (document.getElementById("dropdownMenu4").firstChild.data == 'Bildfrage') {
             //upload picture
 //            let user = { email: model.user, password: model.password };
-            let formData = new FormData();
-            let image = document.getElementById('inputPicture').files[0];
+            var image = document.getElementById('inputPicture').files[0];
+            if (image) {
+              $("#uploadProgress").modal();
+              var self = this;
+              $(document).on('shown.bs.modal','#uploadProgress', function () {
+              //$("#uploadProgress").on('shown.bs.modal', function() {
+                var prog = document.getElementById("progress");
+                prog.value = 0;
+                prog.max = 100;
 
-            formData.append("image", image);
+                var formData = new FormData();
 
-            let req = new XMLHttpRequest();
+                formData.append("image", image);
+                formData.append("user", JSON.stringify( {email: model.email, password: model.password} ));
+                formData.append("quiz", JSON.stringify( {profession: self.selected.professionIndex.toString(), qualification: self.selected.qualificationIndex.toString()} ));
 
-            req.open("POST", '/upload');
-            req.send(formData);
+                var req = new XMLHttpRequest();
 
-//            formData.append("user", JSON.stringify(user))
+                req.onload = function(e) {
+                  document.getElementById("prozent").innerHTML = "100%";
+                  prog.value = prog.max;
+                  $("#uploadProgress").modal("hide");
+                }
 
-//            console.log(formData);
+                req.upload.onprogress = function(e) {
+                  var p = Math.round(100 / e.total * e.loaded);
+                  document.getElementById("progress").value = p;
+                  document.getElementById("prozent").innerHTML = p + "%";
+                }
 
-//            fetch('/upload', {method: "POST", body: formData});
+                req.open("POST", '/upload', true);
+                req.send(formData);
+              });
+
+              this.selected.questionType = -1;
+            } else { console.log("no image to be uploaded") }
           }
           return false;
         }
@@ -241,6 +269,8 @@ Vue.component( 'settings-editquiz',
         y = x[this.currentTab].getElementsByTagName("input");
         // A loop that checks every input field in the current tab:
         for (i = 0; i < y.length; i++) {
+          // don't check file input
+          if (y[i].type == "file") continue;
           // If a field is empty...
           if (y[i].value == "") {
             // add an "invalid" class to the field:
@@ -276,15 +306,6 @@ Vue.component( 'settings-editquiz',
       },
 
       loadPicture: function(input) {
-//        if (input.files && input.files[0]) {
-//          var reader = new FileReader();
-
-//          reader.onload = function (e) {
-//            $('#imgPreview').attr('src', e.target.result);
-//          };
-//          reader.readAsDataURL(input.files[0]);
-//        }
-
         var self = this
         document.getElementById('inputPicture').addEventListener('change', function() {
           var fr = new FileReader();
@@ -293,15 +314,6 @@ Vue.component( 'settings-editquiz',
             $('#imgPreview').attr('src', e.target.result);
           };
           fr.readAsDataURL(this.files[0]);
-
-          //TODO: save picture on server
-
-
-
-//          fr.onload=function(){
-//            self.model.questionnaire = jsyaml.safeLoad(fr.result)
-//          }
-//          fr.readAsText(this.files[0]);
         })
       },
 
@@ -311,16 +323,29 @@ Vue.component( 'settings-editquiz',
         this.question().answers.splice(index, 1);
       },
 
+      prepForExistingQuestion: function() {
+        if(this.question().imageName != '') {
+          this.selected.questionType = 1;
+          var profession = this.selected.professionIndex.toString();
+          var qualification = this.selected.qualificationIndex.toString();
+          var imageName = this.question().imageName;
+          var imageSrc = "/getimage/" + profession + "/" + qualification + "/" + imageName
+          this.imageSrc = imageSrc;
+//          document.getElementById("imgPreview").src = imageSrc;
+//          $('#imgPreview').attr('src', imageSrc);
+        } else {
+          this.selected.questionType = 0;
+        }
+      },
 
 
-      fileChange: function() {
-        //FileList Objekt aus dem Input Element mit der ID "fileA"
-        var fileList = document.getElementById("fileA").files;
 
-        //File Objekt (erstes Element der FileList)
+
+      fileChange: function(id) {
+        var fileList = document.getElementById(id).files;
+
         var file = fileList[0];
 
-        //File Objekt nicht vorhanden = keine Datei ausgewählt oder vom Browser nicht unterstützt
         if(!file) return;
 
         document.getElementById("fileName").innerHTML = 'Dateiname: ' + file.name;
@@ -329,12 +354,9 @@ Vue.component( 'settings-editquiz',
         document.getElementById("progress").value = 0;
         document.getElementById("prozent").innerHTML = "0%";
       },
-      uploadFile: function() {
-        //Wieder unser File Objekt
-        var file = document.getElementById("fileA").files[0];
-        //FormData Objekt erzeugen
+      uploadFile: function(id) {
+        var file = document.getElementById(id).files[0];
         var formData = new FormData();
-        //XMLHttpRequest Objekt erzeugen
         this.client = new XMLHttpRequest();
 
         var prog = document.getElementById("progress");
@@ -344,7 +366,6 @@ Vue.component( 'settings-editquiz',
         prog.value = 0;
         prog.max = 100;
 
-        //Fügt dem formData Objekt unser File Objekt hinzu
         formData.append("image", file);
 
         this.client.onerror = function(e) {
@@ -371,7 +392,6 @@ Vue.component( 'settings-editquiz',
       },
       uploadAbort: function() {
         if(this.client instanceof XMLHttpRequest) {
-          //Briecht die aktuelle Übertragung ab
           this.client.abort();
         }
       }
@@ -387,6 +407,7 @@ Vue.component( 'settings-editquiz',
           answerType: -1
         },
         currentTab: 0,
+        imageSrc: '',
         client: null
       }
     },
@@ -423,9 +444,10 @@ Vue.component( 'settings-editquiz',
     template: `
       <div id="settings-editquiz" class="container">
 
+        <!-- upload test 
         <form action="" method="post" enctype="multipart/form-data">
-          <input name="file" type="file" id="fileA" @change="fileChange()"/>
-          <input name="upload" value="Upload" type="button" @click="uploadFile();" />
+          <input name="file" type="file" id="fileA" @change="fileChange('fileA')"/>
+          <input name="upload" value="Upload" type="button" @click="uploadFile('fileA');" />
           <input name="abort" value="Abbrechen" type="button" @click="uploadAbort();" />
         </form>
         <div>
@@ -434,6 +456,8 @@ Vue.component( 'settings-editquiz',
           <div id="fileType"></div>
           <progress id="progress" style="margin-top:10px"></progress> <span id="prozent"></span>
         </div>
+
+        <img style="max-width: 180px;" src="/getimage/0/0/foto03.jpg" /> -->
 
 
         <!-- <h3 class="text-center">Quizverwaltung</h3> -->
@@ -530,7 +554,7 @@ Vue.component( 'settings-editquiz',
                       <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Frage ausw&aumlhlen
                       </button>
-                      <button v-if="this.model.quiz.question != -1" type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#questionEditModal">Frage bearbeiten</button>
+                      <button v-if="this.model.quiz.question != -1" type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#questionCreation" @click="prepForExistingQuestion();">Frage bearbeiten</button>
                       <button v-if="this.model.quiz.question != -1" type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#questionDeleteModal">Frage entfernen</button>
                       <div class="dropdown-menu" aria-labelledby="dropdownMenu3">
                         <button v-if="this.model.questionnaire.length > 0" class="dropdown-item" type="button" v-for="(question, index) in this.model.questionnaire" @click="selectQuestion(index)">{{question.title}}</button>
@@ -617,7 +641,7 @@ Vue.component( 'settings-editquiz',
 
                 <div class="form-group">
                   <label for="inputQuestionExplanation">Erklärung:</label>
-                  <input id="inputQuestionExplanation" type="text" class="form-control" placeholder="Geben Sie eine Erklährung für die richtige Antwort ein" :value="question().explanation">
+                  <input id="inputQuestionExplanation" type="text" class="form-control" placeholder="Geben Sie eine Erklärung für die richtige Antwort ein" :value="question().explanation">
                   <small id="QuestionExplanationHelp" class="form-text text-muted">Geben Sie eine Erkl&aumlrung zur richtigen Antwort der Quizfrage ein.</small>
                 </div>
                 <div class="form-group">
@@ -700,7 +724,7 @@ Vue.component( 'settings-editquiz',
                           <label class="btn btn-dark" @click="loadPicture()">
                             Bild hochladen<input type="file" id="inputPicture" accept="image/*" hidden>
                           </label>
-                          <p><img id="imgPreview" style="max-width: 180px;" src="http://placehold.it/180" alt="uploaded image" /></p>
+                          <p><img id="imgPreview" style="max-width: 180px;" :src="imageSrc" alt="uploaded image" /></p>
                           <small id="imgPreviewHelp" class="form-text text-muted">Bildvorschau</small>
                         </div>
                         <br>
@@ -737,7 +761,7 @@ Vue.component( 'settings-editquiz',
                   <div class="tab">
                     <p><label for="inputQuestionExplanation1">Erklärung:</label></p>
                     <p>
-                      <input id="inputQuestionExplanation1" type="text" class="form-control" placeholder="Geben Sie eine Erklährung für die richtige Antwort ein" oninput="this.className = 'form-control'" :value="question().explanation">
+                      <input id="inputQuestionExplanation1" type="text" class="form-control" placeholder="Geben Sie eine Erklärung für die richtige Antwort ein" oninput="this.className = 'form-control'" :value="question().explanation">
                       <small id="QuestionExplanationHelp1" class="form-text text-muted">Geben Sie eine Erkl&aumlrung zur richtigen Antwort der Quizfrage ein.</small>
                     </p>
                   </div>
@@ -788,6 +812,34 @@ Vue.component( 'settings-editquiz',
 
 
 
+
+        <!-- Modal for upload progress -->
+        <div v-if="this.model.quiz.question != -1" class="modal fade" id="uploadProgress" tabindex="-1" role="dialog" aria-labelledby="uploadProgressModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="uploadProgressLongTitle">Lade hoch: {{question().imageName}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+
+                <div>
+                  <!-- <div id="fileName"></div>
+                  <div id="fileSize"></div>
+                  <div id="fileType"></div> -->
+                  <progress id="progress" style="margin-top:10px"></progress> <span id="prozent"></span>
+                </div>
+
+              </div>
+              <div class="modal-footer">
+                <!-- <button type="button" class="btn btn-dark mr-auto" @click="downloadLog()">Download Log</button> -->
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Schlie&szligen</button>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <!-- modal for delete confirmation -->
         <div v-if="this.model.quiz.question != -1" class="modal fade" id="questionDeleteModal" tabindex="-1" role="dialog" aria-labelledby="questionDeleteModalLabel" aria-hidden="true">
