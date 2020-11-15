@@ -140,6 +140,19 @@ Vue.component( 'settings-editquiz',
         element.click();
 
         document.body.removeChild(element);
+
+        // if images are linked (with model.questionnaire[].imageName) in quiz
+        // send them
+        for (let i in this.model.questionnaire) {
+          if (this.model.questionnaire[i].imageName != '') {
+            var link = document.createElement('a');
+            link.href = '/getimage/' + this.selected.professionIndex.toString() + '/' + this.selected.qualificationIndex.toString() + '/' + this.model.questionnaire[i].imageName;
+            link.download = this.model.questionnaire[i].imageName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
+        }
       },
       // load question backup from client to replace current data on client with backup
       loadFile: function() {

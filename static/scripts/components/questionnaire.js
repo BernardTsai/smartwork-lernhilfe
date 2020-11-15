@@ -121,6 +121,9 @@ Vue.component( 'questionnaire',
           <div class="form-group">
             <b>Frage:</b> {{question().question}}
           </div>
+          <div v-if="question().imageName != ''" class="form-group">
+            <img style="max-width: 350px;" :src="'/getimage/' + model.profession.toString() + '/' + model.qualification.toString() + '/' + question().imageName" />
+          </div>
           <div class="form-group">
             <div v-for="(option,index) in question().options" class="custom-control custom-radio d-flex">
               <input type="checkbox" :id="'option-' + index" name="customCheck" class="custom-control-input" :disabled="answerMode">
