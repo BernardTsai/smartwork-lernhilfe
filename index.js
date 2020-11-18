@@ -1598,6 +1598,129 @@ function getImage(req, res) {
 
 //------------------------------------------------------------------------------
 
+function deleteImage(req, res) {
+  emailReq       = req.body.emailReq      ? req.body.emailReq      : ""
+  passwordReq    = req.body.passwordReq   ? req.body.passwordReq   : ""
+  profession     = req.body.profession    ? req.body.profession    : ""
+  qualification  = req.body.qualification ? req.body.qualification : ""
+  imageName      = req.body.imageName     ? req.body.imageName     : ""
+  response = {
+    'email':     emailReq,
+    'password':  passwordReq,
+    'msg':       "error"
+  }
+
+  // check if email is valid and password has been defined
+  if (emailReq == '' || passwordReq == '' || emailReq.includes('..') || emailReq.includes('/')) {
+    var logLine = 'WARNING: |deleteImage| possible manipulation attempt detected. User ' + emailReq + ' contains cd command (../) or is empty and/or password is empty.'
+    appendToLog(logLine)
+
+    writeResponse(res, response)
+    return
+  }
+
+  // check if emailNew is valid and passwordNew has been defined
+  if (imageName == '' || imageName.includes('..') || imageName.includes('/')) {
+    var logLine = 'WARNING: |deleteImage| possible manipulation attempt detected. ImageName ' + imageName + ' contains cd command (../) or is empty.'
+    appendToLog(logLine)
+
+    writeResponse(res, response)
+    return
+  }
+
+  // check if directory exists
+  directory = './data/students/' + emailReq
+  filename  = directory + '/password'
+  check = {
+    'validated': "no",
+    'type':      ""
+  }
+
+  // read file password-file of requesting user
+  fs.readFile(filename,
+    // callback function that is called when reading file is done
+    function(err, data) {
+      // error will reading password file
+      if (!err) {
+        real_password = data.toString('utf8').trim()
+        check.validated = (passwordReq === real_password ? "yes" : "no")
+
+        // read file type-file of requesting user
+        fs.readFile(directory + '/type',
+          // callback function that is called when reading file is done
+          function(err, data) {
+            // error will reading type file
+            if (!err) {
+              type = data.toString('utf8').trim()
+              check.type = type
+
+              if (check.validated == "no") {
+                var logLine = 'WARNING: |deleteImage| possible manipulation attempt detected. User ' + emailReq + ' does not use correct password.'
+                appendToLog(logLine)
+
+                response.msg = "don't mess with me!"
+                res.status(403)
+                writeResponse(res, response)
+                return
+              }
+
+              if (check.type == "Schüler/Azubi") {
+                var logLine = 'WARNING: |deleteImage| possible manipulation attempt detected. User ' + emailReq + ' does not have permission to delete files.'
+                appendToLog(logLine)
+
+                response.msg = "no permission"
+                res.status(403)
+                writeResponse(res, response)
+                return
+              }
+
+              // check type of target user
+              directory = './data/materials/profession-' + profession.toString() + '/qualification-' + qualification.toString() + '/'
+              filename  = directory + imageName
+
+              // check if file exists
+              if (fs.existsSync(filename)) {
+                // remove group file
+                try {
+                  fs.unlinkSync(filename)
+
+//                  response.msg = "success"
+//                  writeResponse(res, response)
+//                  return
+                } catch(err) {
+                  var logLine = 'ERROR: |deleteImage| failed to remove file ' + imageName + '. Requesting user: ' + emailReq + ' Err: ' + err.toString()
+                  appendToLog(logLine)
+
+                  console.error(err)
+                  writeResponse(res, {err: err.toString()})
+                  return
+                }
+                var logLine = 'INFO: |deleteImage| removed file ' + filename + ' successfully. Requesting user: ' + emailReq
+                appendToLog(logLine)
+
+                response.msg = "success"
+                writeResponse(res, response)
+                return
+              }
+              else {
+                var logLine = 'ERROR: |deleteImage| file ' + filename + ' does not exist. Requesting user: ' + emailReq
+                appendToLog(logLine)
+
+                response.msg = "error: file does not exist"
+                res.status(404)
+                writeResponse(res, response)
+                return
+              }
+            }
+          }
+        )
+      }
+    }
+  )
+}
+
+//------------------------------------------------------------------------------
+
 app.use( parser.json() )                         // support json encoded bodies
 app.use( parser.urlencoded({ extended: true }) ) // support encoded bodies
 app.use( express.static('./static') )            // static files from root
@@ -1621,6 +1744,7 @@ app.post('/savematerials',                                              saveMate
 app.post('/loadlogs',                                                   loadLogs)
 app.post('/upload', multer({ dest: './tmp/uploaded' }).single('image'), saveUpload)
 app.get( '/getimage/:profession/:qualification/:filename',              getImage)
+app.post('/deleteimage',                                                deleteImage)
 
 server = app.listen(port, () => console.log(`Server listening on port ${port}!`))
 server.timeout = 5000
