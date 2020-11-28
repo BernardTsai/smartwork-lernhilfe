@@ -1,51 +1,78 @@
-# profession:    "Maler/-in und Lackierer/-in"
-# qualification: "Untergründe vorbereiten und bearbeiten"
-# questions:
-- title: "Präsident der U.S.A"
-  description: |
-    Der Präsident der Vereinigten Staaten von Amerika wird in regelmäßigen Intervallen gewählt.
-  question: "Wer wurde 2017 zum Präsidenten der Vereinigten Staaten von Amerika gewählt?"
+- title: 'Untergrund prüfen '
+  description: >-
+    Bevor ein Untergrund bearbeitet werden kann, muss ich den Untergrund auf
+    seine Eigenschaften oder Fehler prüfen. 
+  question: Ich nehme jeden zu bearbeitenden Untergrund in Augenschein. Was heißt das?
+  imageName: ''
   options:
-    - "Donald Trump"
-    - "Barack Obama"
-    - "George Bush"
+    - Ich studiere die Pläne des Architekten und frage nach Fehlern
+    - Ich fotografiere die Wände mit meiner Handykamera
+    - >-
+      Ich schaue mir alle Untergründe (Böden, Wände und Decken) genau an und
+      leite gegebenenfalls weitere Prüfschritte ein 
   answers:
-    - yes
-    - no
-    - no
-  explanation: |
-    Donald Trump wurde 2017 zum Präsidenten der Vereinigten Staaten von Amerika gewählt.
-  points: 5
-- title: "Hauptstadt von Bolivien"
-  description: |
-    Bolivien ist ein Binnenstaat in Südamerika, der im Westen an Peru und Chile,
-    im Süden an Argentinien und Paraguay, im Osten und Norden an Brasilien grenzt.
-  question: "Wie heißt die Hauptstadt von Bolivien?"
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    Die erste Prüfmethode erfolgt durch das genaue Beschauen/ Betrachten der
+    Untergründe. Man kann damit Unregelmäßigkeiten, Abplatzungen, Risse ,
+    Ausblühungen, Feuchtigkeit Verschmutzungen Vermoosung, Veralgung feststellen
+    und kann gegebenenfalls weitere Prüfungen veranlassen.      
+  points: '5'
+- title: ' Welche Untergrundprobleme treten im Altbau häufig auf. '
+  description: 'Ein häufiges Problem in Altbauten sind sandende und kreidende Untergründe '
+  question: >-
+    Wie kann ich feststellen ob sandende oder kreidende Untergründe vorhanden
+    sind?
+  imageName: ''
   options:
-    - "Caracas"
-    - "Sucre"
-    - "Bogotá"
+    - Ich mache eine Feuchtemessung der Untergründe
+    - 'Ich benetze die Wände mit Wasser '
+    - Ich wische mit der flachen Hand über die Flächen
   answers:
-    - no
-    - yes
-    - no
-  explanation: |
-    Sucre ist die Hauptstadt von Bolivien.
-  points: 5
-- title: "Währung in Vietnam"
-  description: |
-    Vietnam ist ein langgestreckter Küstenstaat in Südostasien.
-    Er grenzt an China, Laos, Kambodscha,
-    den Golf von Thailand und das Südchinesische Meer.
-  question: "Welche Währung wird in Vietnam genutzt?"
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    Um Sanden, Kreiden oder Mehlen zu erkennen, kann man mit der Hand über die
+    Oberflächen wischen und anhand des Abriebes erkennen ob die Oberflächen
+    Kreiden.  
+  points: '5'
+- title: Baustellenübliche Untergrundprüfungen
+  description: >-
+    um die Festigkeit der Untergründe zu Prüfen setze ich verschiedene Methoden
+    ein.  
+  question: Was kann ich durch die Klopfprobe ermitteln?
+  imageName: ''
   options:
-    - "Baht"
-    - "Won"
-    - "Dong"
+    - Ich kann damit die Putzgruppe des Untergrundes ermitteln.
+    - Ich kann Hohlstellen oder nicht fest haftenden Putz feststellen.
+    - Ich kann durch das Klopfen den Untergrund verfestigen.
   answers:
-    - no
-    - no
-    - yes
-  explanation: |
-    In Vietnam wird Dong als Währung genutzt.
-  points: 5
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Durch eine Klopf-und Hörprobe kann man mit einem Hammer beispielsweise
+    Hohlstellen oder schlecht haftende Putzstellen ausfindig machen.
+  points: '5'
+- title: Holzuntergründe
+  description: >-
+    um ein gutes Lackierergebnis zu gewährleisten muss Holzwerkstoffe trocken
+    sein.  
+  question: 'Wie messe ich die Holzfeuchtigkeit '
+  imageName: ''
+  options:
+    - 'Ich messe die Holzfeuchte mit einem Messgerät '
+    - Ich prüfe die Holzfeuchte mit einem Tuch an der Oberfläche
+    - Ich lege ein Löschblatt auf das Holz und warte ob es verändert.
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Um die Holzfeuchte exakt zu bestimmen benutzte ich ein Messgerät, bei dem
+    die Messspitzen in das Holz gedrückt werden. Das Messergebnis wird im
+    Display angezeigt, es dürfen max. 12-15% Holzfeuchte vorhanden sein.  
+  points: '5'

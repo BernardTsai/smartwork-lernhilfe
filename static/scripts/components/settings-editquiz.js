@@ -236,7 +236,7 @@ Vue.component( 'settings-editquiz',
 //          document.getElementById("regForm").submit();
 
           $("#questionCreation").modal("hide");
-          $("#quizEditModal").modal();
+//          $("#quizEditModal").modal();
           // save here already because if created question is edited before saving and then editing is canceled - question is removed because of reload..
           this.saveMaterials();
           if (document.getElementById("dropdownMenu4").firstChild.data == 'Bildfrage') {
@@ -245,6 +245,11 @@ Vue.component( 'settings-editquiz',
             var image = document.getElementById('inputPicture').files[0];
             if (image) {
               $("#uploadProgress").modal();
+
+              document.getElementById("fileName").innerHTML = 'Dateiname: ' + image.name;
+              document.getElementById("fileSize").innerHTML = 'Dateigröße: ' + image.size + ' B';
+              document.getElementById("fileType").innerHTML = 'Dateitype: ' + image.type;
+
               var self = this;
               //$(document).on('shown.bs.modal','#uploadProgress', function () {
               //$("#uploadProgress").on('shown.bs.modal', function() {
@@ -259,15 +264,19 @@ Vue.component( 'settings-editquiz',
                 formData.append("quiz", JSON.stringify( {profession: self.selected.professionIndex.toString(), qualification: self.selected.qualificationIndex.toString()} ));
 
                 req.onload = function(e) {
-                  document.getElementById("prozent").innerHTML = "100%";
-                  prog.value = prog.max;
+                  //document.getElementById("prozent").innerHTML = "100%";
+                  //prog.value = prog.max;
                   $("#uploadProgress").modal("hide");
+                  $("#quizEditModal").modal();
                 }
 
                 req.upload.onprogress = function(e) {
                   var p = Math.round(100 / e.total * e.loaded);
-                  document.getElementById("progress").value = p;
-                  document.getElementById("prozent").innerHTML = p + "%";
+
+                  // Update the progress text and progress bar
+                  document.getElementById("progress").setAttribute("style", `width: ${Math.floor(p)}%`);
+                  document.getElementById("progress_status").innerText = `${Math.floor(p)}% uploaded`;
+                  document.getElementById("progress").innerHTML = `${Math.floor(p)}%`;
                 }
 
                 req.open("POST", '/upload', true);
@@ -275,8 +284,11 @@ Vue.component( 'settings-editquiz',
               //});
 
               this.selected.questionType = -1;
-            } else { console.log("no image to be uploaded") }
-          }
+            } else {
+              console.log("no image to be uploaded")
+              $("#quizEditModal").modal();
+            }
+          } else { $("#quizEditModal").modal(); }
           return false;
         }
         // Otherwise, display the correct tab:
@@ -397,6 +409,7 @@ Vue.component( 'settings-editquiz',
 //          $('#imgPreview').attr('src', imageSrc);
         } else {
           this.selected.questionType = 0;
+          this.selectQuestionType(0);
         }
       },
 
@@ -875,7 +888,7 @@ Vue.component( 'settings-editquiz',
         <!-- Modal for upload progress -->
         <div class="modal fade" id="uploadProgress" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="uploadProgressModalCenterTitle" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
+            <div class="modal-content border border-primary">
               <div class="modal-header">
                 <h5 class="modal-title" id="uploadProgressLongTitle">Lade hoch..</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -885,10 +898,17 @@ Vue.component( 'settings-editquiz',
               <div class="modal-body">
 
                 <div>
-                  <!-- <div id="fileName"></div>
+                  <div id="fileName"></div>
                   <div id="fileSize"></div>
-                  <div id="fileType"></div> -->
-                  <progress id="progress" style="margin-top:10px"></progress> <span id="prozent"></span>
+                  <div id="fileType"></div>
+                  <!-- <progress id="progress" style="margin-top:10px"></progress> <span id="prozent"></span> -->
+
+                  <div id="progress_wrapper" class="">
+                    <label id="progress_status"></label>
+                    <div class="progress mb-5">
+                      <div id="progress" class="progress-bar" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                  </div>
                 </div>
 
               </div>
