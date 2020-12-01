@@ -91,3 +91,12 @@ professions:
   - qualification: "Anbieten von Dienstleistungen und dafür werben"
   - qualification: "Waren präsentieren und den Verkauf fördern"
   - qualification: "Kunden im Servicebereich der Kasse betreuen"
+- profession:  "Placeholder"
+  title:       "Placeholder for new profession"
+  description: "Placeholder for new profession"
+  index:       "LF-7"
+  image:       "profession7.jpg"
+  qualifications:
+  - qualification: "placeholder1"
+  - qualification: "placeholder2"
+  - qualification: "placeholder3"
