@@ -242,52 +242,9 @@ Vue.component( 'settings-editquiz',
           if (document.getElementById("dropdownMenu4").firstChild.data == 'Bildfrage') {
             //upload picture
 //            let user = { email: model.user, password: model.password };
-            var image = document.getElementById('inputPicture').files[0];
-            if (image) {
-              $("#uploadProgress").modal();
 
-              document.getElementById("fileName").innerHTML = 'Dateiname: ' + image.name;
-              document.getElementById("fileSize").innerHTML = 'Dateigröße: ' + image.size + ' B';
-              document.getElementById("fileType").innerHTML = 'Dateitype: ' + image.type;
+            this.uploadImage();
 
-              var self = this;
-              //$(document).on('shown.bs.modal','#uploadProgress', function () {
-              //$("#uploadProgress").on('shown.bs.modal', function() {
-                var req = new XMLHttpRequest();
-                var formData = new FormData();
-                var prog = document.getElementById("progress");
-                prog.value = 0;
-                prog.max = 100;
-
-                formData.append("image", image);
-                formData.append("user", JSON.stringify( {email: model.email, password: model.password} ));
-                formData.append("quiz", JSON.stringify( {profession: self.selected.professionIndex.toString(), qualification: self.selected.qualificationIndex.toString()} ));
-
-                req.onload = function(e) {
-                  //document.getElementById("prozent").innerHTML = "100%";
-                  //prog.value = prog.max;
-                  $("#uploadProgress").modal("hide");
-                  $("#quizEditModal").modal();
-                }
-
-                req.upload.onprogress = function(e) {
-                  var p = Math.round(100 / e.total * e.loaded);
-
-                  // Update the progress text and progress bar
-                  document.getElementById("progress").setAttribute("style", `width: ${Math.floor(p)}%`);
-                  document.getElementById("progress_status").innerText = `${Math.floor(p)}% uploaded`;
-                  document.getElementById("progress").innerHTML = `${Math.floor(p)}%`;
-                }
-
-                req.open("POST", '/upload', true);
-                req.send(formData);
-              //});
-
-              this.selected.questionType = -1;
-            } else {
-              console.log("no image to be uploaded")
-              $("#quizEditModal").modal();
-            }
           } else { $("#quizEditModal").modal(); }
           return false;
         }
@@ -349,6 +306,57 @@ Vue.component( 'settings-editquiz',
           };
           fr.readAsDataURL(this.files[0]);
         })
+      },
+
+      uploadImage: function() {
+        var image = document.getElementById('inputPicture').files[0];
+        if (image) {
+          $("#uploadProgress").modal();
+
+          document.getElementById("fileName").innerHTML = 'Dateiname: ' + image.name;
+          document.getElementById("fileSize").innerHTML = 'Dateigröße: ' + image.size + ' B';
+          document.getElementById("fileType").innerHTML = 'Dateitype: ' + image.type;
+
+          var self = this;
+          this.req = new XMLHttpRequest();
+          var formData = new FormData();
+          var prog = document.getElementById("progress");
+          prog.value = 0;
+          prog.max = 100;
+
+          formData.append("image", image);
+          formData.append("user", JSON.stringify( {email: model.email, password: model.password} ));
+          formData.append("quiz", JSON.stringify( {profession: self.selected.professionIndex.toString(), qualification: self.selected.qualificationIndex.toString()} ));
+
+          this.req.onload = function(e) {
+            $("#uploadProgress").modal("hide");
+            $("#quizEditModal").modal();
+          }
+
+          this.req.upload.onprogress = function(e) {
+            var p = Math.round(100 / e.total * e.loaded);
+
+            // Update the progress text and progress bar
+            document.getElementById("progress").setAttribute("style", `width: ${Math.floor(p)}%`);
+            document.getElementById("progress_status").innerText = `${Math.floor(p)}% uploaded`;
+            document.getElementById("progress").innerHTML = `${Math.floor(p)}%`;
+          }
+
+          this.req.open("POST", '/upload', true);
+          this.req.send(formData);
+
+          this.selected.questionType = -1;
+        } else {
+          console.log("no image to be uploaded")
+          $("#quizEditModal").modal();
+        }
+      },
+
+      uploadImageAbort: function() {
+        alert("spacken!");
+        if (this.req instanceof XMLHttpRequest) {
+          this.req.abort();
+        }
       },
 
       // sends remove request to backend for image
@@ -491,6 +499,7 @@ Vue.component( 'settings-editquiz',
         currentTab: 0,
         imageSrc: '',
         rmImage: '',
+        req: null,
         client: null
       }
     },
@@ -504,6 +513,9 @@ Vue.component( 'settings-editquiz',
         self.currentTab = 0;
         self.showTab(self.currentTab);
       });
+
+      // calls uploadImageAbort from cancel btn
+      $(document).on("click", "#uploadAbortBtn", this.uploadImageAbort);
 
       // display selection in dropdown-menu
 //      $(".dropdown-menu").on('click', 'button', function(){
@@ -901,7 +913,7 @@ Vue.component( 'settings-editquiz',
                   <div id="fileName"></div>
                   <div id="fileSize"></div>
                   <div id="fileType"></div>
-                  <!-- <progress id="progress" style="margin-top:10px"></progress> <span id="prozent"></span> -->
+                  <br>
 
                   <div id="progress_wrapper" class="">
                     <label id="progress_status"></label>
@@ -913,8 +925,7 @@ Vue.component( 'settings-editquiz',
 
               </div>
               <div class="modal-footer">
-                <!-- <button type="button" class="btn btn-dark mr-auto" @click="downloadLog()">Download Log</button> -->
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Schlie&szligen</button>
+                <button id="uploadAbortBtn" type="button" class="btn btn-secondary" data-dismiss="modal">Abbrechen</button>
               </div>
             </div>
           </div>
