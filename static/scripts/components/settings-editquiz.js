@@ -353,7 +353,6 @@ Vue.component( 'settings-editquiz',
       },
 
       uploadImageAbort: function() {
-        alert("spacken!");
         if (this.req instanceof XMLHttpRequest) {
           this.req.abort();
         }
