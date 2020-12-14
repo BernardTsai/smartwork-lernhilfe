@@ -127,8 +127,11 @@ Vue.component( 'questionnaire',
             </div>
             <div class="form-group col">
               <div v-for="(option,index) in question().options" class="custom-control custom-radio d-flex">
+
+                <!-- TODO: replace this with textbox if answertype is keyword to look for keywords in entered text -->
                 <input type="checkbox" :id="'option-' + index" name="customCheck" class="custom-control-input" :disabled="answerMode">
                 <label class="custom-control-label" :for="'option-'+ index">{{option}}</label>
+
                 <span v-if="answerMode && correct(index)"  class="far fa-check-circle text-success ml-auto text-success"></span>
                 <span v-if="answerMode && !correct(index)" class="far fa-times-circle text-success ml-auto text-danger"></span>
               </div>

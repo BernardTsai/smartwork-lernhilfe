@@ -10,6 +10,7 @@
     - >-
       Ich schaue mir alle Untergründe (Böden, Wände und Decken) genau an und
       leite gegebenenfalls weitere Prüfschritte ein 
+  answerType: Multiple Choice
   answers:
     - 'no'
     - 'no'
@@ -30,6 +31,7 @@
     - Ich mache eine Feuchtemessung der Untergründe
     - 'Ich benetze die Wände mit Wasser '
     - Ich wische mit der flachen Hand über die Flächen
+  answerType: Multiple Choice
   answers:
     - 'no'
     - 'no'
@@ -49,6 +51,7 @@
     - Ich kann damit die Putzgruppe des Untergrundes ermitteln.
     - Ich kann Hohlstellen oder nicht fest haftenden Putz feststellen.
     - Ich kann durch das Klopfen den Untergrund verfestigen.
+  answerType: Multiple Choice
   answers:
     - 'no'
     - 'yes'
@@ -67,6 +70,7 @@
     - 'Ich messe die Holzfeuchte mit einem Messgerät '
     - Ich prüfe die Holzfeuchte mit einem Tuch an der Oberfläche
     - Ich lege ein Löschblatt auf das Holz und warte ob es verändert.
+  answerType: Multiple Choice
   answers:
     - 'yes'
     - 'no'

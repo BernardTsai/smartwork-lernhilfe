@@ -1,3 +1,5 @@
+// TODO: if keywords are used as answertype - maybe use this.question().answers to save how important the keyword is on a scale from 1-10
+
 Vue.component( 'settings-editquiz',
   {
     props:    ['model'],
@@ -116,6 +118,7 @@ Vue.component( 'settings-editquiz',
           question:    '',
           imageName:   '',
           options:     [ '', '', '' ],
+          answerType:  '',
           answers:     [ '', '', '' ],
           explanation: '',
           points:      -1
@@ -123,6 +126,7 @@ Vue.component( 'settings-editquiz',
         this.model.questionnaire.push(newQuestion);
         this.model.quiz.question = this.model.questionnaire.length - 1;
         this.selected.questionType = -1;
+        this.selected.answerType = -1;
         this.imageSrc = 'http://placehold.it/180';
       },
       // remove question on client
@@ -416,10 +420,56 @@ Vue.component( 'settings-editquiz',
 //          document.getElementById("imgPreview").src = imageSrc;
 //          $('#imgPreview').attr('src', imageSrc);
         } else {
-          this.selected.questionType = 0;
+          this.selected.questionType = 0; // TODO: check if this is necessary
           this.selectQuestionType(0);
         }
+
+        if(this.question().answerType == 'Keywords') {
+          this.selectAnswerType(1);
+        } else {
+          this.selected.answerType = 0;
+          this.selectAnswerType(0);
+        }
       },
+
+      selectAnswerType: function(index) {
+        this.selected.answerType = index;
+        var button = document.getElementById("dropdownMenu5");
+        if (index == 0) button.firstChild.data = 'Multiple Choice';
+        if (index == 1) {
+          button.firstChild.data = 'Texteingabe';
+          // if answers array is empty - remove empty elements
+          if (this.question().options.length == 3 &&
+              this.question().options[0] == '' &&
+              this.question().options[1] == '' &&
+              this.question().options[2] == '') {
+
+            this.question().answers = [];
+            this.question().options.splice(0, 3);
+          }
+        }
+        button.classList.remove("btn-secondary");
+        button.classList.add("btn-primary");
+      },
+
+      addKeyWord: function() {
+        // grab text from inputKeyWord
+        var keyWord = $("#inputKeyWord").val()
+        // add it to answerOption Array
+        this.question().options.push(keyWord);
+      },
+
+      rmKeyWord: function() {
+        // grab keyword from inputKeyWord
+        var keyWord = $("#inputKeyWord").val()
+        // look for keyword in this.question().options array
+        var index = this.question().options.indexOf(keyWord);
+        // if found - remove element from array
+        if (index != -1) this.question().options.splice(index, 1);
+        else alert("Das Keyword konnte nicht in der Liste gefunden werden");
+      },
+
+
 
 
 
@@ -797,7 +847,7 @@ Vue.component( 'settings-editquiz',
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                           Art der Frage ausw&aumlhlen
                         </button>
-                        <small class="form-text text-muted">Ausw&aumlhlen der der Fragenart um fortzufahren</small>
+                        <small class="form-text text-muted">Ausw&aumlhlen der Fragenart um fortzufahren</small>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenu4">
                           <button class="dropdown-item" type="button" @click="selectQuestionType(0)">Textfrage</button>
                           <button class="dropdown-item" type="button" @click="selectQuestionType(1)">Bildfrage</button>
@@ -823,30 +873,72 @@ Vue.component( 'settings-editquiz',
                         <small v-if="selected.questionType == 1" id="QuestionHelp1" class="form-text text-muted">Geben Sie die Bildfrage ein und laden das Bild zu der Frage hoch.</small>
                         <hr>
                       </div>
+
                     </p>
                   </div>
 
                   <div class="tab">
                     <p><label for="questionOptions1">Antworten:</label></p>
                     <p>
-                      <div id="questionOptions1">
-                        <div class="row" v-for="(option,index) in question().options">
-                          <div class="col-md-1 pl-0 radio" style="position:relative; top:10px">
-                            <input type="radio" :id="'option1-' + index" name="customCheck" :checked="checkedCheck(index)">
-                          </div>
-                          <div class="col-md pl-0">
-                            <input :id="'inputQuestionOptionText1-' + index" type="text" class="form-control" placeholder="Geben Sie eine Antwortmöglichkeit ein" oninput="this.className = 'form-control'" :value="option">
-                            <small :id="'inputQuestionOptionTextHelp1' + index" class="form-text text-muted">Geben Sie hier die {{index+1}}. Antwortm&oumlglichkeit ein.</small>
-                          </div>
-                          <div class="col-md-0 pr-1" style="position:relative; top:7px">
-                            <span class="border rounded fas fa-trash-alt" style="font-size: 150%; background: inherit; background: #dddddd;" @click="applyChanges(1); removeQuestionOption(index)" title="Frage entfernen"></span>
-                          </div>
-                          <div v-if="index == (question().options.length - 1)" class="col-md-0 px-0" style="position:relative; top:7px">
-                            <span class="border rounded fas fa-plus" style="font-size: 150%; background: inherit; background: #dddddd;" @click="applyChanges(1); question().options.push(''); question().answers.push('')" title="Frage hinzufügen"></span>
-                          </div>
+
+                      <!-- dropdown answer-type selection -->
+                      <div class="dropdown text-center">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Art der Antwort ausw&aumlhlen
+                        </button>
+                        <small class="form-text text-muted">Ausw&aumlhlen der Antwortart um fortzufahren</small>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenu5">
+                          <button class="dropdown-item" type="button" @click="selectAnswerType(0)">Multiple Choice</button>
+                          <button class="dropdown-item" type="button" @click="selectAnswerType(1)">Texteingabe</button>
                         </div>
                       </div>
-                      <small id="questionOptionsHelp1" class="form-text text-muted">Geben Sie die Antwortm&oumlglichkeiten ein und markieren Sie die richtige Antwort.</small>
+
+                      <div v-if="selected.answerType != -1">
+                        <br>
+                        <hr>
+
+                        <div v-if="selected.answerType == 0" id="questionOptions1">
+                          <div class="row" v-for="(option,index) in question().options">
+                            <div class="col-md-1 pl-0 radio" style="position:relative; top:10px">
+                              <input type="radio" :id="'option1-' + index" name="customCheck" :checked="checkedCheck(index)">
+                            </div>
+                            <div class="col-md pl-0">
+                              <input :id="'inputQuestionOptionText1-' + index" type="text" class="form-control" placeholder="Geben Sie eine Antwortmöglichkeit ein" oninput="this.className = 'form-control'" :value="option">
+                              <small :id="'inputQuestionOptionTextHelp1' + index" class="form-text text-muted">Geben Sie hier die {{index+1}}. Antwortm&oumlglichkeit ein.</small>
+                            </div>
+                            <div class="col-md-0 pr-1" style="position:relative; top:7px">
+                              <span class="border rounded fas fa-trash-alt" style="font-size: 150%; background: inherit; background: #dddddd;" @click="applyChanges(1); removeQuestionOption(index)" title="Frage entfernen"></span>
+                            </div>
+                            <div v-if="index == (question().options.length - 1)" class="col-md-0 px-0" style="position:relative; top:7px">
+                              <span class="border rounded fas fa-plus" style="font-size: 150%; background: inherit; background: #dddddd;" @click="applyChanges(1); question().options.push(''); question().answers.push('')" title="Frage hinzufügen"></span>
+                            </div>
+                          </div>
+                          <small id="questionOptionsHelp1" class="form-text text-muted">Geben Sie die Antwortm&oumlglichkeiten ein und markieren Sie die richtige Antwort.</small>
+                        </div>
+
+                        <div v-if="selected.answerType == 1">
+                          <div class="row" id="questionAnswerKeyWords">
+                            <div class="col-md">
+                              <input id="inputKeyWord" type="text" class="form-control" placeholder="Geben Sie ein Schlüsselwort ein" oninput="this.className = 'form-control'">
+                            </div>
+                            <div class="col-md-1">
+                              <button type="button" class="btn btn-secondary" @click="addKeyWord()">+</button>
+                            </div>
+                            <div class="col-md-2">
+                              <button type="button" class="btn btn-secondary" @click="rmKeyWord()">-</button>
+                            </div>
+                            <small id="keyWordHelp" class="form-text text-muted">Geben Sie ein einzelnes Schlüsselwort ein und drücken anschlie&szligend auf hinzuf&uumlgen.</small>
+                            <br>
+                          </div>
+                          <br>
+                          <!-- TODO: replace this with something were words can be removed -->
+                          <textarea class="form-control" id="keyWords" rows="5" :value="question().options" placeholder="Noch keine Schlüsselwörter hinterlegt" disabled></textarea>
+
+                          <!-- TODO: add input for weighting of the keywords to calculate if question was answered correctly -->
+
+                        </div>
+                      </div>
+
                     </p>
                   </div>
 
