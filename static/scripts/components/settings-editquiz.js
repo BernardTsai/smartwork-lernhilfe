@@ -1,5 +1,3 @@
-// TODO: if keywords are used as answertype - maybe use this.question().answers to save how important the keyword is on a scale from 1-10
-
 Vue.component( 'settings-editquiz',
   {
     props:    ['model'],
@@ -440,21 +438,19 @@ Vue.component( 'settings-editquiz',
           button.firstChild.data = 'Multiple Choice';
           this.question().answerType = 'Multiple Choice'
 
-          // TODO: make sure at least one array element exists
+          // clear array and make sure at least one array element exists
+          this.question().options.push('');
+          this.question().answers = [];
+          this.question().answers.push('');
         }
         if (index == 1) {
           button.firstChild.data = 'Texteingabe';
           this.question().answerType = 'Keywords'
 
-          // TODO: instead of the following.. just remove all empty arrays
-          // if answers array is empty - remove empty elements
-          if (this.question().options.length == 3 &&
-              this.question().options[0] == '' &&
-              this.question().options[1] == '' &&
-              this.question().options[2] == '') {
-
+          // start with empty array
+          if (this.question().options.length != 0) {
             this.question().answers = [];
-            this.question().options.splice(0, 3);
+            this.question().options.splice(0, this.question().options.length);
           }
         }
         button.classList.remove("btn-secondary");
@@ -464,29 +460,17 @@ Vue.component( 'settings-editquiz',
       addKeyWord: function() {
         // grab text from inputKeyWord
         var keyWord = $("#inputKeyWord").val()
-        // add it to answerOption Array
-        // TODO: don't make array -> put relevance in this.question().answers instead of 'yes'/'no'
-        // change this also in template for correct view
-        // this.question().options.push(keyWord);
-        // this.question().answers.push(-1);
-        var optionNew = { keyword: keyWord, relevance: -1 };
-        this.question().options.push(optionNew);
+        // add it to answerOptions
+        this.question().options.push(keyWord);
+        this.question().answers.push(-1);
+        //clear input
+        document.getElementById("inputKeyWord").value = '';
       },
-
-//      rmKeyWord: function() {
-        // grab keyword from inputKeyWord
-//        var keyWord = $("#inputKeyWord").val()
-        // look for keyword in this.question().options array
-//        var index = this.question().options.indexOf(keyWord);
-        // if found - remove element from array
-//        if (index != -1) this.question().options.splice(index, 1);
-//        else alert("Das Keyword konnte nicht in der Liste gefunden werden");
-//      },
 
       updateRelevance: function(index) {
         var value = $('#inputOptionPoints-' + index).val()
 
-        this.question().options[index].relevance = value;
+        this.question().answers[index] = value;
       },
 
 
@@ -943,11 +927,6 @@ Vue.component( 'settings-editquiz',
                             <div class="col-md-2">
                               <button type="button" class="btn btn-secondary" @click="addKeyWord()">+</button>
                             </div>
-                            <!-- <div class="col-md-2">
-                              <button type="button" class="btn btn-secondary" @click="rmKeyWord()">-</button>
-                            </div>
-                            <small id="keyWordHelp" class="form-text text-muted">Geben Sie ein einzelnes Schlüsselwort ein und drücken anschlie&szligend auf das +.</small>
-                            <br> -->
                           </div>
                           <small id="keyWordHelp" class="form-text text-muted">Geben Sie ein einzelnes Schlüsselwort ein und drücken anschlie&szligend auf das +.</small>
                           <br>
@@ -956,10 +935,10 @@ Vue.component( 'settings-editquiz',
                             <div class="card-body">
                               <div class="row">
                                 <div class="col-md">
-                                  <input type="text" class="form-control" oninput="this.className = 'form-control'" :value="option.keyword" disabled>
+                                  <input type="text" class="form-control" oninput="this.className = 'form-control'" :value="option" disabled>
                                 </div>
                                 <div class="col-md-3">
-                                  <input :id="'inputOptionPoints-' + index" type="number" class="form-control" oninput="this.className = 'form-control'" @change="updateRelevance(index)" :value="option.relevance">
+                                  <input :id="'inputOptionPoints-' + index" type="number" class="form-control" oninput="this.className = 'form-control'" @change="updateRelevance(index)" :value="question().answers[index]">
                                 </div>
                                 <div class="col-md-0" style="position:relative; top:7px">
                                   <span class="border rounded fas fa-trash-alt" style="font-size: 150%; background: inherit; background: #dddddd;" @click="removeQuestionOption(index)" title="Keyword entfernen"></span>
