@@ -438,17 +438,19 @@ Vue.component( 'settings-editquiz',
           button.firstChild.data = 'Multiple Choice';
           this.question().answerType = 'Multiple Choice'
 
-          // clear array and make sure at least one array element exists
-          this.question().options.push('');
-          this.question().answers = [];
-          this.question().answers.push('');
+          if (this.question().options.length == 0) {
+            // clear array and make sure at least one array element exists
+            this.question().options.push('');
+            this.question().answers = [];
+            this.question().answers.push('');
+          }
         }
         if (index == 1) {
           button.firstChild.data = 'Texteingabe';
           this.question().answerType = 'Keywords'
 
-          // start with empty array
-          if (this.question().options.length != 0) {
+          // start with empty array if objects are empty
+          if (this.question().options.length != 0 && this.question().options[0] == '') {
             this.question().answers = [];
             this.question().options.splice(0, this.question().options.length);
           }
