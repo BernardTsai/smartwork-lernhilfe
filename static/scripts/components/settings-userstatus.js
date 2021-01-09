@@ -96,6 +96,19 @@ Vue.component( 'settings-userstatus',
 
         <h3 class="text-center">Benutzer&uumlbersicht und Lernstand</h3>
 
+        <!-- Dropdown to filter users -->
+        <div class="text-center">
+          <p>
+            <button class="btn btn-dark" type="button" data-toggle="collapse" data-target="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">Filter</button>
+          </p>
+          <div class="collapse" id="collapseFilter">
+            <div class="card card-body bg-light my-3 mx-auto" style="max-width: 540px;">
+              Noch ohne Funktion. Noch ohne Funktion. Noch ohne Funktion. Noch ohne Funktion...
+            </div>
+            <hr style="max-width: 540px;">
+          </div>
+        </div>
+
         <!-- Modal for user certs -->
         <div class="modal fade" id="certs" tabindex="-1" role="dialog" aria-labelledby="certsModalCenterTitle" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered" role="document">

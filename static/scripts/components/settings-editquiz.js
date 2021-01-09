@@ -199,7 +199,7 @@ Vue.component( 'settings-editquiz',
 
 
 
-      // following function control multi step form
+      // following function controls multi step form
       showTab: function(n) {
         // This function will display the specified tab of the form ...
         var x = document.getElementsByClassName("tab");
@@ -379,8 +379,7 @@ Vue.component( 'settings-editquiz',
             result = jsyaml.safeLoad(request.responseText)
 
             if (result.msg == 'success') {
-              // reload questions
-              //self.selectQualification(self.selected.qualificationIndex)
+              
             }
             else {
               alert("Error!");
@@ -409,17 +408,13 @@ Vue.component( 'settings-editquiz',
 
         // if question contains a picture
         if(this.question().imageName != '') {
-          //this.selected.questionType = 1;
           this.selectQuestionType(1);
           var profession = this.selected.professionIndex.toString();
           var qualification = this.selected.qualificationIndex.toString();
           var imageName = this.question().imageName;
           var imageSrc = "/getimage/" + profession + "/" + qualification + "/" + imageName
           this.imageSrc = imageSrc;
-//          document.getElementById("imgPreview").src = imageSrc;
-//          $('#imgPreview').attr('src', imageSrc);
         } else {
-          this.selected.questionType = 0; // TODO: check if this is necessary
           this.selectQuestionType(0);
         }
 
@@ -471,75 +466,8 @@ Vue.component( 'settings-editquiz',
 
       updateRelevance: function(index) {
         var value = $('#inputOptionPoints-' + index).val()
-
         this.question().answers[index] = value;
-      },
-
-
-
-
-
-
-// for fileupload test!! not in use at the moment
-      fileChange: function(id) {
-        var fileList = document.getElementById(id).files;
-
-        var file = fileList[0];
-
-        if(!file) return;
-
-        document.getElementById("fileName").innerHTML = 'Dateiname: ' + file.name;
-        document.getElementById("fileSize").innerHTML = 'Dateigröße: ' + file.size + ' B';
-        document.getElementById("fileType").innerHTML = 'Dateitype: ' + file.type;
-        document.getElementById("progress").value = 0;
-        document.getElementById("prozent").innerHTML = "0%";
-      },
-      uploadFile: function(id) {
-        var file = document.getElementById(id).files[0];
-        var formData = new FormData();
-        this.client = new XMLHttpRequest();
-
-        var prog = document.getElementById("progress");
-
-        if(!file) return;
-
-        prog.value = 0;
-        prog.max = 100;
-
-        formData.append("image", file);
-
-        this.client.onerror = function(e) {
-          alert("onError");
-        };
-
-        this.client.onload = function(e) {
-          document.getElementById("prozent").innerHTML = "100%";
-          prog.value = prog.max;
-        };
-
-        this.client.upload.onprogress = function(e) {
-          var p = Math.round(100 / e.total * e.loaded);
-          document.getElementById("progress").value = p;
-          document.getElementById("prozent").innerHTML = p + "%";
-        };
-
-        this.client.onabort = function(e) {
-          alert("Upload abgebrochen");
-        };
-
-        this.client.open("POST", "/upload");
-        this.client.send(formData);
-      },
-      uploadAbort: function() {
-        if(this.client instanceof XMLHttpRequest) {
-          this.client.abort();
-        }
       }
-
-
-
-
-
     },
     data() {
       return {
@@ -571,44 +499,11 @@ Vue.component( 'settings-editquiz',
 
       // calls uploadImageAbort from cancel btn
       $(document).on("click", "#uploadAbortBtn", this.uploadImageAbort);
-
-      // display selection in dropdown-menu
-//      $(".dropdown-menu").on('click', 'button', function(){
-//        $(".btn:first-child").text($(this).text());
-//        $(".btn:first-child").val($(this).text());
-//      });
-      // if file is selected
-//      if(this.selected.qualificationIndex != -1) {
-//        document.getElementById('inputBackup').addEventListener('change', function() {
-//          var fr = new FileReader();
-//          fr.onload=loadFile(fr.result)
-//          fr.onload=function(){
-//            console.log(fr.result);
-//          }
-//          fr.readAsText(this.files[0]);
-//        })
-//      }
     },
     computed: {
     },
     template: `
       <div id="settings-editquiz" class="container">
-
-        <!-- upload test 
-        <form action="" method="post" enctype="multipart/form-data">
-          <input name="file" type="file" id="fileA" @change="fileChange('fileA')"/>
-          <input name="upload" value="Upload" type="button" @click="uploadFile('fileA');" />
-          <input name="abort" value="Abbrechen" type="button" @click="uploadAbort();" />
-        </form>
-        <div>
-          <div id="fileName"></div>
-          <div id="fileSize"></div>
-          <div id="fileType"></div>
-          <progress id="progress" style="margin-top:10px"></progress> <span id="prozent"></span>
-        </div>
-
-        <img style="max-width: 180px;" src="/getimage/0/0/foto03.jpg" /> -->
-
 
         <!-- <h3 class="text-center">Quizverwaltung</h3> -->
 
