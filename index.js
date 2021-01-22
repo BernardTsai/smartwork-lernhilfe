@@ -1728,29 +1728,25 @@ function updateStat(req, res) {
   var questionIndex = req.body.questionIndex ? req.body.questionIndex : ""
   var result        = req.body.result        ? req.body.result        : ""
 
-//  console.log(req.body)
-  var self = this;
+//  var self = this;
 
   // wait if file is locked
   var _flagCheck = setInterval(function() {
     if (questionsFileLocked == false) {
         clearInterval(_flagCheck);
-//        console.log("file is unlocked");
         updateResult(); // the function to run once file is unlocked
     }
-//    console.log("file is locked");
   }, 100); // interval set at 100 milliseconds
 
   function updateResult() {
-//    console.log("updateResult()");
+    // lock file
     questionsFileLocked = true;
 
     directory = './data/materials/profession-' + profession.toString() + "/qualification-" + qualification.toString()
     filename  = directory + '/questions.yaml'
-//    response  = {}
     questions = {}
 
-    // read overview information
+    // read questions file
     fs.readFile(filename,
       // callback function that is called when reading file is done
       function(err, data) {
@@ -1759,7 +1755,8 @@ function updateStat(req, res) {
 
           var logLine = 'ERROR: |updateStats| load questions Err: ' + err.toString()
           appendToLog(logLine)
-
+          // unlock file
+          questionsFileLocked = false
           writeResponse(res, {err: err.toString()})
           return
         }
@@ -1772,22 +1769,29 @@ function updateStat(req, res) {
           // calculate moving average
           var stat = questions[questionIndex].stats
 
-          console.log("stat old: " + stat);
-
           var recentAverageSmoothingFactor = 100.0;
           stat = (stat * recentAverageSmoothingFactor + result) / (recentAverageSmoothingFactor + 1.0);
           questions[questionIndex].stats = stat;
 
-          console.log("stat new: " + stat);
+          // write question.yaml file
+          try {
+            fs.writeFileSync(filename, yaml.safeDump(questions))
+          }
+          catch (e) {
+            var logLine = 'ERROR: |updateStats| failed to write file ' + filename + '. Err: ' + e.toString()
+            appendToLog(logLine)
+            // unlock file
+            questionsFileLocked = false;
+            writeResponse(res, {err: e.toString()})
+            return
+          }
 
-//          response = yaml.safeLoad(information)
+          // call questionnaire() to send response with updated stats
+          req.params["profession"] = profession
+          req.params["qualification"] = qualification
+          questionnaire(req, res)
         }
-
-        // write to file
-
-        // maybe call questionnaire() to return updated question
-
-//        writeResponse(res, questions)
+        // unlock file
         questionsFileLocked = false;
       }
     )

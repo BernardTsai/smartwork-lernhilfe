@@ -21,7 +21,7 @@
     Ausblühungen, Feuchtigkeit Verschmutzungen Vermoosung, Veralgung feststellen
     und kann gegebenenfalls weitere Prüfungen veranlassen.      
   points: '5'
-  stats: 0.0
+  stats: 0
 - title: ' Welche Untergrundprobleme treten im Altbau häufig auf. '
   description: 'Ein häufiges Problem in Altbauten sind sandende und kreidende Untergründe '
   question: >-
@@ -42,7 +42,7 @@
     Oberflächen wischen und anhand des Abriebes erkennen ob die Oberflächen
     Kreiden.  
   points: '5'
-  stats: 0.0
+  stats: 0
 - title: Baustellenübliche Untergrundprüfungen
   description: >-
     um die Festigkeit der Untergründe zu Prüfen setze ich verschiedene Methoden
@@ -62,7 +62,7 @@
     Durch eine Klopf-und Hörprobe kann man mit einem Hammer beispielsweise
     Hohlstellen oder schlecht haftende Putzstellen ausfindig machen.
   points: '5'
-  stats: 0.0
+  stats: 0
 - title: Holzuntergründe
   description: >-
     um ein gutes Lackierergebnis zu gewährleisten muss Holzwerkstoffe trocken
@@ -83,4 +83,4 @@
     die Messspitzen in das Holz gedrückt werden. Das Messergebnis wird im
     Display angezeigt, es dürfen max. 12-15% Holzfeuchte vorhanden sein.  
   points: '5'
-  stats: 0.0
+  stats: 0

@@ -15,7 +15,7 @@
     - 'no'
   explanation: Das Ohmsche Gesetz lautet U = R*I. Umgestellt nach I ergibt das I = U/R.
   points: '5'
-  stats: 0.0
+  stats: 0
 - title: Messen mit dem Oszilloskop
   description: |
     Ein Oszilloskop is in der Elektrotechnik ein wichtiges Messgerät. 
@@ -33,7 +33,7 @@
   explanation: |
     Mit einem Oszilloskop können elektrische Signale sichtbar gemacht werden.
   points: 5
-  stats: 0.0
+  stats: 0
 - title: Bedienung elektrischer Geräte
   description: |
     Bei der Bedienung elektrischer Geräte kann man viel falsch machen.
@@ -52,7 +52,7 @@
     Elektrogeräte können erstaunlich viel Rauch produzieren. 
     *hust* Elektrolytkondensator verpolt *hust*
   points: 5
-  stats: 0.0
+  stats: 0
 - title: Bobbycar
   description: Auch Kinderspielzeug kann heutzutage viel Elektronik beinhalten.
   question: Wie viele Elektromotoren befinden sich in einem billig Bobbycar?
@@ -68,7 +68,7 @@
     - 'no'
   explanation: Billig Bobbycars haben keine Motoren!
   points: 5
-  stats: 0.0
+  stats: 0
 - title: Testfrage
   description: Da gibbet nüscht zu beschreiben. Ist eben eine Testfrage zum testen
   question: Ist dies ein Test?
@@ -84,7 +84,7 @@
     - 'no'
   explanation: 'Wie schon sogar der Titel verrät, ist dies einfach nur eine Testfrage'
   points: '5'
-  stats: 0.0
+  stats: 0
 - title: asdf
   description: asdf
   question: asdf
@@ -112,4 +112,4 @@
     - 'no'
   explanation: asdf
   points: '5'
-  stats: 0.0
+  stats: 0
