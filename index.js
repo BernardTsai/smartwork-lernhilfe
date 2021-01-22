@@ -1718,6 +1718,81 @@ function deleteImage(req, res) {
     }
   )
 }
+//------------------------------------------------------------------------------
+
+var questionsFileLocked = false;
+
+function updateStat(req, res) {
+  var profession    = req.body.profession    ? req.body.profession    : ""
+  var qualification = req.body.qualification ? req.body.qualification : ""
+  var questionIndex = req.body.questionIndex ? req.body.questionIndex : ""
+  var result        = req.body.result        ? req.body.result        : ""
+
+//  console.log(req.body)
+  var self = this;
+
+  // wait if file is locked
+  var _flagCheck = setInterval(function() {
+    if (questionsFileLocked == false) {
+        clearInterval(_flagCheck);
+//        console.log("file is unlocked");
+        updateResult(); // the function to run once file is unlocked
+    }
+//    console.log("file is locked");
+  }, 100); // interval set at 100 milliseconds
+
+  function updateResult() {
+//    console.log("updateResult()");
+    questionsFileLocked = true;
+
+    directory = './data/materials/profession-' + profession.toString() + "/qualification-" + qualification.toString()
+    filename  = directory + '/questions.yaml'
+//    response  = {}
+    questions = {}
+
+    // read overview information
+    fs.readFile(filename,
+      // callback function that is called when reading file is done
+      function(err, data) {
+        if (err) {
+          console.log(err)
+
+          var logLine = 'ERROR: |updateStats| load questions Err: ' + err.toString()
+          appendToLog(logLine)
+
+          writeResponse(res, {err: err.toString()})
+          return
+        }
+
+        if (data) {
+          information = data.toString('utf8')
+
+          questions = yaml.safeLoad(information)
+
+          // calculate moving average
+          var stat = questions[questionIndex].stats
+
+          console.log("stat old: " + stat);
+
+          var recentAverageSmoothingFactor = 100.0;
+          stat = (stat * recentAverageSmoothingFactor + result) / (recentAverageSmoothingFactor + 1.0);
+          questions[questionIndex].stats = stat;
+
+          console.log("stat new: " + stat);
+
+//          response = yaml.safeLoad(information)
+        }
+
+        // write to file
+
+        // maybe call questionnaire() to return updated question
+
+//        writeResponse(res, questions)
+        questionsFileLocked = false;
+      }
+    )
+  }
+}
 
 //------------------------------------------------------------------------------
 
@@ -1745,6 +1820,7 @@ app.post('/loadlogs',                                                   loadLogs
 app.post('/upload', multer({ dest: './tmp/uploaded' }).single('image'), saveUpload)
 app.get( '/getimage/:profession/:qualification/:filename',              getImage)
 app.post('/deleteimage',                                                deleteImage)
+app.post('/updatestat',                                                 updateStat)
 
 server = app.listen(port, () => console.log(`Server listening on port ${port}!`))
 server.timeout = 5000
