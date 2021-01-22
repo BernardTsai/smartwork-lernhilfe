@@ -119,7 +119,8 @@ Vue.component( 'settings-editquiz',
           answerType:  '',
           answers:     [ '', '', '' ],
           explanation: '',
-          points:      -1
+          points:      -1,
+          stats:       0
         }
         this.model.questionnaire.push(newQuestion);
         this.model.quiz.question = this.model.questionnaire.length - 1;

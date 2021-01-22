@@ -1,7 +1,39 @@
+//TODO: display result compared to running average at the end
 Vue.component( 'questionnaire',
   {
     props:    ['model'],
     methods: {
+      updateStats: function(result) {
+        var request = new XMLHttpRequest();
+        var self = this;
+
+        // callback function to process the results
+        function updateStatsCB() {
+          if (this.readyState == 4) {
+            // check status
+            if (this.status != 200) {
+              return
+            }
+            result = jsyaml.safeLoad(request.responseText)
+            console.log(result);
+
+            if (result) {
+              //TODO: updateStat
+            }
+            else {
+              alert("Error updating Stats!");
+              console.log("error: " + result.msg)
+            }
+          }
+        }
+
+        var params  = JSON.stringify( {profession: this.model.quiz.profession.toString(), qualification: this.model.quiz.qualification.toString(), questionIndex: this.model.quiz.question.toString(), result: result} )
+        console.log(params);
+        request.onreadystatechange = updateStatsCB
+        request.open('POST', '/updatestat', true);  // asynchronous request
+        request.setRequestHeader('Content-type', 'application/json');
+        request.send(params);
+      },
       check: function() {
         if (this.question().answerType == 'Multiple Choice') {
           // check answers
@@ -71,6 +103,8 @@ Vue.component( 'questionnaire',
 
           this.model.quiz.mode = "answer";
         }
+        success = (this.model.quiz.questions[this.model.quiz.question].success == "yes")
+        this.updateStats(success ? 100 : 0);
       },
       next: function() {
         this.model.quiz.question = this.model.quiz.question + 1
