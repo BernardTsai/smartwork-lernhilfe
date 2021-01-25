@@ -15,10 +15,10 @@ Vue.component( 'questionnaire',
               return
             }
             result = jsyaml.safeLoad(request.responseText)
-            console.log(result);
+//            console.log(result);
 
             if (result) {
-              //TODO: updateStat
+              //TODO: updateStat on frontend
             }
             else {
               alert("Error updating Stats!");
@@ -28,7 +28,7 @@ Vue.component( 'questionnaire',
         }
 
         var params  = JSON.stringify( {profession: this.model.quiz.profession.toString(), qualification: this.model.quiz.qualification.toString(), questionIndex: this.model.quiz.question.toString(), result: result} )
-        console.log(params);
+//        console.log(params);
         request.onreadystatechange = updateStatsCB
         request.open('POST', '/updatestat', true);  // asynchronous request
         request.setRequestHeader('Content-type', 'application/json');
@@ -104,7 +104,7 @@ Vue.component( 'questionnaire',
           this.model.quiz.mode = "answer";
         }
         success = (this.model.quiz.questions[this.model.quiz.question].success == "yes")
-        this.updateStats(success ? 100 : 0);
+        this.updateStats(success ? 1 : 0);
       },
       next: function() {
         this.model.quiz.question = this.model.quiz.question + 1
@@ -125,6 +125,23 @@ Vue.component( 'questionnaire',
       },
       result: function() {
         this.model.mode = "result"
+
+        // TODO: display result in modal
+        var finalResult = 0
+        for (var question of this.model.quiz.questions) finalResult += (question.success == "yes") ? 1 : 0;
+        finalResult /= this.model.quiz.length;
+
+//        console.log(finalResult*100 + "%")
+
+        var average = 0
+        for (var question of this.model.questionnaire) average += question.stats;
+        average /= this.model.questionnaire.length
+
+//        console.log(average*100 + "%")
+        var resultCompared = Math.round(((finalResult - average)*100 + Number.EPSILON) * 100) / 100
+        if (resultCompared > 0) alert("Herzlichen Glückwunsch! Du bist " + resultCompared + "% besser als der Durchschnitt (gleitender Mittelwert)");
+        else alert ("Du hast " + finalResult*100 + "% erreicht");
+
       },
       question: function() {
         return this.questionnaire[this.model.quiz.question]
