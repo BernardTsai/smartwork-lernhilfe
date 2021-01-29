@@ -124,24 +124,26 @@ Vue.component( 'questionnaire',
         this.model.quiz.mode = "question"
       },
       result: function() {
-        this.model.mode = "result"
+//        this.model.mode = "result"
 
         // TODO: display result in modal
         var finalResult = 0
         for (var question of this.model.quiz.questions) finalResult += (question.success == "yes") ? 1 : 0;
         finalResult /= this.model.quiz.length;
 
-//        console.log(finalResult*100 + "%")
-
         var average = 0
         for (var question of this.model.questionnaire) average += question.stats;
         average /= this.model.questionnaire.length
 
-//        console.log(average*100 + "%")
+        // calculate result compared to running average in percent
         var resultCompared = Math.round(((finalResult - average)*100 + Number.EPSILON) * 100) / 100
-        if (resultCompared > 0) alert("Herzlichen Glückwunsch! Du bist " + resultCompared + "% besser als der Durchschnitt (gleitender Mittelwert)");
-        else alert ("Du hast " + finalResult*100 + "% erreicht");
+//        if (resultCompared > 0) alert("Herzlichen Glückwunsch! Du bist " + resultCompared + "% besser als der Durchschnitt (gleitender Mittelwert)");
+//        else alert ("Du hast " + finalResult*100 + "% erreicht");
 
+        this.results.result = Math.round((finalResult*100 + Number.EPSILON) * 100) / 100
+        this.results.resultCompared = resultCompared
+
+        $("#resultModal").modal()
       },
       question: function() {
         return this.questionnaire[this.model.quiz.question]
@@ -206,6 +208,14 @@ Vue.component( 'questionnaire',
         return this.model.quiz.mode == "question"
       }
     },
+    data() {
+      return {
+        results: {
+          result:         -1,
+          resultCompared: -1
+        }
+      }
+    },
     template: `
       <div id="questionnaire" class="container">
         <form>
@@ -268,6 +278,61 @@ Vue.component( 'questionnaire',
             <button v-if="answerMode && index==count"   type="button" class="btn btn-sm mr-auto btn-secondary" @click="result()">Ergebnis</button>
           </div>
         </form>
+
+
+        <!-- Modal for result displaying -->
+        <div class="modal fade" id="resultModal" data-backdrop="static" data-keyboard="false"  tabindex="-1" role="dialog" aria-labelledby="resultModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content border-success">
+              <div class="modal-header">
+                <h5 class="modal-title" id="resultLongTitle">Quiz Auswertung</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @click="this.model.mode = 'result'">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+
+                <div v-if="this.results.result > 0" class="card text-white bg-success my-3 mx-auto" style="max-width: 540px;">
+                  <div class="row no-gutters">
+                    <div class="col-md-2 my-auto d-none d-md-block">
+                      <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/thumbs-up.svg" class="card-img p-1" alt="thumbs up">
+                    </div>
+                    <div class="col-md-10">
+                      <div class="card-body">
+                        <h5 class="card-title">Herzlichen Gl&uumlckwunsch! Du hast {{this.results.result}}% erreicht!</h5>
+                        <p v-if="this.results.resultCompared > 0" class="card-text">
+                          Du bist {{this.results.resultCompared}}% besser als der Durchschnitt (gleitender Mittelwert)
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div v-if="this.results.result <= 0" class="card text-white bg-info my-3 mx-auto" style="max-width: 540px;">
+                  <div class="row no-gutters">
+                    <div class="col-md-2 my-auto d-none d-md-block">
+                      <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/times.svg" class="card-img p-1" alt="thumbs up">
+                    </div>
+                    <div class="col-md-10">
+                      <div class="card-body">
+                        <h5 class="card-title">Du hast leider {{this.results.result}}% erreicht!</h5>
+                       <!-- <p class="card-text">
+                          Du bist {{this.results.resultCompared}}% besser als der Durchschnitt (gleitender Mittelwert)
+                        </p> -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal" @click="this.model.mode = 'result'">Weiter</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
       </div>`
   }
 )
