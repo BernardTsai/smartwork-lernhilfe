@@ -16,9 +16,9 @@ Vue.component( 'settings-userstatus',
       selectUser: function(index) {
         this.users.select = index;
         // because of error when trying to access array from modal
-        this.users.emailSel = this.users.user[index].email;
-        loadCerts(this.users.user[index].email);
-        loadCert(this.users.user[index].email);
+        this.users.emailSel = this.users.userFiltered[index].email;
+        loadCerts(this.users.userFiltered[index].email);
+        loadCert(this.users.userFiltered[index].email);
         getProfessions();
         // show certs in modal
         $("#certs").modal();
@@ -28,6 +28,56 @@ Vue.component( 'settings-userstatus',
         // needed for authentication (not working yet)
 //        var params  = JSON.stringify( { email: model.email, password: model.password } )
         this.users.user = loadData('POST', '/getallusers'/*, params*/);
+        // copy userlist to filterd user list
+        this.users.userFiltered = JSON.parse(JSON.stringify(this.users.user));
+      },
+
+      // request list of all groups from backend
+      getGroups: function() {
+        this.groups.group = loadData('POST', '/getallgroups'/*, params*/);
+        for (let group of this.groups.group) {
+          group.members = jsyaml.safeLoad(group.members);
+        }
+      },
+
+      filterGroups: function() {
+        // empty filtered users
+        this.users.userFiltered = [];
+
+        this.getGroups();
+
+        // find groups with this.model.email as member
+        var arrIndex = -1
+        var found = false
+        for (let i in this.groups.group) {
+          for (let j in this.groups.group[i].members) {
+            if (this.groups.group[i].members[j].email == this.model.email) {
+              found = true
+              arrIndex = i
+            }
+          }
+          if (found) {
+            if (arrIndex > -1) {
+              this.groups.groupTmp.push(this.groups.group[arrIndex])
+            }
+            found = false
+          }
+        }
+
+        for (let i in this.groups.group) {
+          for (let j in this.groups.group[i].members) {
+            found = false;
+            for (let user of this.users.userFiltered) {
+              if (user.email == this.groups.group[i].members[j].email) {
+                found = true
+              }
+            }
+            if (!found) {
+              this.users.userFiltered.push(this.groups.group[i].members[j])
+              found = true
+            }
+          }
+        }
       },
 
       getPercentage: function(profession) {
@@ -78,8 +128,13 @@ Vue.component( 'settings-userstatus',
       return {
         users: {
           user: {},
+          userFiltered: [],
           select: -1,
           emailSel: ''
+        },
+        groups: {
+          group: {},
+          groupTmp: []
         }
       }
     },
@@ -103,7 +158,10 @@ Vue.component( 'settings-userstatus',
           </p>
           <div class="collapse" id="collapseFilter">
             <div class="card card-body bg-light my-3 mx-auto" style="max-width: 540px;">
-              Noch ohne Funktion. Noch ohne Funktion. Noch ohne Funktion. Noch ohne Funktion...
+              <p> Filtern nach: </p>
+              <button class="btn btn-primary" type="button" @click="filterGroups()">Eigene Gruppen(n)</button>
+              <br><hr>
+              <button class="btn btn-secondary" type="button" @click="users.userFiltered = JSON.parse(JSON.stringify(users.user));">Zur&uumlcksetzen</button>
             </div>
             <hr style="max-width: 540px;">
           </div>
@@ -147,7 +205,7 @@ Vue.component( 'settings-userstatus',
         </div>
 
         <!-- loop over all users -->
-        <div v-for="(user, index) in this.users.user" :class="{
+        <div v-for="(user, index) in this.users.userFiltered" :class="{
                                                         'card': true,
                                                         'my-3': true,
                                                         'mx-auto': true,
