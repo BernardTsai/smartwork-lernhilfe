@@ -578,6 +578,16 @@ Vue.component( 'settings-editquiz',
           <button type="button" class="btn btn-dark" @click="downloadQuiz()">Download: Backup von diesem Quiz</button>
         </div>
 
+        <br><hr style="max-width: 540px;"><br>
+
+        <div v-if="this.selected.qualificationIndex != -1" class="text-center">
+          <h3><u>Quiz Statistik</u></h3>
+          <p v-for="(question, index) in this.model.questionnaire">{{question.title}}:<span class="col-auto ml-auto">{{Math.round((question.stats*100 + Number.EPSILON) * 100) / 100}}%</span></p>
+        </div>
+
+
+
+
         <!-- Modal for quiz details and options -->
         <div v-if="this.selected.qualificationIndex != -1" class="modal fade" id="quizEditModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="quizEditModalCenterTitle" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered" role="document">
