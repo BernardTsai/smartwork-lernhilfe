@@ -84,3 +84,509 @@
     Display angezeigt, es dürfen max. 12-15% Holzfeuchte vorhanden sein.  
   points: '5'
   stats: 0
+- title: 'Untergründe prüfen '
+  description: >-
+    Bevor ein Untergrund tapeziert werden kann, muss dieser auf lose und alte
+    Anstriche überprüft werden.
+  question: >-
+    Welcher Beschichtungsstoff ist auf jeden Fall vor einer Tapezierung vom
+    Untergrund zu entfernen?
+  imageName: ''
+  options:
+    - Dispersionsfarbe
+    - Leimfarbe
+    - Kalkfarbe
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Leimfarbe muss immer von den Wand - und Deckenflächen entfernt werden, da
+    hier kein tragender Untergrund gewährleistet ist. Der Kleister auf den
+    Tapeten löst die Leimfabe an, so das hier keine Haftung auf den Untergrund
+    zustande kommt
+  points: '5'
+  stats: 0
+- title: Untergründe prüfen
+  description: >-
+    Bevor ein Untergrund bearbeitet werden kann, muss ich den Untergrund auf
+    seine Eigenschaften oder Fehler prüfen
+  question: Ich nehme jeden zu bearbeitenden Untergrund in Augenschein. Was heißt das?
+  imageName: ''
+  options:
+    - Ich studiere die Pläne des Architekten und frage nach Fehlern
+    - Ich fotografiere die Wände mit meiner Handykamera
+    - >-
+      Ich schaue mir alle Untergründe (Böden, Wände und Decken) genau an und
+      leite gegebenenfalls weitere Prüfschritte ein.
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    Die erste Prüfung erfolgt durch das genaue Beschauen/betrachten der
+    Untergründe. Man kann damit Unregelmäßigkeiten, Abplatzungen, Risse,
+    Ausblühungen, Feuchtigkeit, Verschmutzungen, Vermoosung, Veralgung
+    feststellen und kann gegebenenfalls weitere Prüfungen veranlassen
+  points: 5
+  stats: 0
+- title: Untergründe prüfen
+  description: >-
+    Bevor ein Untergrund tapeziert werden kann, muss dieser auf lose und alte
+    Anstriche überprüft werden.
+  question: >-
+    Welcher Beschichtungsstoff ist auf jeden Fall vor einer Tapezierung vom
+    Untergrund zu entfernen?
+  imageName: ''
+  options:
+    - Dispersionsfarbe
+    - Leimfarbe
+    - Kalkfarbe
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Leimfarbe muss immer von den Wand - und Deckenflächen entfernt werden, da
+    hier kein tragender Untergrund gewährleistet ist. Der Kleister auf den
+    Tapeten löst die Leimfabe an, so das hier keine Haftung auf den Untergrund
+    zustande kommt
+  points: 5
+  stats: 0
+- title: Arbeitsschutzmaßnahmen
+  description: >-
+    Das Arbeiten mit ätzenden Materialien bedarf vorher einige Schutzmaßnahmen
+    die getroffen werden müssen.
+  question: >-
+    Welche Schutzmaßnahmen treffen Sie bei der Verarbeitung von ätzenden
+    Ablaugern?
+  imageName: ''
+  options:
+    - Schutzhelm und Schutzschuhe tragen
+    - Stark mit Wasser verdünnen
+    - Schutzbrille und Schutzhandschuhe tragen
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    Die Schutzbrille schützen die Augen und die Schutzhandschuhe die Haut vor
+    evtl. Spritzer des ätzenden Ablaugemittel
+  points: 5
+  stats: 0
+- title: Untergründe prüfen
+  description: In einem Gastraum hat sich an der Decke und den Wänden Schimmel gebildet
+  question: Worauf ist der Schimmelpilzbefall in einem Raum zurückzuführen?
+  imageName: ''
+  options:
+    - Auf länger andauernde Feuchtigkeitseinwirkung
+    - Auf zu häufiges Lüften des Raums
+    - Auf zu rauen Putz
+  answerType: Multiple Choice
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Häufig werden die Räume nicht regelmäßig und ausreichend gelüftet oder
+    Feuchtigkeit dringt von außen ein, weitere Prüfungen müssen veranlasst
+    werden.
+  points: 5
+  stats: 0
+- title: Gesundheitsschutz
+  description: >-
+    Untergründe - besonders in Feuchträumen - müssen vor weiterer Bearbeitung
+    auch auf Pilzbefall überprüft werden
+  question: >-
+    Warum sollte Pilzbefall an Decken und Wänden in Räumen beseitigt und
+    Neubefall verhindert werden?
+  imageName: ''
+  options:
+    - Weil Pilzbefall die Festigkeit von Decken und Wänden beeinträchtigt
+    - Weil Pilzbefall Gesundheitsschäden hervorrufen kann
+    - Weil Pilzbefall zu zusätzlichen Wärmeverlusten in den Räumen führt
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Durch das einatmen der Pilzsporen können schwere gesundheitliche Schäden
+    entstehen. Bei nichtfachgerechter entfernung des Pilzbefalls, breitet sich
+    der Neubefall wieder sehr schnell aus
+  points: 5
+  stats: 0
+- title: Untergründe vorbehandeln
+  description: >-
+    Untergründe die von Pilzen befallen sind, müssen fachgerecht behandelt
+    werden.
+  question: Wie behandeln Sie die mit Pilzen befallenen Bereiche?
+  imageName: ''
+  options:
+    - Abflammen mit einem Abbrenngerät
+    - >-
+      Putz der befallenen Bereiche abschlagen und Fehlstellen mit
+      Gipskarton-Bauplatten schließen
+    - Abbürsten/Absaugen und mit einem geigneten Fungizid ( Biozid ) behandeln
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    durch das Abbürsten/Absaugen werden die von den Pilzen befallenen Stellen
+    fachgerecht befreit, die weitere Bearbeitung mit Fungizide/Biozide
+    Materialen verhindern einen erneuten Pilzbefall auf den Untergründen.
+  points: 5
+  stats: 0
+- title: Untergründe vorbehandeln
+  description: Bestimmte Untergründe müssen vor weiterer Bearbeitung abgesperrt werden
+  question: >-
+    An einer Küchendecke sollen Wasserflecken isoliert werden. Welches
+    Isolierverfahren setzen Sie ein, damit die Putzstruktur des Untergrundes
+    erhalten bleibt?
+  imageName: ''
+  options:
+    - isolieren mit nicht schichtbildendem lösemittelhaltigem Absperrmittel
+    - Isolieren mit Polymerisathharzmittel
+    - isolieren mit Öllackmittel
+  answerType: Multiple Choice
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Da die vorhandene Putzstruktur erhalten bleiben soll, muss ein nicht
+    schichtbildendes Material wie z.B. Absperrgrund oder Isoliergrund verwendet
+    werden. Dieses Material dringt tief in den Untergrund ein und hinterlässt
+    somit keine Schichtbildung
+  points: 5
+  stats: 0
+- title: Untergründe vorbehandeln
+  description: >-
+    Sie stellen fest, dass sich an mehreren Stellen des Altputzes beim Abreiben
+    mit der Hand ein Putzabrieb zeigt.
+  question: Wie behandeln Sie diese Stellen?
+  imageName: ''
+  options:
+    - Putz abklopfen und neu beschichten
+    - Putzoberfläche mit Grundbeschichtungsstoff behandeln
+    - Putzoberfläche mit Biozid behandeln
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Damit die Putzoberflächen wieder tragfähig werden und somit die
+    nachfolgenden Beschichtungen anhaften können, müssen diese vorher mit einem
+    Grundbeschichtungsstoff bearbeitet werden.
+  points: 5
+  stats: 0
+- title: Untergründe prüfen
+  description: >-
+    Putzuntergründe müssen fachlich optimal vorbereitet sein, bevor diese weiter
+    bearbeitet werden.
+  question: >-
+    Welche Eigenschaften muss der Putzuntergrund aufweisen, auf dem Sie
+    tapezieren können?
+  imageName: ''
+  options:
+    - 'Der Putz muss trocken, fest und saugfähig sein'
+    - Der Putz muss trocken und noch alkalisch sein
+    - Der Putz muss eine Sinterschicht aufweisen
+  answerType: Multiple Choice
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Der Putzuntergrund muss gut durchgetrocknet, also keine feuchten Stellen an
+    den zu bearbeitenden Flächen mehr vorhanden sein, er darf nicht sanden und
+    muss eine gewisse saugfähigkeit aufzuweisen haben.
+  points: 5
+  stats: 0
+- title: Untergründe prüfen
+  description: >-
+    Bevor auf den Fassadenflächen Beschichtungen aufgetragen werden können,
+    müssen diese auch auf Moos, Pilz und Algenbefall überprüft werden.
+  question: >-
+    Woran können Sie erkennen, ob auf den Fassadenflächen Moos, Algen- oder/ und
+    Pilzbefall vorhanden ist/sind?
+  imageName: ''
+  options:
+    - Die Flächen zeigen weißliche Ausblühungen
+    - Die Flächen zeigen grünen bezw. dunklen Bewuchs
+    - Die Fläsche zeichnen sich durch eine rasche Wasseraufnahme aus.
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Algen, Pilze und Moose zählen, wie auch Bakterien zu den sogenannten
+    Mikroorganismen Typische Anzeichen von Moos, Pilz und Algenbefall sind
+    grüner bezw. dunkler Bewuchs
+  points: 5
+  stats: 0
+- title: Untergründe vorbehandeln
+  description: >-
+    Sie haben festgestellt, dass eine Außenfassade Moos-Algen- und Pilzbewuchs
+    aufweisen
+  question: >-
+    Welche Maßnahmen sind erforderlich, damit Sie negative Auswirkungen des
+    Befalls ausschließen können?
+  imageName: ''
+  options:
+    - Putz abschlagen und neu verputzen
+    - Erst nach längerer Trockenperiode mit den Dämmmaßnahmen beginnen
+    - >-
+      Bewuchs mechanisch oder durch Reinigen mit Hochdruckheißwasserstrahl
+      entfernen
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    Durch Abbürsten mit einer Nylon-Borste und Abbstrahlen mit einem
+    Hochdruckreiniger wird der Bewuchs optimal entfernt.
+  points: 5
+  stats: 0
+- title: Sicherheit- und Gesundheitsschutz
+  description: >-
+    Elektrische Maschinen und Leitungen müssen vor Auftragsdurchführung auf
+    evtl. Schäden per Augenschein untersucht werden.
+  question: >-
+    Was unternehmen Sie, wenn Sie einen Schaden an einem Gerät oder einer
+    stromführenden Zuleitung entdecken?
+  imageName: ''
+  options:
+    - >-
+      Schadhafte Geräte oder Leitungen sofort außer Betrieb setzen, Reparatur
+      von einer Fachkraft ausführen lassen.
+    - den Schaden sorgfältig reparieren
+    - 'solange weiter arbeiten, wie es der Schaden zuläßt'
+  answerType: Multiple Choice
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Bei defekten Leitungen muss immer zuerst die Stromzufuhr unterbrochen,
+    defekte Geräte von einem Fachmann repariert werden
+  points: 5
+  stats: 0
+- title: Untergründe für Beschichtungen vorbereiten
+  description: >-
+    Untergründe müssen vor der Beschichtung mit anderen Materialien gut
+    vorbehandelt werden.
+  question: Welche Aufgaben soll das Schleifen eines Untergrundes erfüllen?
+  imageName: ''
+  options:
+    - 'Vorbereiten, fertigen, abtragen'
+    - 'Einrichten, verschönern, gestalten'
+    - Aufrauhen und glätten
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    Durch das Schleifen wird eine bessere Haftung für die nachfolgenden
+    Beschichtungen erreicht, außerdem werden kleinere Unebenheiten beseitigt.
+  points: 5
+  stats: 0
+- title: Untergründe vorbehandeln
+  description: Nach der Tapetenentfernung zeigen sich Rostflecken im Putzuntergrund
+  question: Wie werden diese vor dem Tapezieren abgesperrt?
+  imageName: ''
+  options:
+    - Mit Streichmakulatur
+    - Mit Alumiumfolie
+    - Mit Tapetenwechselgrund
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Die Aluminiumfolie sperrt die Rostflecken dementsprechend ab, sodass diese
+    nicht mehr durch die Tapeten durchdringen können
+  points: 5
+  stats: 0
+- title: Untergründe prüfen
+  description: >-
+    Vor dem Bearbeiten von glatten Holz/Metallflächen muss der Untergrund auf
+    Haftfestigkeit überprüft werden
+  question: Wie wird die Haftfähigkeit der vorhandenen Beschichtungen geprüft?
+  imageName: ''
+  options:
+    - >-
+      Die Haftfestigkeit der alten Beschichtungen kann durch eine
+      Gitterschnittprüfung getestet werden
+    - Die Haftfestigkeit wird durch abkratzen mit einer Japanspachtel geprüft
+    - Die Haftfestigkeit wird durch aufrauhen mit Stahlwolle geprüft
+  answerType: Multiple Choice
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Mit einem Cuttermesser oder Gitterschnittgerät werden sechs oder mehr
+    rechtwinklig kreuzende parallele Schnitte bis auf den Untergrund durchgehend
+    geritzt. Dadurch entsteht ein Gitter mit Quadtraten. Die Tragfähigkeit ist
+    gut, wenn keine oder geringe Ausbrüche an den Schnittpunkten oder keine
+    abgeplatzten Flächen auf der Altbeschichtung sichtbar sind
+  points: 5
+  stats: 0
+- title: Untergründe vorbereiten und bearbeiten
+  description: 'Bevor ein Raum renoviert wird, müssen gewisse Vorarbeiten getätigt werden.'
+  question: >-
+    In welcher Reihenfolge müssen die unten aufgeführten Arbeiten durchgeführt
+    werden?
+  imageName: ''
+  options:
+    - >-
+      Schalter und Steckdosen abschrauben, Fußboden abdecken, Strom abschalten,
+      alte Tapeten perforieren mit Wasser und Tapetenlöser benetzen und weichen
+      lassen, alte Tapeten entfernen und entsorgen.
+    - >-
+      Fußboden abdecken, alte Tapeten perforieren, Schalter und Steckdosen
+      abschrauben, mit Wasser und Tapetenlöser benetzen und weichen lassen, alte
+      Tapeten entfernen und entsorgen.
+    - >-
+      Fußboden abdecken, Strom abschalten/ Sicherung ausschalten, Schalter und
+      Steckdosen abschrauben, alte Tapeten perforieren, mit Wasser und
+      Tapetenlöser benetzen und weichen lassen, alte Tapeten entfernen und
+      entsorgen
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    Bevor mit den Renovierungsarbeiten begonnen werden kann, muss zum Schutz des
+    Fußbodens vor den weiteren Renovierungsarbeiten, dieser erst abgedeckt
+    werden. Die Sicherungen müssen immer, wegen der Gefahr eines Stromschlags,
+    vor dem Abmontieren der Schalter und Steckdosen abgeschaltet werden.
+  points: 5
+  stats: 0
+- title: Untergründe für Beschichtungen vorbereiten
+  description: >-
+    Untergründe müssen,bevor sie eine Schlußlackierung bekommen, immer
+    vorbehandelt werden.
+  question: Warum müssen die gespachtelten Türen vorlackiert werden?
+  imageName: ''
+  options:
+    - Um die Stoßfestigkeit der Schlußlackierung zu erhöhen
+    - >-
+      Um eine gleichmäßig saugende 0berfläche für die Schlußlackierung zu
+      schaffen
+    - Um auf das Spachteln zu verzichten
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Wenn kein Voranstrich durchgeführt wird, würde die Schlußlackierung auf
+    gespachtelten Untergründen ungleichmäßig auftrocknen und die Oberfläche
+    fleckig erscheinen.
+  points: 5
+  stats: 0
+- title: Untergründe grundieren und beschichten
+  description: Metallische Untergründe müssen mit speziellen Materialien bearbeiten werden
+  question: Wovor sollen Beschichtungen auf metallischen Untergründen schützen?
+  imageName: ''
+  options:
+    - Vor Korrosion der metallischen Untergründe
+    - Vor Säuren auf den metallischen Untergründen
+    - Vor Regen auf den metallischen untergründen
+  answerType: Multiple Choice
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Die hierfür zu verwendeten Materialien sollen das Metall vor Korrosion
+    (Rost) schützen. Ohne diese speziellen Beschichtungen, würde das Metall im
+    Laufe der Zeit von Rost völlig zerstört werden.
+  points: 5
+  stats: 0
+- title: Untergründe grundieren
+  description: >-
+    Vor der Tapezierung sind Untergründe mit einem Grundiermittel zu
+    bearbeiteten.
+  question: >-
+    Warum sollte der Untergrund, auf dem eine Mustertapete geklebt wird, nicht
+    mit einer filmbildenden Kunstharzdispersion grundiert werden?
+  imageName: ''
+  options:
+    - Weil eine filmbildende Kunstharzdispersion hohe Materialkosten verursacht.
+    - >-
+      Weil einen filmbildende Kunstharzdispersion durch die Mustertaptete
+      hindurch scheint und so den Farbton verändert.
+    - >-
+      Weil eine filmbildende Kunstharzdispersion die Dampfdiffusion zur Wand hin
+      stark beeinträchtigt und dadurch die Trocknung des Tapetenkleisters
+      verzögert.
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    Die Dampfdiffusion - Wanderung feuchthaltiger Luft durch einen Bauteil- in
+    diesem Falle durch die Wände, wird sehr stark beinträchtigt.Auch besteht die
+    Gefahr, dass die Tapetennähte sich öffnen oder auseinander ziehen können.
+  points: 5
+  stats: 0
+- title: Werkzeugpflege
+  description: >-
+    Auf eine sorgfältige und regelmäßige Pflege der Werkzeuge muss ständig
+    geachtet werden.
+  question: >-
+    Wann und wie reinigt man die Werkzeuge, die bei der Beschichtung mit
+    Dispersionsfarben eingesetzt wurden?
+  imageName: ''
+  options:
+    - Reinigen am nächsten Werktag
+    - Reinigung gleich nach Beendigung der Arbeiten
+    - 'Reinigung nach Auftragsdurchführung, jedoch spätestens eine Woche danach'
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Die Werkzeuge müssen direkt nach Beendigung der Arbeiten mit Wasser
+    gereinigt werden, da die Dispersionsfarbe nach der Trocknung nicht mehr
+    entfernt werden kann
+  points: 5
+  stats: 0
+- title: Untergründe vorbehandeln
+  description: >-
+    Lose und alte nicht tragbare Lackbeschichtungen müssen vor einer
+    Neubeschichtung abgebeizt werden
+  question: Das zu verwendete Abbeizmittel ist wasseremulgierbar. Was bedeutet das?
+  imageName: ''
+  options:
+    - Das Abbeizmittel darf nicht bei Feuchtigkeit verwendet werden.
+    - Das Abbeizmittel zieht Wasserdampf an
+    - Das Abbeizmittel ist mit Wasser nachzuwaschen
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    Abbeizer müssen nach dem Einsatz immer gründliche mit viel Wasser
+    abgewaschen werden - Neutralisieren - danach die Untergründe gut trocknen
+    trocknen lassen, und noch einmal fein schleifen.
+  points: 5
+  stats: 0
