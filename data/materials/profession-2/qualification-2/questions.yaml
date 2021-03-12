@@ -1,1 +1,490 @@
-[]
+- title: Sicherheit und Gesundheitsschutz
+  description: >-
+    Im Betrieb und am Arbeitsplatz muß stets auch auf den Gesundheitsschutz
+    geachtet werden.
+  question: Wodurch können Arbeitsstoffe zur Gefährdung werden?
+  imageName: ''
+  options:
+    - durch Verschüttung von Materialien
+    - durch Hautkontakt mit ätzenden Materialien
+    - durch verstreichen von Materialien
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Ätzende Materialien die bei der Verarbeitung mit der Haut in Kontakt kommen,
+    können schwere Hautschädigungen verursachen. Die betroffenen Stellen müssen
+    nach Kontakt umgehend mit Wasser nachgewaschen werden.
+  points: 5
+  stats: 0
+- title: Sicherheits und Gesundheitsschutz
+  description: >-
+    Das Verarbeiten von lösemittelhaltigen Materialien muss mit großer Sorgfalt
+    durchgeführt werden
+  question: >-
+    Welche Gefahren entstehen beim Verarbeiten von gefährlichen Arbeitsstoffen
+    in unzureichend be- und entlüfteten Räumen entstehen
+  imageName: ''
+  options:
+    - 'es besteht Erhitzung, Brand - und Explosionsgefahr'
+    - 'es besteht Staub, Nebel - und Erstickungsgefahr'
+    - es besteht Explosion-und Erstickungsgefahr
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    Da sich die Lösemitteldämpfe während des Verarbeitungsprozess in den Räumen
+    mit wenig Luftzufuhr, sehr schnell anreichern können, besteht eine hohe
+    Gesundheits- und Explosionsgefahr. Aus diesem Grunde muss immer für eine
+    gute Be- und Entlüftung der Räume gesorgt werden
+  points: 5
+  stats: 0
+- title: Einkleistern einer Tapetenbahn
+  description: >-
+    Spezielle Mustertapeten können nur mit einer Kleisterbürste eingekleistert
+    werden
+  question: >-
+    Was ist beim Einkleistern einer Tapetenbahn mit der Kleisterbürste zu
+    beachten?
+  imageName: ''
+  options:
+    - den Kleister möglichst dick auftragen und dann schnell verteilen
+    - gleichmäßiger Kleisterauftrag auf der gesamten Bahn
+    - Kleister von der Kante zur Bahnmitte möglichst dünn verteilen
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Der Kleister muss auf der gesamte Tapetenbahn gleichmäßig aufgetragen
+    werden. Wird der Kleister zu dick oder zu dünn aufgetragen, können Blasen
+    entstehen, die sich hinterher nur sehr schwer oder garnicht mehrt entfernen
+    lassen
+  points: 5
+  stats: 0
+- title: Tapezierarbeiten mit Raufasertapete
+  description: >-
+    Für das Tapezieren mit Rauhfasertapeten muss eine gewisse Reihenfolge der
+    Arbeitsweise eingehalten werden
+  question: 'Welche Arbeitsschritte gehen Sie, um Raufaser zu tapezieren?'
+  imageName: ''
+  options:
+    - >-
+      Kleister ansetzen, Anzahl und Länge der Bahnen feststellen,Raufaser
+      zuschneiden, Raufaser einkleistern, Raufasertapeten 10 Minuten weichen
+      lassen, lotrechtes Kleben der Tapeten auf Stoß, exaktes Abschneiden der
+      Tapeten im Eckenbereich ( Decke und Wand )Ausschneiden der Tapeten an
+      Türen und Aussparrungen usw.
+    - >-
+      Anzahl und Länge der Bahnen feststellen,Raufaser zuschneiden, Kleister
+      ansetzen, Raufaser einkleistern, Bahnen loten, Bahnen an den Fußleisten
+      abschneiden, Bahnen tapezieren
+    - >-
+      Raufaser zuschneiden,Anzahl und Länge der Bahnen feststellen, Raufaser
+      einkleistern, Bahnen loten, Bahnen tapezieren
+  answerType: Multiple Choice
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Zuerst wird immer der Kleister angesetzt, weil dieser noch einige Zeit bis
+    zur Verarbeitung ziehen muss. Wichtig ist auch darauf zu achten, dass die
+    Tapeten auf Stoß und nicht überlappt geklebt werden dürfen, da die Nähte
+    nach dem Anstrich nicht mehr sichtbar sein dürfen
+  points: 5
+  stats: 0
+- title: Prüfen und vorbereiten von Untergründen
+  description: >-
+    Bevor Untergründe neu Beschichtet werden können, müssen diese auf
+    Risbildungen überprüft werden
+  question: >-
+    Welche Risse können mit einer elastischen rissüberbrückenden Beschichtung
+    dauerhaft beseitigt werden?
+  imageName: ''
+  options:
+    - die Haar -und leichte Schwundrisse
+    - die großen Zug- und Druckspannungsrisse
+    - die kleineren Stoß- und Lagerfugenrisse
+  answerType: Multiple Choice
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Da es sich hier nur um kleinere, nicht sehr tiefe Risse handelt, können
+    diese mit einer elastischen Beschichtung dauerhaft beseitigt werden.
+  points: 5
+  stats: 0
+- title: Verkleben von Unterlagsstoffen ( Makulatur )
+  description: >-
+    Für spezielle Tapeten muss eine Makulatur auf die Untergründe verklebt
+    werden.
+  question: >-
+    Weshalb müssen Sie vor dem tapezieren einer Tapete, auf dem Untergrund eine
+    Makulatur aufbringen?
+  imageName: ''
+  options:
+    - damit Risse und Löcher überbrückt werden
+    - um eine Dampfsperre zu bewirken
+    - 'um einen gleichmäßig saugenden, hellen Untergrund zu schaffen'
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    Die Makulatur macht den Untergrund weniger saugfähig, Unebenheiten kann man
+    damit ausgleichen und sie schafft helle gleichmäßige Untergründe. Besonders
+    für hochwertige Tapeten wie: Vinyl - Textil - Gras - und Seidentapeten,
+    lassen sich die Untergründe mit der Rollenmakulatur gut vorbereiten.
+  points: '5'
+  stats: 0
+- title: Verkleben von Unterlagsstoffen (Dämmmaterialien )
+  description: >-
+    Materialienmüssen immer vor der Verarbeitung auf Beschädigungen überprüft
+    werden
+  question: >-
+    Wie kann man erreichen, dass am Wärmedämmverbundsystem keine Mängel
+    entstehen,die zu späteren Schäden führen können?
+  imageName: ''
+  options:
+    - Beschädigte Stellen mit Putzmaterial ausbessern
+    - Dämmplatten mit Beschädigungen aussortieren und nicht weiter verarbeiten
+    - Beschädigte Stellen mit Armierungsmasse ausspachteln und Gewebe einlegen
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Materialien die Beschädigungen aufweisen, dürfen nicht weiter verarbeitet
+    werden, da hier keine optimale Dämmung im Wärmedämmverbundsystem mehr
+    gewährleistet werden kann
+  points: 5
+  stats: 0
+- title: Tapezieren von Raufasertapeten
+  description: >-
+    Es gibt mehrere Arten von Wandbekleidungen die im Malerhandwerk verarbeitet
+    werden müssen
+  question: Zu welcher Art von Wandbekleidung gehört die Raufaser?
+  imageName: ''
+  options:
+    - Wandbekleidung für nachträgliche Behandlung
+    - Wandbekleidung für hohe Beanspruchung
+    - Naturwerkstoff - Wandbekleidung
+  answerType: Multiple Choice
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Die Raufasertapete besteht aus bis zu 3 Papierschichten, strukturbildende
+    Holzfaser und Hilfsstoffe, und muss mit einem Beschichtungsmaterial wie
+    Dispersions - oder Latexfarben nach Trocknung der Tapete gestrichen werden.
+  points: 5
+  stats: 0
+- title: Abdeck und Abklebearbeiten
+  description: >-
+    Bevor man mit den Renovierungsarbeiten beginnen kann, müssen Abdeck und
+    Abklebearbeiten vorgenommen werden
+  question: >-
+    In welcher Reihenfolge und mit welchem Materialien führen Sie die Abdeck und
+    Abklebearbeiten durch?
+  imageName: ''
+  options:
+    - >-
+      Sockelleisten, Fenster und Türzargen mit Abklebeband abkleben, Fußboden
+      mit Abdeckpapier/Abdeckflies oder Milchtütenpapier abdecken Möbel und alle
+      nicht zu bearbeitende Gegenstände mit Folie abhängen/abkleben
+    - >-
+      Möbel und alle nicht zu bearbeitende Gegenstände mit Folie
+      abhängen/abkleben. Sockelleisten, Fenster und Türzargen mit Abklebeband
+      abkleben. Fußboden mit Abdeckpapier/Abdeckflies oder Milchtütenpapier
+      abdecken.
+    - >-
+      Fußböden mit Abdeckpapier/Abdeckflies oder Milchtütenpapier abdecken.
+      Sockelleisten, Fensterrahmen und Türzargen mit Abklebeband abkleben.
+      Möbel, Fensterscheiben und alle nicht zu bearbeitende Gegenstände mit
+      Folie abhängen/abkleben
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    Fußböden werden wegen der Verschmutzungsgefahr im Arbeitsprozesses, immer
+    zuerst mit den entssprechenden Materialien abgedeckt. Hochwertige Fußböden
+    müssen mit foliebeschichteten Abdeckflies oder Milchtütenpapier abgedeckt
+    werden.
+  points: 5
+  stats: 0
+- title: Einrichtung eines Arbeitsplatzes für Tapezierarbeiten mit Raufasertapete
+  description: >-
+    Vor Auftragsbeginn muss eine sorgfältige Zusammenstellung der benötigten
+    Werkzeuge erfolgen
+  question: >-
+    Welche Werkzeuge und Maschinen nehmen Sie für das Tapezieren von
+    Raufasertapete mit auf die Arbeitestelle?
+  imageName: ''
+  options:
+    - >-
+      Lot, Wasserwaage, Tapezierschere, Zollstock, Nahtroller,
+      Kleisterbürste/Kleistermaschine, Kleistereimer, Tapeziertisch,
+      Cuttermesser
+    - >-
+      Wasserwaage, Tapezierschere, Zollstock, Nahtroller,
+      Kleisterbürste/Kleistermaschine, Tapeziertisch, Cuttermesser, Lot
+    - >-
+      Tapezierbürste, Lot, Wasserwaage, Tapezierschere, Zollstock, Nahtroller,
+      Kleisterbürste/Kleistermaschine, Kleistereimer, Tapeziertisch,
+      Cuttermesser, Abreißer
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    Besonders wichtig für die Tapezierarbeiten ist natürlich auch die
+    Tapezierbürste, die zum anbürsten der Tapeten benötigt wird, auch der
+    Kleistereimer für das Anrühren des Spezialkleisters, darf nicht fehlen.
+  points: 5
+  stats: 0
+- title: Tapezierarbeiten
+  description: Kleisterflecken auf schon bearbeitende Untergründe müssen vermieden werden
+  question: Warum darf kein Kleister auf eine bereits gestrichene Decke gelangen?
+  imageName: ''
+  options:
+    - Die Deckenfarbe sich löst
+    - Weil dadurch Glanzstellen entstehen
+    - Die gelöste Deckenfarbe über die Tapete löst.
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Sobald der Kleister an der Deckenfläche getrocknet ist, bilden sich
+    Glanzstellen ab, die sich nachträglich nicht mehr entfernen lassen
+  points: 5
+  stats: 0
+- title: Untergründe prüfen und vorbereiten
+  description: >-
+    Gestrichene Raufasertapete lässt sich in den meistens Fällen nicht mit
+    einfachen Mitteln entfernen
+  question: Mit welchem Werkzeug können gestrichene Raufastertapete bearbeitet werden?
+  imageName: ''
+  options:
+    - gestrichene Raufasertapete muss vor dem Einweichen perforiert werden
+    - gestrichene Raufasertapete wird mit der Flächenspachtelm enfernt
+    - gestrichene Raufasertapete wird mit der Stielspachtel abgekratzt
+  answerType: Multiple Choice
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Bedingt dadurch, dass der Tapetenlöser nicht durch die gestrichene
+    Raufasertapete durchdringen kann, muss diese mit einer Perforierwalze (
+    Igelwalze ) vor dem Einweichen perforiert ( durchlöchert ) werden.
+  points: 5
+  stats: 0
+- title: Untergründe vorbereiten
+  description: >-
+    Glatte Untergründe müssen vor einer Neubeschichtung fachgerecht vorbehandelt
+    werden
+  question: >-
+    Wie werden lackierte Flächen, die gut haften, vor einer Tapezierung
+    vorbehandelt?
+  imageName: ''
+  options:
+    - Eine Vorbehandlung ist nicht nötig
+    - Ablaugen und mit waschbeständiger Dispersionsfarbe streichen
+    - Abbeizen und Flächen spachteln
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Durch das Ablaugen wird der Untergrund angerauht und kann mit einer
+    Grundbeschichtung mit Dispersionsfarbe vorbehandelt werden.
+  points: 5
+  stats: 0
+- title: Untergrundprüfungen
+  description: >-
+    Untergründe die tapeziert werden sollen, müssen vorher sorgfältig überprüft
+    werden
+  question: >-
+    Wie muss die Beschaffenhei eines Untergrundes sein, bevor dieser tapeziert
+    werden kann
+  imageName: ''
+  options:
+    - der Untergrund muss glatt und trocken sein
+    - der Untergrund muss gleichmäßig und sauber sein
+    - >-
+      der Untergrund muss tragfähig, gleichmäßig, trocken, saugfähigkeit, fest,
+      glatt und sauber sein.
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    Es muss eine umfangreiche Überprüfung durchgeführt werden, damit vor den
+    Tapezierarbeiten die Untergründe dementsprechend vorbereitet werden können
+  points: 5
+  stats: 0
+- title: Untergründe vorbehandeln
+  description: >-
+    Alte Dispersionsfarbe sind oft für eine Tapezierung als Untergrund nicht
+    mehr geeignet
+  question: >-
+    Wie sollte man schlechthaftende Dispersionsfarben vor einer Tapezierung
+    entfernen?
+  imageName: ''
+  options:
+    - Schlechthaftende Dispersionsfarben werden abgeschliffen
+    - Schlechthaftende Dispersionsfarben werden mit einem Abbeizmittel entfernt
+    - Schlechthaftende Dispersionsfarben werden abgestoßen
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Dispersionsfarben die keine gute Haftung mehr mit dem Untergrund vorweisen
+    können, müssen mit einem Abbeizmittel komplett abgelöst werden, danach muss
+    der Untergrund gut mit Wasser nachgewaschen- neutralisiert - werden.
+  points: 5
+  stats: 0
+- title: Tapezierarbeiten
+  description: >-
+    Tapetenbahnen müssen nach dem Einkleistern noch einige Zeit weichen bevor
+    man sie tapezieren kann
+  question: Wovon hängt die Weichzeit einer Tapete ab?
+  imageName: ''
+  options:
+    - die Weichzeit der Tapeten hängt von der Papierstärke ab
+    - die Weichzeit der Tapeten hängt meistens von der Papierfarbe ab
+    - die Weichzeit der Tapeten hängt immer von der Druckfarbe ab
+  answerType: Multiple Choice
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Die Weichzeiten hängen immer von der Papierstärke der Tapeten ab, wichtig
+    ist dabei auch darauf zu achten, dass die einzelnen Bahnen, gleich lang
+    weichen müssen, da diese ansonsten durch zur langer Weichzeit, beim
+    Tapezieren einreisen können.
+  points: 5
+  stats: 0
+- title: Spezialkleister für Raufasertapeten ansetzen
+  description: >-
+    Bevor tapeziert werden kann, muss der Kleister in einem Kleistereimer
+    angesetzt werden.
+  question: >-
+    Wie rühren Sie den Kleister für eine Rauhfasertapete in einem Kleistereimer
+    an
+  imageName: ''
+  options:
+    - >-
+      das Pulver wird zügig mit einem Rührstab in warmes, sauberes Wasser
+      eingerührt und nach kurzem ziehen lassen nochmals durchgerührt
+    - >-
+      das Pulver wird langsam in in heißes Wasser mit einem Rührstab eingerührt
+      und gleich danach nochmals durchgerührt
+    - >-
+      das Pulver wird zügig in kaltem Wasser unter ständiger Bewegung,in einem
+      sauberen Kleistereimer eingerührt, und nach kurzem ziehen lassen nochmals
+      kräftig durchgerührt
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    Bedingt durch das zügige einrühren des Tapetenkleisters in das saubere kalte
+    Wasser - aber nicht eiskalte - und das kräftige Durchrühren nach dem der
+    Kleister eine Weile durchgezogen hat, bleibt dieser klumpenfrei und lässt
+    sich somit gut verarbeiten.
+  points: 5
+  stats: 0
+- title: Tapezierarbeiten
+  description: Die einzelnen Tapetenrollen müssen vor Beginn der Arbeiten überprüft werden
+  question: Auf was überprüfen Sie die Tapetenrollen vor dem Aufschneiden?
+  imageName: ''
+  options:
+    - es muss die Saugfähigkeit der Tapeten überprüft werden
+    - es müssen die Anfertigungsnummern der Tapetenrollen überprüft werden
+    - es muss die Papierqualität der Tapeten überprüft werden
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Die Anfertigungsnummer gibt Auskunft darüber, ob ein Produkt aus der
+    gleichen Druckserie stammt. Unterschiedliche Anfertigungsnummern können
+    geringfügige Muster-Farb-Glanz und Strukturabweichungen aufweisen. Es dürfen
+    immer nur Tapeten mit der gleichen Anfertigungsnummer tapeziert werden.
+  points: 5
+  stats: 0
+- title: Kennzeichnung der Tapeten
+  description: >-
+    Die Mustertapeten sind mit Symbolen nach der Euro-Norm DIN EN 235
+    gekennzeichnet
+  question: Welche Bedeutung hat Ihrer Meinung nach diese Kennzeichnung?
+  imageName: ''
+  options:
+    - die Euro Norm DIN EN 235 informiert über die aktuellen Tapetenpreise
+    - die Euro Norm DIN EN informiert über den Tapetenhersteller
+    - die Euro Norm DIN EN 235 informiert über die Qualitätsmerkmale der Tapeten
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    Qualitätsmerkmale der Tapeten sind: Waschbeständig, scheuerbeständig,
+    farbbeständig, dubliert, stoßfest, lichtbeständig, sehr gute
+    lichtbeständigkeit und Musteransatz. Desweiteren kann man auch Hinweise zur
+    Verarbeitung und Entfernung der Tapeten entnehmen.
+  points: '5'
+  stats: 0
+- title: Sicherheitsschutz bei der Arbeit
+  description: >-
+    Beim Aufbau von Behelfsgerüsten aus Stehleitern und Bohlen muss eine gewisse
+    Höhe berücksichtigt werden.
+  question: >-
+    Welche Höhe darf ein Behelfsgerüst aus Stehleitern und Bohlen ohne
+    Seitenschutz höchstens haben?
+  imageName: ''
+  options:
+    - >-
+      Behelfsgerüste aus Stehleitern und Bohlen ohne Seitenschutz dürfen
+      höchstens eine Höhe von 2,00 m haben
+    - >-
+      Behelfsgerüste aus Stehleitern und Bohlen ohne Seitenschutz sollten eine
+      Höhe von ca. 3,00 m haben
+    - >-
+      Behelfsgerüste aus Stehleitern und Bohlen ohne Seitenschutz dürfen
+      ungefähr eine Höhe von 2,50 m haben
+  answerType: Multiple Choice
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Die Behelfsgerüste aus Stehleitern und Bohlen ohne Seitenschutz dürfen nicht
+    höher als 2,00 m sein, da ansonsten die Standsicherheit nicht mehr
+    gewährleistet ist und somit die Gefahr eines Absturzes von dem Behelfsgerüst
+    besteht
+  points: 5
+  stats: 0

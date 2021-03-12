@@ -1,1 +1,513 @@
-[]
+- title: Entfernen von nicht tragfähigen Putzen
+  description: >-
+    Alte lose Putze müssen vor weitererer Untergrundbehandlung gründlich
+    entfernt werden
+  question: >-
+    Mit welchen Werkzeugen und Maschinen kann alter Putz an den Wandflächen
+    abgetragen werden?
+  imageName: ''
+  options:
+    - 'Hammer, Meisel, Abbruchhammer, Bohrhammer, Meiselhammer, Putzfräse'
+    - 'Stiehlspachtel, Maurerhammer, Putzkelle, Dampfstrahler, Nadelpistole'
+    - 'Rundschleifmaschine, Winkelschleifer, Bandschleifgerät, Hochdruckstrahler'
+  answerType: Multiple Choice
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Für die Entfernung von alten Putz benötigt man gutes stabiles Werkzeug
+    und/oder Maschinen wie die Putzfräse, die auch dafür sorgt, dass eine
+    gleichmäßige Putzschicht abgetragen werden kann.
+  points: 5
+  stats: 0
+- title: Prüfen von Untergründen
+  description: >-
+    Vor der Beschichtung von Fassadenflächen müssen diese auch auf Risse
+    überprüft werden
+  question: Wodurch entstehen baudynamische Risse auf einer Fassadenfläche?
+  imageName: ''
+  options:
+    - Baudynamischen Risse entstehen durch Bwegung der Beschichtung
+    - Baudynamischen Risse enstehen durch Bewegung des Putzes
+    - Baudynamischen Risse entstehen durch Bewegung des Baugrundes
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    Baudynamische Risse sind Baugrundbedingte Risse, diese entstehen durch
+    Setzung des Gebäudes, können aber auch eine Folge der Spannungen im Bauwerk
+    sein. Vor Auftragsdurchführung sollte ein Fachberater oder Statiker mit
+    einbezogen werden
+  points: 5
+  stats: 0
+- title: Vorbereiten von Untergründen
+  description: >-
+    Bevor Trockenbauplatten beschichtet werden können, müssen diese vorbehandelt
+    werden.
+  question: >-
+    Warum müssen Trockenbauplatten vor jeder weiteren Bearbeitung mit
+    Grundbeschichtungsstoff beschichtet werden?
+  imageName: ''
+  options:
+    - Damit der Karton sich anlösen kann
+    - Die Saugfähigkeit muss egalisiert und der Karton wasserbeständig werden
+    - Die Alkalität muss herabgesetzt werden
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Bedingt durch den Auftrag der Grundbeschichtung wird die Saugfähigkeit des
+    Untergrundes reguliert - gleichmäßiges Aufsaugen- und bei spätere Entfernung
+    der Tapeten wird die Trockenbauplatte beim Ablösen der Tapete nicht
+    beschädigt.
+  points: 5
+  stats: 0
+- title: Sanierung einer Betonfläche
+  description: >-
+    Eine Betonfläche mit rostendem und freiliegendem Bewehrungsstahl muss
+    Instand gesetzt werden
+  question: In welchen Arbeitsschritten gehen Sie bei der Sanierung vor?
+  imageName: ''
+  options:
+    - >-
+      Betonstahl bis zum nichtkorrodierten Bereich freilegen, freigelegter Stahl
+      durch Druckstrahlen entrosten, Korrosionsschutzbeschichtungsstoff
+      aufbringen, Haftbrücke mit Haftsschlemmen bilden Ausbruchstelle mit
+      Füllmasse schließen, Reparaturstelle feinspachteln, Grundbeschichtung
+      durchführen
+    - >-
+      Betonstahl bis zum nichtkorrodierten Bereich freilegen, Haftbrücke mit
+      Haftschlemmen bilden freigelegter Stahl entrosten,
+      Korrosionsschutzbeschichtungsstoff aufbringen, Ausbruchstelle mit
+      Füllmasse schließen, Reparaturstelle feinspachteln, Grundbeschichtung
+      durchführen
+    - >-
+      Betonstahl bis zum nichtkorrodierten Bereich freilegen,
+      Korrosionsschutzbeschichtungsstoff aufbringen Haftbrücke mit Haftschlemme
+      bilden, freigelegter Stahl durch Strahlen entrosten Ausbruchstelle mit
+      Füllmasse schließen, Grundbeschichtung durchführen, Reparaturstelle
+      feinspachteln
+  answerType: Multiple Choice
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Der freigelegte Stahl muss ersteinmal, mittels Druckstrahlen, komplett vom
+    Rost befreit werden, damit der nachfolgende Beschichtungsaufbau durchgeführt
+    werden kann. Ansonsten besteht die Gefahr, dass sich erneut Rost auf dem
+    Bewehrungsstahl ausbreiten kann
+  points: 5
+  stats: 0
+- title: Trockenbauverkleidung
+  description: >-
+    Trockenbauplatten werden sehr gerne eingesetzt, da sie ziemlich einfach zu
+    handhaben sind
+  question: Was versteht man unter Trockenbauverkleidung ?
+  imageName: ''
+  options:
+    - >-
+      Unter Trockenbauverkleidung versteht man das Verputzen der Wandflächen mit
+      Fertigputz
+    - >-
+      Unter Trockenbauverkleidung versteht man das Verputzen von Wandflächen mit
+      Schnellmörtel
+    - >-
+      Unter Trockenbauverkleidung versteht man das Anbringen von
+      Trockenbauplattenan Decken und Wandflächen in Innenräumen
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    Trockenbauplatten werden als Verkleidung von Innenflächen anstelle des
+    herkömmlichen Putzverfahrens eingesetzt. Eine weitere Möglichkeit ist die
+    zusätzliche Verwendung einer Unterkonstruktion, auf die anschließend die
+    Platten montiert werden, dies geschieht üblicher Weise, durch Profile aus
+    Blech oder Holz
+  points: 5
+  stats: 0
+- title: Anbringen von Trockenbaustoffen
+  description: >-
+    In einem unverputzten Raum sollen Trockenbauplatten auf die Wandflächen
+    angebracht werden
+  question: Welche Vorgehensweise wählen Sie ?
+  imageName: ''
+  options:
+    - >-
+      Trockenbauplatten werden mit Hilfe von schnell erhärtender Ansetzmörtel,
+      die punktförmig als Batzen auf die Plattenfläche aufgebracht werden, an
+      der unverputzten Wand angebracht
+    - >-
+      Trockenbauplatten werden mit Hilfe von Kalkmörtel welche punktförmig als
+      Batzen auf die Platte aufgebracht werden, an der unverputzten Wand
+      aufgestellt
+    - >-
+      Trockenbauplatten werden mit Hilfe von Spezialkleber welche punktförmig
+      als Batzen auf die Platte aufgebracht werden, an der unverputzten Wand
+      aufgestellt
+  answerType: Multiple Choice
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Trockenbauplatten werden mit schnell erhärtender Ansetzmörtel auf die
+    Wandfläche angebracht und können danach ohne längere Trockenzeiten weiter
+    bearbeitet werden. Mit Trockenbauplatten lassen sich Unebenheiten an Decken
+    und Wandflächen gut ausgleichen
+  points: 5
+  stats: 0
+- title: Entfernen von nichttragfähigen Anstrichen
+  description: >-
+    Alte und lose Dispersionfarben müssen vor einem neuem Beschichtungsaufbau
+    entfernt werden
+  question: Mit welchen Werkzeugen und Materialen lösen Sie diese Beschichtungen ab ?
+  imageName: ''
+  options:
+    - 'Heißes Wasser, Drahtbürste, Japanspachtel,'
+    - 'Schaber, Stielspachtel, Fräse, Abbeizmittel'
+    - 'Schleifpaier, Schwamm und kaltes Wasser, Bandschleifer'
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Alte und lose Dispersionsfarben lassen sich gut mit Abbeizmittel entfernen,
+    kleinere lose Schichten werden mit einer Stilspachtel oder Schaber
+    abgekratzt. Schwierigere Fälle wie lose Kunststoffputze müssen vorsichtig
+    mit einer Fräse abgetragen werden
+  points: 5
+  stats: 0
+- title: Feststellen von verschiedenen Untergrundschäden
+  description: Untergründe müssen vor weiterer Bearbeitung umfangreich begutachtet werden
+  question: >-
+    Auf welche Mängel sollte ein Putzuntergrund vor Beginn der
+    Beschichtungsarbeiten überprüft werden?
+  imageName: ''
+  options:
+    - >-
+      Putzfestigkeit, Hohlstellen, Sinterschichten, Saugfähigkeit, Ausblühungen
+      Risse, Verschmutzungen, Rostflecken, Moos -, Algen und Pilzbefall
+    - >-
+      Putzfestigkeit, Hohlstellen, Sinterschichten, Saugfähigkeit, Ausblühungen
+      Risse, Verschmutzungen, Rostflecken, Lichtbeständigkeit, Sauberkeit
+    - >-
+      Putzfestigkeit, Hohlstellen, Sinterschichten, Saugfähigkeit, Ausblühungen
+      Risse, Verschmutzungen, Rostflecken, Farbbeständigkeit, Sauberkeit
+  answerType: Multiple Choice
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Die Putzuntergründe müssen immer, bevor diese weiter bearbeitet werden
+    können, umfangreich überprüft werden, da ansonsten eine Haftung der
+    nachfolgenden Beschichtungen nicht gewährleistet ist .
+  points: 5
+  stats: 0
+- title: Arbeiten mit fahrbaren Gerüsten
+  description: >-
+    Für kleinere Fassadenanstricharbeiten soll ein fahrbares Gerüst aufgestellt
+    werden
+  question: Was muss aus Sicherheitsgründen nach Aufbau des Gerüstes überprüft werden?
+  imageName: ''
+  options:
+    - 'den Belag und die Standfestigkeit, die Verstrebungen'
+    - 'die Verankerung und die Steckrahmen, die Konstruktion,'
+    - >-
+      der Seitenschutz, den Belag, die Verankerung, Standsicherheit,
+      Konstruktion
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    Es muss auf Standsicherheit geachtet werden und alle Laufrollen müssen
+    festgestellt sein. Der Gerüstbelag muss eine ausreichende Stärke haben. Nach
+    allen vier Seiten ist ein Seitenschutz aus Geländerholm, Zwischenholm, und
+    Bordbrett erforderlich. Fahrbare Gerüste dürfen nur auf ebenen und festen
+    Standflächen eingesetzt werden. Nach Aufbau muss nochmals augenscheinlich
+    die ganze Konstruktion des Gerüstes auf eventuelle Beschädigungen und
+    Funktion überprüft werden
+  points: 5
+  stats: 0
+- title: Sicherheit bei der Arbeit
+  description: >-
+    Eine Fassadenfläche soll mit Dispersionsfarbe neu Beschichtet werden,
+    hierfür wird kurzfristig zur Ausführung der Arbeiten eine Anlegeleiter
+    benutzt.
+  question: Welche Sicherheitsvorkehrungen müssen dabei beachtet werden?
+  imageName: ''
+  options:
+    - Sicherheitsabstände der Sprossen
+    - Standsicherheit der Anlegeleiter
+    - Sicherheitskennzeichnung der Sprossen
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Die Standsicherheit der Anlegeleiter muss gewährleistet sein. Von
+    Anlegeleitern aus dürfen nur Arbeiten geringeren Umfangs ausgeführt werden
+    .Bei freistehend verwendeten Anlegeleitern darf man die obersten vier
+    Sprossen nicht besteigen. Die Arbeitshöhe der Anlegeleiter darf maximal 7,00
+    m betragen.
+  points: 5
+  stats: 0
+- title: Anwendung Reinigungsverfahren
+  description: >-
+    Die Auswahl des Reinigungsverfahren hängt auch von der Art der notwendigen
+    Reinigung, den örtlichen Gegebenheiten und dem zu reinigen 0bjekten ab
+  question: Welche Aufgaben hat die Reinigung im Malerhandwerk ?
+  imageName: ''
+  options:
+    - >-
+      Beseitungen von Verschmutzungen, Beseitigungen von Umweltschäden, Hygiene,
+      Schaffung von tragfähigen Untergründen
+    - >-
+      Die Reinigungen müssen durchgeführt werden, damit der Untergrund wieder
+      sauber aussieht
+    - >-
+      Untergrundreinigung muss hauptsächlich aus hygienischen Gründen
+      durchgeführt werden.
+  answerType: Multiple Choice
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Verschmutzungen verhindern die Haftung von Neubeschichtungen auf einen
+    Untergrund, Abgase und saure Niederschläge können die Oberfläche der
+    mineralische Untergründe sehr schaden.
+  points: 5
+  stats: 0
+- title: Aufgaben der Putze
+  description: Putze müssen heute viele Aufgaben erfüllen
+  question: Welche Anforderungen stellt man heutzutage an Putze ?
+  imageName: ''
+  options:
+    - >-
+      Putze müssen hauptsächlich preiswert sein und sich schnell verarbeiten
+      lassen
+    - >-
+      Putze dienen dem Schutz, der Verschönerung, dem Beschichtungsgrund und der
+      Verankerung
+    - Putze dienen der Verschönerung und der Dämmung
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Der Putz hält den Regen ab und verbessert die Wärmedämmung des Mauerwerks,
+    durch die Struktur des Putzes werden Unebenheiten ausgeglichen und alte
+    nicht mehr schön anzusehende Untergründe werden wieder ansehbar gemacht.
+    Desweitern wird die Wärme- und Schalldämmung sowie der Flammschutz gut
+    verbessert. Der Putz dient aber auch der Verankerung, dass heißt er
+    verbindet sich mit dem Mauerwerk und den mineralischen Untergründen.
+  points: 5
+  stats: 0
+- title: Feststellen von Untergrundsschäden
+  description: >-
+    Alte Putze haben oft sehr viele Mängel die erst nach guter Prüfung erkannt
+    werden
+  question: >-
+    Welche Prüfmethoden kann man anwenden, damit Mängel sichtbar und erkennbar
+    werden ?
+  imageName: ''
+  options:
+    - Untergründe werden hauptsächlich durch Augenschein und Abklopfen überprüft
+    - Es genügt wenn man eine Reibe und Kratzprobe durchführt
+    - 'durch Augenschein, Benetz, Kratz, Reibe - und Klopfprobe'
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    Durch genaue Betrachtung kann man Ausblühungen, abgeplatzte Stellen, Risse
+    und Verschmutzungen gut erkennen.Die Benetzprobe macht Haarrisse sichtbar
+    und zeigt an, ob der Untergrund eine gleichmäßige Saugfähigkeit aufweist.
+    Mittels Kratz- und Reibeprobe kann man die Festigkeit des Putzes
+    feststellen. Die Klopfbrobe mit dem Hammer wird durchgeführt um lose
+    Putzschichten, und Hohlräume zu erkennen.
+  points: 5
+  stats: 0
+- title: Aufbringen von Putz auf Decken und Wandflächen
+  description: >-
+    Für bestimmte Aufträge benötigt man Materialien die spezielle Eigenschaften
+    erfüllen müssen.
+  question: Welche Putze weisen Ihrer Meinung nach bessondere Eigenschaften auf?
+  imageName: ''
+  options:
+    - 'Wärmedämmputze, Sanierputze, Dünnlagenputz'
+    - 'Kalputze, Zementputze, Kunststoffputze, Gipsputze'
+    - 'Füllstoffspachtel, Schnellmörtel, Spritzbewurfputze'
+  answerType: Multiple Choice
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Der Wärmedämmputz enthält Polystyrol das für eine gute Dämmung sorgt,
+    Sanierputze werden für feuchte Keller, Gewölbe und sehr alte Gebäude
+    eingesetzt, mit dem Aufbringen eines Dünnlagenputzes bekommt man einen
+    gleichmäßigen und festen Untergrund. Putze wie Schall-, Brand und
+    Strahlenputze sind Putze mit besonderen Anforderungen, diese müssen eine
+    bestimmte Putzdicke vorweisen, die sich wiederum nach den gestellten
+    Anforderungen richten.
+  points: 5
+  stats: 0
+- title: Entfernen von Altanstrichen
+  description: >-
+    Viele Beschichtungen lassen sich durch Abbrennen mit einem Heißluftgerät
+    entfernen
+  question: Welche Untergründe eignen sich nicht für das Abbrennen von Altanstrichen?
+  imageName: ''
+  options:
+    - 'dicke Metallteile, dünne Betonschicht'
+    - 'Kunststoffe, dünne Bleche, Naturholz'
+    - 'Alle mineralische Untergründe, Holzuntergründe'
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Da Kunsstoffe während des Erhitzens sehr schnell schmelzen, dünne Bleche
+    sich verbiegen und Naturholz durch Hitze angekohlt wird, sind diese
+    Untergründe für das Abbrennen von Beschichtungen nicht geeignet.
+  points: 5
+  stats: 0
+- title: Anwendung Reinigungsverfahren
+  description: >-
+    Alte schmutzige Fassaden müssen vor einer Neubeschichtung mit einem
+    Hochdruckreiniger gereinigt werden
+  question: Was ist auch entscheident abhängig von der Reinigungswirkung?
+  imageName: ''
+  options:
+    - die Einhaltung der zeitlichen Vorgabe für die Reinigung
+    - die Form des Wasserstrahls
+    - 'die Wasserqualität, das man nur sehr kaltes Wasser nimmt'
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Mit einem Flachstrahl kann man lose Anstriche abschälen, durch den
+    Punktsstrahl lösen sich sehr stark haftende Beschichtungen und mit dem
+    Rotationsstrahl erreicht man eine Punkt und Flachstrahlkombination
+  points: 5
+  stats: 0
+- title: Beschichtungen mit putzartigem Aussehen( Kunstharzputze )
+  description: >-
+    Ein Kunde möchte wissen was den Kunstharzputz anderen Putzen gegenüber
+    auszeichnet .
+  question: Welche Eigenschaften spricht man den Kunstharzputz zu?
+  imageName: ''
+  options:
+    - >-
+      Gute Haftung, Feuchtigkeitsabweisend, Dampfdurchlässigkeit,
+      Selbstreinigung
+    - >-
+      Witterungsbeständig, Farbechtheit, Materialergiebigkeit, schnelle
+      Trocknungszeit
+    - 'Hohes Deckvermögen, sehr guter Glanzgrad, gute Farbbeständigkeit'
+  answerType: Multiple Choice
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Kunstharzputze sind sehr elastisch und haften deswegen auch gut auf dem
+    Untergrund, da der Kuntsharzputz beim Erhärten eine dichte Beschichtung
+    bildet, kann Regen dem Putz nicht schaden. Kunstharzputze enthalten grobe
+    mineralische Bestandteile ( Quarz ),dadurch ist die
+    Wasserdampfdurchlässigkeit gewährleistet. Schmutz und Staub wird immer
+    wieder vom Regen abgewaschen, der Kunstharzputz behält dadurch seinen
+    ursprünglichen Farbton.
+  points: 5
+  stats: 0
+- title: Untergrundvorbereiten für Spachteltechnik
+  description: Eine Wandfläche soll für eine Spachteltechnik vorbereitet werden
+  question: Beschreiben Sie die Vorgehensweise der Untergrundvorbehandlung
+  imageName: ''
+  options:
+    - >-
+      Wandfläche mit Wasser anfeuchten und mit feinem Schleifpaier
+      durchschleifen
+    - >-
+      Wandfläche mit Spachtelmasse glätten, Untergrund erst mit gröberen und
+      danach mit sehr feinem Schleifpapier schleifen
+    - >-
+      Wandfläche grob durchspachteln und danach mit etwas gröberen Schleifpapier
+      schleifen
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Die Wandfläche muss ersteinmal mit einer Spachtelmasse gleichmäßig überzogen
+    werden, danach schleift man den Untergrund in mehreren Arbeitsgängen mit
+    Korngröße von mittel nach fein. Im Anschluß wird die Wandfläche nochmals
+    überprpüft und gegebenenfalls nachgeglättet
+  points: 5
+  stats: 0
+- title: Bearbeitung von Rissen
+  description: >-
+    Bevor man eine weitere Beschichtung auf den Untergrund aufbringen kann,
+    müssen Risse geschlossen werden
+  question: 'Wie werden Risse beseitigt, wenn man den Untergrund tapezieren möchte'
+  imageName: ''
+  options:
+    - 'Risse anfeuchten, mit Gips spachteln und nachschleifen'
+    - 'Risse mit Füllstoff spachteln, grundieren und nachschleifen'
+    - >-
+      Risse auskratzen, aufweiten und anfeuchten, mit Füllstoff spachteln,
+      größere Einzelrisse mit Armierungsstreifen armieren.
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    Risse müssen ersteinmal ausgekratzt werden, damit diese sich nicht später
+    auf die Fläche ausweiten, im Anschluss werden die Risse, um die
+    Saugfähigkeit zu egalisieren, angefeuchtet und mit Füllstoff ausgespachtelt.
+    Danach wird zur Glättung der Oberfläche nochmals nachgeschliffen.
+  points: 5
+  stats: 0
+- title: Gesundheitsschutz bei der Arbeit
+  description: >-
+    Vor Durchführung mit ätzenden Stoffen muss auch immer der Gesundheitsschutz
+    dabei berücksichtigt werden
+  question: Durch welche Arbeiten können Augenschäden verursacht werden?
+  imageName: ''
+  options:
+    - Spritzer von Abbeizmitteln und Steinreiniger
+    - Dämpfe von lösemittelhaltigen Materialien
+    - ständiges Lackieren von weißen Flächen
+  answerType: Multiple Choice
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Abbeizmittel und Steinreiniger sind beides stark ätzende Stoffe und können
+    schwere Augenschäden verursachen. Während des Arbeitens mit diesen
+    gefährlichen Materialien, muss unbedingt eine Schutzbrille und säurefeste
+    Handschuhe getragen werden.
+  points: 5
+  stats: 0
