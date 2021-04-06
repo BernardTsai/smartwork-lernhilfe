@@ -1,1 +1,473 @@
-[]
+- title: Ausführen von Holzanstrichen im Außenbereich
+  description: Holzuntergründe im Außenbereich müssen besonders geschützt werden.
+  question: >-
+    Welchen Vorteil hat die Beschichtung der Holzuntergründe mit einer Lasur,
+    gegenüber der Beschichtung mit einem Klarlack
+  imageName: ''
+  options:
+    - Durch die Lasur kann die Holzmasserung gut zum vorschein kommen
+    - 'Die Lasur verhindert, dass Feuchtigkeit in das Holz eintritt'
+    - >-
+      Die Lasurpigmente verhindern, dass UV-Strahlen des Sonnenlichts in das
+      Holz eindringen können, und dieses dann in Verbindung mit Feuchtigkeit
+      vergrauen lässt.
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    Im Gegensatz zu einem Klarlack enthält die Lasur Pigmente, die den
+    Holzuntergrund weitgehend vor UV-Strahlen schützen.
+  points: 5
+  stats: 0
+- title: Ausführen von Fassadenanstrichen
+  description: >-
+    Für das Auftragen von Materialien auf einer Fassadenfläche, muss eine
+    gewisse Arbeitstechnik dabei berücksichtigt werden.
+  question: >-
+    Weshalb muss beim Beschichten von Fassaden, dass Material nass-in-nass
+    aufgetragen werden?
+  imageName: ''
+  options:
+    - Damit die Beschichtung nicht wieder abblättert
+    - >-
+      Weil ansonsten an den Übergängen der einzelnen Arbeitsfelder, auf den
+      bereits angetrockneten Schichten zu Ansätzen kommen kann.
+    - Da sonst die Beschichtung an einigen Stellen dunkler auftrocknet
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Bei Überlappung der frischen auf die bereits angetrockneten Schicht
+    verändert sich die Oberflächenstruktur und lässt dadurch einen optischen
+    Mangel ( Ansätze ) entstehen,
+  points: 5
+  stats: 0
+- title: Ausführen von Lackierungen
+  description: >-
+    Bevor ein Untergrund mit einer Schlußlackierung lackiert werden kann, muss
+    dieser mit einem Vorlack beschichtet werden.
+  question: Warum muss eine gespachtelte Holzfläche vorlackiert werden
+  imageName: ''
+  options:
+    - Damit die Stoßfestigkeit erhöht wird
+    - Damit die Schlußlackierung optimal auf den Untergrund haftet
+    - >-
+      Damit eine gleichmäßig saugende 0berfläche für die Schlußlackierung
+      geschaffen wird
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    Die gespachtelte Fläche muss mit einem Vorlack vorlackiert werden, damit die
+    Schlußlackierung gleichmäßig auftrocknen kann.
+  points: 5
+  stats: 0
+- title: Ausführung von Lackierungen
+  description: >-
+    Ein Kunde wünscht, dass eine Türe mit einer Pinsellackierung beschichtet
+    wird.
+  question: Welchen Arbeitsgang führt man zum Schluß einer Pinsellackierung durch
+  imageName: ''
+  options:
+    - Verschlichten des Lackes
+    - Überrollen mit einen Lackrolle
+    - Abtönen des Lackes
+  answerType: Multiple Choice
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Die Lackfarbe muss zuerst in einer Richtung aufgetragen werden, danach wird
+    der Lack dazu diagonal vertrieben und abschließend wieder in die
+    urspüngliche Richtung mit dem Lackierpinsel durchgezogen ( Verschlichtet )
+  points: 5
+  stats: 0
+- title: Innenanstriche unter Berücksichtigung einfacher Gestaltungsprinzipien
+  description: Das Wohnzimmer eines Kunden soll in mediterranen Farbtönen gestaltet werden
+  question: >-
+    Welche Farbtöne schlagen Sie einem Kunden für die mediterrane Gestaltung der
+    Wandfächen vor?
+  imageName: ''
+  options:
+    - 'Gelb, Rotgrün, Blaugelb'
+    - 'Terrakotta, Orange/Rotorange, Rotbraun'
+    - 'Blaurot, Gelb, Grün, Blaugrün'
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Die Farbtöne Terrakotta, 0range, Rotorange und Rotbraun sind freundliche und
+    warme Farben, diese wirken auf den Menschen belebend, anregend und fröhlich.
+  points: 5
+  stats: 0
+- title: Innenanstriche und Gestaltungsprinzipien
+  description: >-
+    Sie möchtem Ihrem Kunden eine zusätzliche mediterrane Gestaltungsmöglichkeit
+    vorschlagen
+  question: >-
+    Welche weitere mediterrane Gestaltungsmöglichkeit könnte man dem Kunden noch
+    anbieten?
+  imageName: ''
+  options:
+    - Tuptechnik in den Farbtönen Violett
+    - Wickeltechnik in den Farbtönen Braungelb
+    - Glättetechnik in einem Terrakotta-Farbton
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    Mit der Glättetechnik im einem Terrakotta-Farbton, wird ein schöner und
+    gelassener italienischer Flair hergestellt. Verwendet wurde diese Technik
+    schon in der Antike und galt als höchste technische Volkommenheit bei der
+    Wandgestaltung, wenn Oberflächen glänzend und zusätzlich strukturiert
+    werden.
+  points: 5
+  stats: 0
+- title: Ausführen von Farbauftrag mit der Spritzpistole
+  description: >-
+    Wenn große Flächen in Innenräumen beschichtet werden sollen, ist es
+    effizienter mit einer Spritzpistole zu arbeiten
+  question: Was ist beim Sprühvorgang mit einer Spritzpistole zu beachten?
+  imageName: ''
+  options:
+    - >-
+      Sprühknopf muss während der Benutzung senkrecht zur Wand stehen, der
+      Abstand zwischen Wand und Arbeitsgerät sollte 15-20 cm betragen
+    - >-
+      Sprühknopf muss während der Benutzung leicht nach unten zur Wand stehen,
+      der Abstand zwischen Wand und Arbeitsgerät sollte 05-10 cm betragen
+    - >-
+      Sprühknopf muss während der Benutzung leicht nach oben zur Wand stehen,
+      der Abstand zwischen Wand und Arbeitsgerät sollte 30-50 cm betragen
+  answerType: Multiple Choice
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Damit ein gleichmäßiger Farbauftrag gewährleistet ist, muss der Sprühkopf
+    immer senkrecht zur Wandfläche stehen und der Abstand zwischen Wand und
+    Spritzpistole 15-20cm betragen, da ansonsten entweder zuviel oder zu wenig
+    Farbe aufgetragen wird.
+  points: 5
+  stats: 0
+- title: Ausführen von Farbauftrag mit Spritzpistole
+  description: KEINE BESCHREIBUNG VORHANDEN!
+  question: Nach welchem Verfahren arbeiten luftzerstäubende Spritzgeräte?
+  imageName: ''
+  options:
+    - Mittel-und Niederdruckverfahren
+    - Nieder - und Hochdruckverfahren
+    - Hoch - und Höchstdruckverfahren
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Beim Hochdruckverfahren gelangt Druckluft über einen Schlauch zur
+    Spritzpistole. Der Betriebsdruck liegt zwischen 1,5 - 7 bar, Dickflüssige
+    kalte Lacke benötigen einen höheren Druck als dünnflüssige warme Lacke. Im
+    Gegensatz zum Hochdruckspritzen wird beim Niederdruckspritzen keine
+    Druckluft verwendet.
+  points: 5
+  stats: 0
+- title: Gesundheitsschutz am Arbeitsplatz
+  description: >-
+    Bevor man mit den Lackierarbeiten beginnen kann, muss auch der
+    Gesundheitsschutz brücksichtigt werden.
+  question: Welche Schutzmaßnahmen sollten Sie vor den Spritzarbeiten durchführen?
+  imageName: ''
+  options:
+    - >-
+      Atemschutzmasken tragen und Filter rechtzeitig wechseln, wenn im Betrieb
+      vorhanden Absaugungsanlage benutzen.
+    - Räume gut durchlüften und Staubmaske tragen
+    - Regelmäßige Querbelüftung in den Räumem durchfüren
+  answerType: Multiple Choice
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Bei Spritzarbeiten bildet sich im Allgemeinen Spritznebel die unter anderem
+    Lösemitteldämpfe und andere Materialbestandteile enthalten. Da diese sehr
+    Gesundheitsgefährdend sind, müssen die genannten Sicherheitsvorkehrungen
+    unbedingt eingehalten werden.
+  points: 5
+  stats: 0
+- title: Farbgestaltung
+  description: >-
+    Ein Kunde wünscht, dass sein Wohnzimmer farblich neu gestaltet wird, hierbei
+    sollen auch die Kontrastarten berücksichtigt werden.
+  question: Welche drei Kontrastarten gibt es im Malerhandwerk
+  imageName: ''
+  options:
+    - Qualitätskontrast - heiß-warm-Kontrast- Quantitätskontrast
+    - Qualitätskontrast - Kalt-Warm-Kontrast- Quantitätskontrast
+    - Quantitätskontrast - Qualitätskontrast-Neutralitätskontrast
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Kalte Farben sind z.B. Blau und Grün, zu den warmen Farben zählen die
+    Farbtöne Gelb, Rot und 0rang. Mit dem Qualitätskontrast wird der Reinheits -
+    und Sättigungsgrad der Farben bestimmt. Der Quantitätskontrast ist ein
+    empfundenes Größenverhältnis, hierbei werden die farbigen Flächengröße bei
+    einer Farbgestaltung festgelegt.
+  points: 5
+  stats: 0
+- title: Sicherheit am Arbeitsplatz
+  description: >-
+    Für die Durchführung von kleineren Aufträgen kann der Maler sich ein
+    Behelfsgerüst aufstellen.
+  question: >-
+    Bis zur welcher Standhöhe ist ein Behelfsgerüst aus Stehleitern und Bohlen
+    ohne Seitenschutz zulässig?
+  imageName: ''
+  options:
+    - 'zulässig bis 3,00 m'
+    - 'zulässig bis 5,00 m'
+    - 'zulässig bis 2,00 m'
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    Das Behelfsgerüst darf nur eine Standhöhe von höchstens 2,00 m haben, bei
+    höheren Behelfsgerüsten muss ein Seitenschutz angebracht werden, hierbei
+    muss aber immer noch die Standsicherheit gewährleistet sein.
+  points: 5
+  stats: 0
+- title: Mischen und Nachmischen von Farben
+  description: >-
+    Ein Kunde möchte, dass die Wände seines Wohnzimmers in verschiedenen
+    Farbtönen nach einer Farbtonkarte gestaltet werden.
+  question: >-
+    Mit welchen Farben lassen sich alle Farbtöne aus der Farbtonkarte
+    nachmischen?
+  imageName: ''
+  options:
+    - 'Rot, Gelb, blau'
+    - 'Grün, Violett, 0range'
+    - 'Braun, Schwarz, Weiß'
+  answerType: Multiple Choice
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Die Farben Rot, Gelb, Blau bezeichnet man als Grund oder Primärfarben, aus
+    diesen lassen sich alle anderen Farbtöne nachmischen. Mischt man zum
+    Beispiel gelb und rot miteinander, entsteht der Farbton 0range, diese
+    gemischte Farbe nennt man auch Sekundärfarbe.
+  points: 5
+  stats: 0
+- title: Ausführen von Anstrichen im Außenbereich
+  description: Eine Fassade soll mit einem sehr dunklen Farbton beschichtet werden
+  question: >-
+    Warum sollten Sie dem Kunden für die Beschichtung mit einem dunklen Farbton
+    im Außenbereich eher abraten?
+  imageName: ''
+  options:
+    - Weil dunkle Anstriche die Menschen oft depressiv stimmen
+    - Weil bei dunklen Anstrichen sich Ansätze in den Farbfeldern bilden können
+    - >-
+      Weil ein dunkler Anstrich eher zu Schäden im Putzuntergrund führen kann
+      als ein heller
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    Fassaden die mit einem dunklen Farbton gestrichen werden, heizen sich, wenn
+    die Sonnenstrahlen direkt auf die Flächen scheinen auf und kühlen am Abend
+    wieder ab. Dadurch entstehen Temperaturschwankungen die zu Putzrissen und
+    Putzabplatzungen führen können. Aus diesem Grunde ist es nicht ratsam
+    größere Flächen mit dunkler Farbe zu Beschichten
+  points: 5
+  stats: 0
+- title: Abdeck- und Abklebearbeiten
+  description: >-
+    Bevor man Untergründe mit Silikatfarben beschichten kann, müssen bestimmte
+    Vorarbeiten durchgeführt werden.
+  question: >-
+    Warum ist es wichtig, dass Keramikfliesen, Fenster, Klinker vor dem
+    Beschichten mit Silikatfarbe gut abgedeckt werden?
+  imageName: ''
+  options:
+    - Weil man dann hohe Reinigungskosten einsparen kann
+    - >-
+      Weil Silikatfarben alkalisch sind und auf Glas, Keramik und Klinker ätzend
+      wirken
+    - Weil dann schneller gearbeitet werden kann
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Bedingt dadurch, dass Silikatfarben eine hohe Alkalität aufweisen, haben sie
+    eine ätzende Wirkung und durch die Verkieselung mit dem Untergrund lassen
+    sich Farbflecken nicht mehr restlos entfernen.
+  points: 5
+  stats: 0
+- title: Innenanstriche nach Gestaltungsprinzipien
+  description: >-
+    Der Kunde wünscht, dass eine Wand in Lasurtechnik gestaltet wird und möchte
+    von Ihnen wissen, was eine Schwammtupftechnik ist.
+  question: Erklären Sie dem Kunden die Abläufe einer Schwammtupftechnik
+  imageName: ''
+  options:
+    - >-
+      Die verdünnte Dispersionsfarbe wird mit einem Naturschwamm in mehreren
+      Schichten und unterschiedlichen Farbtönen aufgetupft .
+    - Die Dispersionsfarbe wird mit einem Schwamm in großen Abständen aufgetupft
+    - Die Kunstharzlackfarbe wird mit einem Naturschwamm aufgetupft
+  answerType: Multiple Choice
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Der Untergrund wird vorher mit heller oder dunkler Innendispersionsfarbe
+    gestrichen, dann wird der Naturschwamm in eine leicht verdünnte, abgetönte
+    Dispersionsfarbe getaucht, und in mehreren Schichten gleichmäßig aufgetupft.
+  points: 5
+  stats: 0
+- title: Ausführen von Anstrichen auf Kunststoffuntergründe
+  description: >-
+    Die Fenster eines Gebäudes sind aus Kunststoff und sollen eine
+    Erstbeschichtung erhalten.
+  question: Welche Arbeitsschritte müssen bei einer Erstlackierung vorgenommen werden
+  imageName: ''
+  options:
+    - >-
+      Reinigen und schleifen des Untergrunds, Grundbeschichtung,
+      Zwischenbeschichtung und Schlußbeschichtung
+    - 'Schleifen, spachteln, vorstreichen und lackieren'
+    - 'Reinigen,vorstreichen und lackieren'
+  answerType: Multiple Choice
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Der Untergrund wird mit Spiritus gereinigt und mit einem Schleifvlies
+    geschliffen, danach wird eine Grundbeschichtung mit einem Haftprimer oder
+    Spezialhaftgrund aufgetragen, es folgt eine Zwischenbeschichtung mit
+    Vorlackfabe und eine Schlußbeschichtung mit Acryldispersionslackfarbe
+  points: 5
+  stats: 0
+- title: Beschichtung von Metalluntergründen
+  description: Ein neues Garagentor aus Zink soll von außen beschichtet werden
+  question: Welche Arbeiten müssen hierfür vor einem Anstrich durchgeführt werden?
+  imageName: ''
+  options:
+    - Zinkuntergrund mit groben Schleifpapier schleifen
+    - 'Zinkuntergrund reinigen, Fettschicht und Zinksalze entfernen'
+    - Zinkuntergrund mit feinem Schleifpapier schleifen
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Der Zinkuntergrund muss mit einer 25% prozentigen Amoniaklösung
+    (Salmiakgeist) gereinigt und mit einem Kunststoffvlies geschliffen werden,
+    danach wird mit klarem Wasser gründlich nachgewaschen.
+  points: 5
+  stats: 0
+- title: Beschichtung von Metalluntergründen
+  description: >-
+    Ein Kunde wünscht, dass sein aus Zink bestehendes Garagentor beschichtet
+    werden soll.
+  question: Welches Beschichtungssystem schlagen Sie dem Kunden vor?
+  imageName: ''
+  options:
+    - '2 K- Epoxidharz-Grundierung, 2K-Polyurethan-Decklack'
+    - Grund-Zwischen und Schlußanstrich mit Dispersionsfarbe
+    - Grund -Zwischen und Schlußanstrich mit Alkydharzlack
+  answerType: Multiple Choice
+  answers:
+    - 'yes'
+    - 'no'
+    - 'no'
+  explanation: >-
+    Damit die Beschichtungen auf dem Zinkuntergrund halten, ist es wichtig, dass
+    die Materialien aufeinander abgestimmt sind und die Herrsteller auf die
+    Eignung seines Beschichtungssystem für den Auftrag auf Zink speziell
+    hinweisen. Ein einfacher Alkydharzlack kann z.B. abplatzen weil er
+    Fettsäuren enthält, die mit Zink reagieren und verseifen.
+  points: 5
+  stats: 0
+- title: Sicherheit am Arbeitsplatz
+  description: >-
+    Sie sollen im Wohnzimmer eines Kunden eine Wandfläche mit Latexfarbe
+    beschichten, um diese Arbeiten durchführen zu können, benötigen Sie eine
+    Holzstehleiter.
+  question: >-
+    Welche Anforderungen und Vorausetzungen müssen für ein sicheres Arbeiten mit
+    einer Stehleiter aus Holz erfüllt sein?
+  imageName: ''
+  options:
+    - Holzstehleiter muss deckend lackiert und standsicher sein.
+    - Schadhafte Stellen an der Holzleiter vor Auftragsdurchführung reparieren
+    - 'Lagerung, Handhabung, Beschaffenheit /Konstruktion'
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'no'
+    - 'yes'
+  explanation: >-
+    Die Holzleiter muss immer witterungsgeschützt gelagert werden, sie darf
+    keine Schäden aufweisen und die Spreizsicherungen müssen fest angebracht und
+    gespannt sein. Desweiteren darf die Holzleiter auch nicht mit deckender
+    Lackfarbe gestrichen werden, da man ansonsten vorhandene Risse im Holz nicht
+    rechtzeitig erkennen kann. Auch auf die Standsicherheit der Leiter muss vor
+    jeder Auftragsdurchführung geachtet werden.
+  points: 5
+  stats: 0
+- title: Sicherheit- und Umweltschutz
+  description: >-
+    Bevor ein Auftrag in Innenräumen mit einem AQUA-PU-Alkydharz-
+    Beschichtungsstoff durchgeführt werden kann, müssen bestimmte Vorgaben der
+    Sicherheit und des Umweltschutzes beachtet werden.
+  question: Welche Sicherheits - und Umweltbestimmungen müssen eingehalten werden?
+  imageName: ''
+  options:
+    - >-
+      Räume öfters lüften, Haut schützen, Reste nur verdünnt in Kanalisation
+      entsorgen.
+    - >-
+      Augen und Haut schützen, Räume gut lüften, Material nicht in Kanalisation
+      entsorgen
+    - 'Bei Spritzverarbeitung Staubmaske tragen, Fenster öffnen, Haut bedecken.'
+  answerType: Multiple Choice
+  answers:
+    - 'no'
+    - 'yes'
+    - 'no'
+  explanation: >-
+    Während und nach der Verarbeitung sind die Räume gut zu belüften. Ist eine
+    Spritzverarbeitungvorgesehen, muss eine Atemschutzmaske getragen werden. Bei
+    Kontakt des Materials mit der Haut oder den Augen sind umgehend die
+    betroffenen Stellen mit Wasser gründlich nachzuspülen. Die Restmaterialien
+    dürfen nicht in die Kanalisation oder ins Erdreich entsorgt werden.
+  points: 5
+  stats: 0
