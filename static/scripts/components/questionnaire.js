@@ -67,6 +67,14 @@ Vue.component( 'questionnaire',
           // get words from textInput
           var text = $('#textInput').val();
           // put words in array and trim words (no capital letters, no spaces, ..)
+          text = text.split('.').join("");
+          text = text.split(',').join("");
+          text = text.split(':').join("");
+          text = text.split(';').join("");
+          text = text.split('!').join("");
+          text = text.split('?').join("");
+          text = text.split('-').join("");
+          
           var words = text.split(" ");
           // remove words that are double
           for (var index in words) {
