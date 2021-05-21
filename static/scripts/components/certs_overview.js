@@ -10,6 +10,18 @@ Vue.component( 'certs_overview',
         model.mode = 'certs_details'
       },
 
+      openFinalCert: function(profession) {
+        for (var i = 0; i < this.model.certificates.length; i++) {
+          if (this.model.certificates[i].filename == "final-certificate-" + profession) {
+//            console.log("final-certificate-" + profession + " -> " + i);
+            model.certificate = i;
+          }
+        }
+        // this could possibly lead to problems if Cert isn't loaded fast enough..
+        loadCert();
+        model.mode = 'certificate'
+      },
+
       // get percentage of learning state
       getPercentage: function(profession) {
         var total = this.model.materials.professions[profession].qualifications.length;
@@ -52,6 +64,16 @@ Vue.component( 'certs_overview',
         if (percent > 100) percent = ((counter-1)/total)*100
 
         return Math.round((percent + Number.EPSILON) * 100) / 100
+      },
+
+      finalCertAvailable: function(profession) {
+        return this.getPercentage(profession) < 100
+      },
+
+      finalCertBtnTitle: function(profession) {
+        let title = "Finales Zertifikat noch nicht vorhanden!";
+        if (!this.finalCertAvailable(profession)) title = "Finales Zertifikat anzeigen";
+        return title;
       }
     },
     beforeMount(){
@@ -67,21 +89,35 @@ Vue.component( 'certs_overview',
     template: `
       <div id="certificates" class="container">
 
-        <!-- loop over all professions -->
-        <div v-for="(profession, index) in model.certs_p" class="card my-3 mx-auto" style="max-width: 540px;" @click="select(this.model.certs_p[index])">
-          <div class="row no-gutters">
-            <div class="col-md-2 my-auto">
-              <img :src="'../../images/' + details[profession].image" class="card-img p-1" :alt="details[profession].profession">
-            </div>
-            <div class="col-md-10">
-              <div class="card-body">
-                <h5 class="card-title">{{this.model.materials.professions[this.model.certs_p[index]].profession}}</h5>
-                <p class="card-text">
-                  Fortschritt: {{getPercentage(this.model.certs_p[index])}}%
-                </p>
-              </div>
+        <div class="row mt-5 justify-content-center">
+
+          <div v-for="(profession, index) in model.certs_p" class="card mx-1 mt-1 border-dark" style="width: 14rem;" @click="select(this.model.certs_p[index])">
+            <img class="card-img-top" :src="'../../images/' + details[profession].image" alt="details[profession].profession">
+            <div class="card-body">
+              <h5 class="card-title">{{this.model.materials.professions[this.model.certs_p[index]].profession}}</h5>
+              <p class="card-text">Fortschritt: {{getPercentage(this.model.certs_p[index])}}%</p>
+              <!-- maybe look for filename-part ->final-certificate<- and open? -->
+              <button type="button" class="btn btn-primary" @click.stop="openFinalCert(profession)" :title="finalCertBtnTitle(this.model.certs_p[index])" :disabled="finalCertAvailable(this.model.certs_p[index])">Finales Zertifikat</button>
             </div>
           </div>
+
+          <!-- loop over all professions
+          <div v-for="(profession, index) in model.certs_p" class="card my-3 mx-auto" style="max-width: 540px;" @click="select(this.model.certs_p[index])">
+            <div class="row no-gutters">
+              <div class="col-md-2 my-auto">
+                <img :src="'../../images/' + details[profession].image" class="card-img p-1" :alt="details[profession].profession">
+              </div>
+              <div class="col-md-10">
+                <div class="card-body">
+                  <h5 class="card-title">{{this.model.materials.professions[this.model.certs_p[index]].profession}}</h5>
+                  <p class="card-text">
+                    Fortschritt: {{getPercentage(this.model.certs_p[index])}}%
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div> -->
+
         </div>
 
       </div>`
