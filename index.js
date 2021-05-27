@@ -438,7 +438,7 @@ function login(req, res) {
 //    var logLine = 'WARNING: |login| possible manipulation attempt detected! ' + email + ' includes cd command (../) or is empty.'
     var logLine = "";
     if (email == '') logLine = 'INFO: |login| email is empty.';
-    if (password == '') logLine = 'INFO: |login| password is empty.';
+    else if (password == '') logLine = 'INFO: |login| password is empty.';
     else logLine = 'WARNING: |login| possible manipulation attempt detected! Email: ' + email + ' includes cd command (../).';
     appendToLog(logLine)
 
