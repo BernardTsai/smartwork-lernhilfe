@@ -435,7 +435,11 @@ function login(req, res) {
 
   // check if email is valid and password has been defined
   if (email == '' || password == '' || email.includes('..') || email.includes('/')) {
-    var logLine = 'WARNING: |login| possible manipulation attempt detected! ' + email + ' includes cd command (../) or is empty.'
+//    var logLine = 'WARNING: |login| possible manipulation attempt detected! ' + email + ' includes cd command (../) or is empty.'
+    var logLine = "";
+    if (email == '') logLine = 'INFO: |login| email is empty.';
+    if (password == '') logLine = 'INFO: |login| password is empty.';
+    else logLine = 'WARNING: |login| possible manipulation attempt detected! Email: ' + email + ' includes cd command (../).';
     appendToLog(logLine)
 
     writeResponse(res, response)
