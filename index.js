@@ -433,6 +433,13 @@ function login(req, res) {
     'validated': "no"
   }
 
+//---------
+  //do like here to authenticate - don't use for login - only for demo purposes here
+//  authenticate(email, password, loginCB);
+
+//  function loginCB() {
+//---------
+
   // check if email is valid and password has been defined
   if (email == '' || password == '' || email.includes('..') || email.includes('/')) {
 //    var logLine = 'WARNING: |login| possible manipulation attempt detected! ' + email + ' includes cd command (../) or is empty.'
@@ -488,6 +495,10 @@ function login(req, res) {
             if (data) {
               response.type = data.toString('utf8').trim()
             }
+
+            console.log(email + " wurde eingeloggt!");
+            console.log(response);
+
             writeResponse(res, response)
           }
         )
@@ -496,6 +507,11 @@ function login(req, res) {
       //writeResponse(res, response)
     }
   )
+
+//--------
+//  }
+//--------
+
 }
 
 //------------------------------------------------------------------------------
@@ -1800,6 +1816,59 @@ function updateStat(req, res) {
       }
     )
   }
+}
+
+//------------------------------------------------------------------------------
+
+// to authenticate before performing an action 
+function authenticate(email, password, callback) {
+//  var validated = "";
+
+  // check if email is valid and password has been defined
+  if (email == '' || password == '' || email.includes('..') || email.includes('/')) {
+    var logLine = "";
+    if (email == '') logLine = 'INFO: |authenticate| email is empty.';
+    else if (password == '') logLine = 'INFO: |authenticate| password is empty.';
+    else logLine = 'WARNING: |authenticate| possible manipulation attempt detected! Email: ' + email + ' includes cd command (../).';
+    appendToLog(logLine)
+
+    return false;
+  }
+
+  // check if directory exists
+  directory = './data/students/' + email
+  filename  = directory + '/password'
+
+  // check if directory exists
+  if (!fs.existsSync(directory)) {
+    var logLine = "";
+    logLine = 'INFO: |authenticate| account: ' + email + ' does not exist.';
+    appendToLog(logLine);
+    return false;
+  }
+
+  // read file password file
+  fs.readFile(filename,
+    // callback function that is called when reading file is done
+    function(err, data) {
+      // error will reading password file
+      if (!err) {
+        real_password = data.toString('utf8').trim()
+        validated = (password === real_password ? "yes" : "no")
+
+        if (validated != "yes") {
+          var logLine = 'INFO: |authenticate| Login attempt failed: wrong password for user ' + email
+          appendToLog(logLine)
+          return false;
+        }
+        else if (validated === "yes") {
+          console.log(email + ' authenticated!');
+          callback();
+          return true;
+        }
+      }
+    }
+  )
 }
 
 //------------------------------------------------------------------------------
