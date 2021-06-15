@@ -44,133 +44,68 @@ function loadLogs(req, res) {
   var email    = req.body.email    ? req.body.email    : ""
   var password = req.body.password ? req.body.password : ""
 
-  // check if email has been defined
-  if (email == "" || password == "") {
-    var logLine = 'ERROR: |loadLogs| missing parameters (email || password)'
-    appendToLog(logLine)
+  authenticate(email, password, "Administrator", loadLogsCB, res);
 
-    writeResponse(res, {err: 'missing parameter'})
-    return
-  }
+  function loadLogsCB() {
 
-  // check cert for change dir i.e. if cert includes '../' and abort if true
-  if (log.includes('../' || email.includes('../'))) {
-    var logLine = 'WARNING: |loadLogs| Possible manipulation attempt detected: requesting user ' + email + ' includes cd command (../)'>
-    appendToLog(logLine)
+    directory = './logs/'
 
-    writeResponse(res, {err: 'manipulation detected'})
-    return
-  }
+    // if a log was requested
+    if (log != "") {
 
+      filename  = directory + log
+      response  = {}
 
+      // read log
+      fs.readFile(filename,
+      // callback function that is called when reading file is done
+        function(err, data) {
+          if (err) {
+            var logLine = 'ERROR: |loadLogs| unable to read File. Err: ' + err.toString()
+            appendToLog(logLine)
 
-  // check if directory exists
-  directory = './data/students/' + email
-  filename  = directory + '/password'
-  check = {
-    'validated': "no",
-    'type':      ""
-  }
-
-  // read file password-file of requesting user
-  fs.readFile(filename,
-    // callback function that is called when reading file is done
-    function(err, data) {
-      // error will reading password file
-      if (!err) {
-        real_password = data.toString('utf8').trim()
-        check.validated = (password === real_password ? "yes" : "no")
-
-        // read file type-file of requesting user
-        fs.readFile(directory + '/type',
-          // callback function that is called when reading file is done
-          function(err, data) {
-            // error will reading type file
-            if (!err) {
-              type = data.toString('utf8').trim()
-              check.type = type
-
-              if (check.validated == "no") {
-                var logLine = 'WARNING: |loadLogs| user ' + email + ' did not use the correct password'
-                appendToLog(logLine)
-
-                response = "don't mess with me!"
-                writeResponse(res, response)
-                return
-              }
-
-              if (check.type != "Administrator") {
-                var logLine = 'WARNING: |loadLogs| user ' + email + ' tried to view logs without permission'
-                appendToLog(logLine)
-
-                response = "no permission!"
-                writeResponse(res, response)
-                return
-              }
-
-              directory = './logs/'
-
-              // if a log was requested
-              if (log != "") {
-
-                filename  = directory + log
-                response  = {}
-
-                // read log
-                fs.readFile(filename,
-                  // callback function that is called when reading file is done
-                  function(err, data) {
-                    if (err) {
-                      var logLine = 'ERROR: |loadLogs| unable to read File. Err: ' + err.toString()
-                      appendToLog(logLine)
-
-                      console.log(err)
-                      writeResponse(res, {err: err.toString()})
-                      return
-                    }
-
-                    if (data) {
-                      information = data.toString('utf8')
-
-                      response = information
-//                      response = yaml.safeLoad(information)
-                    }
-
-                    writeResponse(res, response)
-                  }
-                )
-              }
-              // if no log was requested - return list of existing logs
-              else {
-                // get list of all files
-                fs.readdir(directory,
-                  function (err, files) {
-                    if (err) {
-                      var logLine = 'ERROR: |loadLogs| unable to read directory. Err: ' + err.toString()
-                      appendToLog(logLine)
-
-                      console.log('Unable to scan directory: ' + err)
-                      writeResponse(res, {err: err.toString()})
-                      return
-                    }
-                    if (files.length == 0) { files = "no logs found" }
-                    else if (files) {
-                      //listing all files using forEach
-                      files.forEach(function (file) {
-                        // ToDo:
-                        // Maybe check certificate or something..
-                      })
-                    }
-                    writeResponse(res, files)
-                  }
-                )
-              }
-            }
+            console.log(err)
+            writeResponse(res, {err: err.toString()})
+            return
           }
-        )
-      }
+
+          if (data) {
+            information = data.toString('utf8')
+
+            response = information
+          }
+
+          writeResponse(res, response)
+        }
+      )
     }
-  )
+    // if no log was requested - return list of existing logs
+    else {
+      // get list of all files
+      fs.readdir(directory,
+        function (err, files) {
+          if (err) {
+            var logLine = 'ERROR: |loadLogs| unable to read directory. Err: ' + err.toString()
+            appendToLog(logLine)
+
+            console.log('Unable to scan directory: ' + err)
+            writeResponse(res, {err: err.toString()})
+            return
+          }
+          if (files.length == 0) { files = "no logs found" }
+          else if (files) {
+            //listing all files using forEach
+            files.forEach(function (file) {
+              // ToDo:
+              // Maybe file certificate or something..
+            })
+          }
+          writeResponse(res, files)
+        }
+      )
+    }
+
+  }
 }
 
 //------------------------------------------------------------------------------
@@ -304,121 +239,60 @@ function createAccount(req, res) {
     'msg':       "error"
   }
 
-  // check if email is valid and password has been defined
-  if (email == '' || password == '' || email.includes('..') || email.includes('/')) {
-    var logLine = 'WARNING: |createAccount| Possible manipulation attempt detected: requesting user includes cd command (../) or is empty. Requesting user: ' + email + ' tried to create ' + emailNew
-    appendToLog(logLine)
+  var requiredType = (typeNew == "Schüler/Azubi") ? "Ausbilder" : "Administrator"
+  authenticate(email, password, requiredType, createAccountCB, res);
 
-    writeResponse(res, response)
-    return
-  }
+  function createAccountCB() {
+    // check if emailNew is valid and passwordNew has been defined
+    if (emailNew == '' || passwordNew == '' || typeNew == ''  || emailNew.includes('..') || emailNew.includes('/')) {
+      var logLine = 'WARNING: |createAccount| Possible manipulation attempt detected: User to create includes cd command (../) or is empty. Requesting user: ' + email + ' tried to create ' + emailNew
+      appendToLog(logLine)
 
-  // check if emailNew is valid and passwordNew has been defined
-  if (emailNew == '' || passwordNew == '' || typeNew == ''  || emailNew.includes('..') || emailNew.includes('/')) {
-    var logLine = 'WARNING: |createAccount| Possible manipulation attempt detected: User to create includes cd command (../) or is empty. Requesting user: ' + email + ' tried to create ' + emailNew
-    appendToLog(logLine)
-
-    writeResponse(res, response)
-    return
-  }
-
-  // check if directory exists
-  directory = './data/students/' + email
-  filename  = directory + '/password'
-  check = {
-    'validated': "no",
-    'type':      ""
-  }
-
-  // read file password-file
-  fs.readFile(filename,
-    // callback function that is called when reading file is done
-    function(err, data) {
-      // error will reading password file
-      if (!err) {
-        real_password = data.toString('utf8').trim()
-        check.validated = (password === real_password ? "yes" : "no")
-
-        // read file type-file
-        fs.readFile(directory + '/type',
-          // callback function that is called when reading file is done
-          function(err, data) {
-            // error will reading password file
-            if (!err) {
-              type = data.toString('utf8').trim()
-              check.type = type
-
-              if (check.validated == "no") {
-                var logLine = 'WARNING: |createAccount| Possible manipulation attempt detected: requesting user and wrong password is not possible. Requesting user: ' + email + ' tried to create ' + emailNew
-                appendToLog(logLine)
-
-                response.msg = "don't mess with me"
-                writeResponse(res, response)
-                return
-              }
-
-              if (check.type == "Schüler/Azubi") {
-                var logLine = 'WARNING: |createAccount| Possible manipulation attempt detected: requesting user does not have permission. Requesting user: ' + email + ' tried to create ' + emailNew + ' user type is Schüler/Azubi'
-                appendToLog(logLine)
-
-                response.msg = "no permission"
-                writeResponse(res, response)
-                return
-              }
-
-              if (check.type == "Ausbilder" && typeNew == "Administrator") {
-                var logLine = 'WARNING: |createAccount| Account creation denied: requesting user (type: Ausbilder) tried to create an admin account. Requesting user: ' + email + ' tried to create ' + emailNew
-                appendToLog(logLine)
-
-                response.msg = "no permission"
-                writeResponse(res, response)
-                return
-              }
-
-              // check if directory exists
-              directory = './data/students/' + emailNew
-              filename  = directory + '/password'
-
-              // check if directory exists
-              if (!fs.existsSync(directory)) {
-                // create directory
-                fs.mkdirSync(directory)
-                fs.mkdirSync(directory + '/certificates')
-
-                // write password file
-                var writeStream = fs.createWriteStream(filename)
-                writeStream.write(passwordNew)
-                writeStream.end()
-
-                // write permission file
-                writeStream = fs.createWriteStream(directory + '/type')
-                writeStream.write(typeNew)
-                writeStream.end()
-
-                var logLine = 'INFO: |createAccount| new account created ' + emailNew + '. Requesting user: ' + email
-                appendToLog(logLine)
-
-                response.msg = "account created"
-                response.email = emailNew
-                response.password = passwordNew
-                writeResponse(res, response)
-                return
-              }
-              // if account already exists
-              else {
-                var logLine = 'WARNING: |createAccount| Account created denied: ' + emailNew + 'already exists. Requesting user: ' + email
-                appendToLog(logLine)
-
-                response.msg = "account already exists"
-                writeResponse(res, response)
-                return
-              }
-            }
-          }
-        )
-      }
+      writeResponse(res, response)
+      return
     }
-  )
+
+    // check if directory exists
+    directory = './data/students/' + emailNew
+    filename  = directory + '/password'
+
+    // check if directory exists
+    if (!fs.existsSync(directory)) {
+      // create directory
+      fs.mkdirSync(directory)
+      fs.mkdirSync(directory + '/certificates')
+
+      // write password file
+      var writeStream = fs.createWriteStream(filename)
+      writeStream.write(passwordNew)
+      writeStream.end()
+
+      // write permission file
+      writeStream = fs.createWriteStream(directory + '/type')
+      writeStream.write(typeNew)
+      writeStream.end()
+
+      var logLine = 'INFO: |createAccount| new account created ' + emailNew + '. Requesting user: ' + email
+      appendToLog(logLine)
+
+      response.msg = "account created"
+      response.email = emailNew
+      response.password = passwordNew
+      writeResponse(res, response)
+      return
+    }
+    // if account already exists
+    else {
+      var logLine = 'WARNING: |createAccount| Account created denied: ' + emailNew + 'already exists. Requesting user: ' + email
+      appendToLog(logLine)
+
+      response.msg = "account already exists"
+      writeResponse(res, response)
+      return
+    }
+
+  }
+
 }
 
 //------------------------------------------------------------------------------
@@ -496,8 +370,8 @@ function login(req, res) {
               response.type = data.toString('utf8').trim()
             }
 
-            console.log(email + " wurde eingeloggt!");
-            console.log(response);
+//            console.log(email + " wurde eingeloggt!");
+//            console.log(response);
 
             writeResponse(res, response)
           }
@@ -527,78 +401,73 @@ function changePassword(req, res) {
     'success':   "no"
   }
 
-  // check if email is valid and password has been defined
-  if (email == '' || oldPassword == '' || newPassword == '' || email.includes('..') || email.includes('/')) {
-    var logLine = 'WARNING: |changePassword| ' + email + ' includes cd command (../) or is empty or passsword is empty.'
-    appendToLog(logLine)
+  authenticate(email, password, "Schüler/Azubi", changePasswordCB, res);
 
-    writeResponse(res, response)
-    return
-  }
+  function changePasswordCB() {
+    if (newPassword == '') {
+      var logLine = 'INFO: |changePassword| ' + email + ' -> new password is empty.'
+      appendToLog(logLine)
 
-  // check if directory exists
-  directory = './data/students/' + email
-  filename  = directory + '/password'
-
-  // check if directory exists
-  if (!fs.existsSync(directory)) {
-    // maybe some messing around because this shouldn't happen -> deauth
-    var logLine = 'WARNING: |changePassword| Possible manipulation attempt detected: user ' + email + ' does not exist'
-    appendToLog(logLine)
-
-    //console.log(`Directory (i.e. user) doesn't exist!`)
-    response.validated = "no"
-    response.success = "no"
-    writeResponse(res, response)
-    return
-  }
-
-  // read file password file to check if old Password is correct
-  fs.readFile(filename,
-    // callback function that is called when reading file is done
-    function(err, data) {
-      // error will reading password file
-      if (!err) {
-        real_password = data.toString('utf8').trim()
-        response.validated = (oldPassword === real_password ? "yes" : "no")
-
-        // check if old password was correct
-        if (response.validated === "no") {
-          // just to make sure..
-          //console.log(`validated: no!`)
-
-          var logLine = 'WARNING: |changePassword| Possible manipulation attempt detected: requesting user and wrong password is not possible. Requesting user: ' + email
-          appendToLog(logLine)
-
-          response.validated = "no"
-          response.success = "no"
-          writeResponse(res, response)
-          return
-        }
-        else if (response.validated === "yes") {
-          // write new password
-          //console.log(`validated: yes!`)
-
-          try {
-            fs.writeFileSync(filename, newPassword)
-          }
-          catch (e) {
-            var logLine = 'ERROR: |changePassword| unable to write file. Requesting user: ' + email
-            appendToLog(logLine)
-
-            writeResponse(res, {err: e.toString()})
-            return
-          }
-
-          response.password = newPassword
-          response.validated = "yes"
-          response.success = "yes"
-        }
-      }
       writeResponse(res, response)
+      return
     }
-  )
+
+    // check if directory exists
+    directory = './data/students/' + email
+    filename  = directory + '/password'
+
+    // check if directory exists
+    if (!fs.existsSync(directory)) {
+      // maybe some messing around because this shouldn't happen -> deauth
+      var logLine = 'WARNING: |changePassword| Possible manipulation attempt detected: user ' + email + ' does not exist'
+      appendToLog(logLine)
+
+      //console.log(`Directory (i.e. user) doesn't exist!`)
+      response.validated = "no"
+      response.success = "no"
+      writeResponse(res, response)
+      return
+    }
+
+    // write new password
+    try {
+      fs.writeFileSync(filename, newPassword)
+    }
+    catch (e) {
+      var logLine = 'ERROR: |changePassword| unable to write file. Requesting user: ' + email
+      appendToLog(logLine)
+
+      writeResponse(res, {err: e.toString()})
+      return
+    }
+
+    response.password = newPassword
+    response.validated = "yes"
+    response.success = "yes"
+    writeResponse(res, response)
+
+  }
+
+
 }
+
+//------------------------------------------------------------------------------
+
+// not possible to use authenticate() yet because required type changes depending on targettype
+//function passwordReset(req, res) {
+//  emailReq       = req.body.emailReq    ? req.body.emailReq    : ""
+//  passwordReq    = req.body.passwordReq ? req.body.passwordReq : ""
+//  emailTar       = req.body.emailTar    ? req.body.emailTar    : ""
+//  passwordTar    = req.body.passwordTar ? req.body.passwordTar : ""
+//  response = {
+//    'email':     emailReq,
+//    'password':  passwordReq,
+//    'msg':       "error"
+//  }
+
+//  authenticate(email, password, "Ausbilder", passwordResetCB, res);
+
+//}
 
 //------------------------------------------------------------------------------
 
@@ -940,6 +809,8 @@ function getAllUsers(req, res) {
       }
     }
   )
+
+
 }
 
 //------------------------------------------------------------------------------
@@ -999,117 +870,61 @@ function createGroup(req, res) {
     'msg':       "error"
   }
 
-  // check if email is valid and password has been defined
-  if (email == '' || password == '' || email.includes('..') || email.includes('/')) {
-    var logLine = 'WARNING: |createGroup| possible manipulation attempt detected. User ' + email + ' includes cd command (../) or is empty or password is empty.'
-    appendToLog(logLine)
+  authenticate(email, password, "Ausbilder", createGroupCB, res);
 
-    writeResponse(res, response)
-    return
-  }
+  function createGroupCB() {
+    // check if groupName is valid has been defined
+    if (members == '' || groupName == ''  || groupName.includes('..') || groupName.includes('/')) {
+      var logLine = 'ERROR: |createGroup| no groupName and/or members defined and/or groupName includes cd command (../)'
+      appendToLog(logLine)
 
-  // check if groupName is valid has been defined
-  if (members == '' || groupName == ''  || groupName.includes('..') || groupName.includes('/')) {
-    var logLine = 'ERROR: |createGroup| no groupName and/or members defined and/or groupName includes cd command (../)'
-    appendToLog(logLine)
-
-    writeResponse(res, response)
-    return
-  }
-
-  // check if directory exists
-  directory = './data/students/' + email
-  filename  = directory + '/password'
-  check = {
-    'validated': "no",
-    'type':      ""
-  }
-
-  // read file password-file
-  fs.readFile(filename,
-    // callback function that is called when reading file is done
-    function(err, data) {
-      // error will reading password file
-      if (!err) {
-        real_password = data.toString('utf8').trim()
-        check.validated = (password === real_password ? "yes" : "no")
-
-        // read file type-file
-        fs.readFile(directory + '/type',
-          // callback function that is called when reading file is done
-          function(err, data) {
-            // error will reading password file
-            if (!err) {
-              type = data.toString('utf8').trim()
-              check.type = type
-
-              if (check.validated == "no") {
-                var logLine = 'WARNING: |createGroup| possible manipulation attempt detected. User ' + email + ' does not use correct password.'
-                appendToLog(logLine)
-
-                response.msg = "don't mess with me"
-                writeResponse(res, response)
-                return
-              }
-
-              if (check.type == "Schüler/Azubi") {
-                var logLine = 'WARNING: |createGroup| possible manipulation attempt detected. User ' + email + ' does not have permission.'
-                appendToLog(logLine)
-
-                response.msg = "no permission"
-                writeResponse(res, response)
-                return
-              }
-
-//              console.log(members);
-
-              // check if directory exists
-              directory = './data/groups/'
-              filename  = directory + groupName
-
-              // check if file exists
-              if (!fs.existsSync(filename)) {
-                // write group file
-//                var writeStream = fs.createWriteStream(filename)
-//                writeStream.write(members)
-//                writeStream.end()
-
-                try {
-                  fs.writeFileSync(filename, yaml.safeDump(members))
-                }
-                catch (e) {
-                  var logLine = 'ERROR: |createGroup| failed to write file. Err: ' + e.toString()
-                  appendToLog(logLine)
-
-                  writeResponse(res, {err: e.toString()})
-                  return
-                }
-
-                var logLine = 'INFO: |createGroup| added group ' + groupName + ' successfully. Requesting user: ' + email
-                appendToLog(logLine)
-
-                response.msg = "success"
-                response.groupName = groupName
-                response.members = members
-                writeResponse(res, response)
-                return
-              }
-              // if group already exists
-              else {
-                var logLine = 'WARNING: |createGroup| denied. Group ' + groupName + ' already exists.'
-                appendToLog(logLine)
-
-                response.msg = "group already exists"
-                writeResponse(res, response)
-                return
-              }
-            }
-          }
-        )
-      }
+      writeResponse(res, response)
+      return
     }
-  )
+
+    // check if directory exists
+    directory = './data/groups/'
+    filename  = directory + groupName
+
+    // check if file exists
+    if (!fs.existsSync(filename)) {
+
+      try {
+        fs.writeFileSync(filename, yaml.safeDump(members))
+      }
+      catch (e) {
+        var logLine = 'ERROR: |createGroup| failed to write file. Err: ' + e.toString()
+        appendToLog(logLine)
+
+        writeResponse(res, {err: e.toString()})
+        return
+      }
+
+      var logLine = 'INFO: |createGroup| added group ' + groupName + ' successfully. Requesting user: ' + email
+      appendToLog(logLine)
+
+      response.msg = "success"
+      response.groupName = groupName
+      response.members = members
+      writeResponse(res, response)
+      return
+    }
+    // if group already exists
+    else {
+      var logLine = 'WARNING: |createGroup| denied. Group ' + groupName + ' already exists.'
+      appendToLog(logLine)
+
+      response.msg = "group already exists"
+      writeResponse(res, response)
+      return
+    }
+  }
+
 }
+
+//------------------------------------------------------------------------------
+
+
 
 //------------------------------------------------------------------------------
 
@@ -1820,8 +1635,8 @@ function updateStat(req, res) {
 
 //------------------------------------------------------------------------------
 
-// to authenticate before performing an action 
-function authenticate(email, password, callback) {
+// to authenticate before performing an action
+function authenticate(email, password, minType, callback, res) {
 //  var validated = "";
 
   // check if email is valid and password has been defined
@@ -1832,6 +1647,8 @@ function authenticate(email, password, callback) {
     else logLine = 'WARNING: |authenticate| possible manipulation attempt detected! Email: ' + email + ' includes cd command (../).';
     appendToLog(logLine)
 
+    res.status(401);
+    writeResponse(res, "not authenticated");
     return false;
   }
 
@@ -1844,6 +1661,9 @@ function authenticate(email, password, callback) {
     var logLine = "";
     logLine = 'INFO: |authenticate| account: ' + email + ' does not exist.';
     appendToLog(logLine);
+
+    res.status(401);
+    writeResponse(res, "not authenticated");
     return false;
   }
 
@@ -1859,12 +1679,56 @@ function authenticate(email, password, callback) {
         if (validated != "yes") {
           var logLine = 'INFO: |authenticate| Login attempt failed: wrong password for user ' + email
           appendToLog(logLine)
+
+          res.status(401);
+          writeResponse(res, "not authenticated");
           return false;
         }
         else if (validated === "yes") {
-          console.log(email + ' authenticated!');
-          callback();
-          return true;
+
+          // check user type
+          fs.readFile(directory + '/type',
+            // callback function that is called when reading file is done
+            function(err, data) {
+              if (err) {
+                var logLine = 'WARNING: |authenticate| failed to read type file for user ' + email
+                appendToLog(logLine)
+
+                console.log(err)
+                writeResponse(res, {err: err.toString()})
+                return false
+              }
+              var type = "";
+              if (data) {
+                type = data.toString('utf8').trim()
+              }
+
+              if (type == "Administrator") {
+                callback();
+                return true;
+              }
+              else if (type == "Ausbilder" && minType == "Ausbilder") {
+                callback();
+                return true;
+              }
+              else if (type == "Ausbilder" && minType == "Schüler/Azubi") {
+                callback();
+                return true;
+              }
+              else if (type == minType) {
+                callback();
+                return true;
+              }
+              else {
+                var logLine = 'WARNING: |authenticate| user ' + email + ' tried to access ' + callback.toString().split(' ')[1] + ' without permission!'
+                appendToLog(logLine)
+
+                res.status(403);
+                writeResponse(res, "no permission!");
+                return false;
+              }
+            }
+          )
         }
       }
     }
