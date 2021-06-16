@@ -453,24 +453,6 @@ function changePassword(req, res) {
 
 //------------------------------------------------------------------------------
 
-// not possible to use authenticate() yet because required type changes depending on targettype
-//function passwordReset(req, res) {
-//  emailReq       = req.body.emailReq    ? req.body.emailReq    : ""
-//  passwordReq    = req.body.passwordReq ? req.body.passwordReq : ""
-//  emailTar       = req.body.emailTar    ? req.body.emailTar    : ""
-//  passwordTar    = req.body.passwordTar ? req.body.passwordTar : ""
-//  response = {
-//    'email':     emailReq,
-//    'password':  passwordReq,
-//    'msg':       "error"
-//  }
-
-//  authenticate(email, password, "Ausbilder", passwordResetCB, res);
-
-//}
-
-//------------------------------------------------------------------------------
-
 function passwordReset(req, res) {
   emailReq       = req.body.emailReq    ? req.body.emailReq    : ""
   passwordReq    = req.body.passwordReq ? req.body.passwordReq : ""
@@ -482,127 +464,86 @@ function passwordReset(req, res) {
     'msg':       "error"
   }
 
-  // check if email is valid and password has been defined
-  if (emailReq == '' || passwordReq == '' || emailReq.includes('..') || emailReq.includes('/')) {
-    var logLine = 'WARNING: |passwordReset| Requesting user ' + emailReq + 'includes cd command (../) or is empty or passsword is empty.'
-    appendToLog(logLine)
+  authenticate(emailReq, passwordReq, "Ausbilder", passwordResetCB, res);
 
-    writeResponse(res, response)
-    return
-  }
+  function passwordResetCB(type) {
+    // check if emailNew is valid and passwordNew has been defined
+    if (emailTar == '' || passwordTar == '' || emailTar.includes('..') || emailTar.includes('/')) {
+      var logLine = 'WARNING: |passwordReset| Target user ' + emailTar + 'includes cd command (../) or is empty or passsword is empty. Requesting user: ' + emailReq
+      appendToLog(logLine)
 
-  // check if emailNew is valid and passwordNew has been defined
-  if (emailTar == '' || passwordTar == '' || emailTar.includes('..') || emailTar.includes('/')) {
-    var logLine = 'WARNING: |passwordReset| Target user ' + emailTar + 'includes cd command (../) or is empty or passsword is empty. Requesting user: ' + emailReq
-    appendToLog(logLine)
+      writeResponse(res, response)
+      return
+    }
 
-    writeResponse(res, response)
-    return
-  }
+    // check type of target user
+    directory = './data/students/' + emailTar
+    filename  = directory + '/type'
 
-  // check if directory exists
-  directory = './data/students/' + emailReq
-  filename  = directory + '/password'
-  check = {
-    'validated': "no",
-    'type':      ""
-  }
+    fs.readFile(filename,
+      // callback function that is called when reading file is done
+      function(err, data) {
+        // error will reading type file
+        if (!err) {
+          tarType = data.toString('utf8').trim()
 
-  // read file password-file of requesting user
-  fs.readFile(filename,
-    // callback function that is called when reading file is done
-    function(err, data) {
-      // error will reading password file
-      if (!err) {
-        real_password = data.toString('utf8').trim()
-        check.validated = (passwordReq === real_password ? "yes" : "no")
+          // stop others from resetting Admin passwords
+          if (tarType == "Administrator" && type == "Ausbilder") {
+            var logLine = 'WARNING: |passwordReset| reset denied. Requesting user ' + emailReq + 'with type Ausbilder tried to reset admin password of ' + emailTar
+            appendToLog(logLine)
 
-        // read file type-file of requesting user
-        fs.readFile(directory + '/type',
-          // callback function that is called when reading file is done
-          function(err, data) {
-            // error will reading type file
-            if (!err) {
-              type = data.toString('utf8').trim()
-              check.type = type
+            response.msg = "no permission"
+            res.status(403);
+            writeResponse(res, response)
+            return
+          }
 
-              if (check.validated == "no") {
-                var logLine = 'WARNING: |passwordReset| possible manipulation attempt detected: requesting user ' + emailReq + 'does not use the correct password.'
-                appendToLog(logLine)
+          // only Admin and instructors have permission to reset pw
+          if (type == "Ausbilder" || type == "Administrator") {
 
-                response.msg = "don't mess with me!"
-                writeResponse(res, response)
-                return
-              }
+            // check if directory exists
+            directory = './data/students/' + emailTar
+            filename  = directory + '/password'
 
-              // check type of target user
-              directory = './data/students/' + emailTar
-              filename  = directory + '/type'
+            // check if directory exists
+            if (fs.existsSync(directory)) {
+              // write password file
+              var writeStream = fs.createWriteStream(filename)
+              writeStream.write(passwordTar)
+              writeStream.end()
 
-              fs.readFile(filename,
-                // callback function that is called when reading file is done
-                function(err, data) {
-                  // error will reading type file
-                  if (!err) {
-                    tarType = data.toString('utf8').trim()
+              response.msg = "success"
+              response.email = emailTar
+              response.password = passwordTar
+              writeResponse(res, response)
+              return
+            }
+            // if account doesn't exist
+            else {
+              var logLine = 'ERROR: |passwordReset| failed. Requesting user ' + emailReq + 'tried to reset password of non existing account ' + emailTar
+              appendToLog(logLine)
 
-                    // stop others from resetting Admin passwords
-                    if (tarType == "Administrator" && check.type == "Ausbilder") {
-                      var logLine = 'WARNING: |passwordReset| reset denied. Requesting user ' + emailReq + 'with type Ausbilder tried to reset admin password of ' + emailTar
-                      appendToLog(logLine)
-
-                      response.msg = "no permission"
-                      writeResponse(res, response)
-                      return
-                    }
-
-                    // only Admin and instructors have permission to reset pw
-                    if (check.type == "Ausbilder" || check.type == "Administrator") {
-
-                      // check if directory exists
-                      directory = './data/students/' + emailTar
-                      filename  = directory + '/password'
-
-                      // check if directory exists
-                      if (fs.existsSync(directory)) {
-                        // write password file
-                        var writeStream = fs.createWriteStream(filename)
-                        writeStream.write(passwordTar)
-                        writeStream.end()
-
-                        response.msg = "success"
-                        response.email = emailTar
-                        response.password = passwordTar
-                        writeResponse(res, response)
-                        return
-                      }
-                      // if account doesn't exist
-                      else {
-                        var logLine = 'ERROR: |passwordReset| failed. Requesting user ' + emailReq + 'tried to reset password of non existing account ' + emailTar
-                        appendToLog(logLine)
-
-                        response.msg = "error: Account not found!"
-                        writeResponse(res, response)
-                        return
-                      }
-                    }
-                    else {
-                      var logLine = 'WARNING: |passwordReset| Requesting user ' + emailReq + 'does not have permission to reset passwords!'
-                      appendToLog(logLine)
-
-                      response.msg = "no permission"
-                      writeResponse(res, response)
-                      return
-                    }
-                  }
-                }
-              )
+              response.msg = "error: Account not found!"
+              writeResponse(res, response)
+              return
             }
           }
-        )
+          else {
+            var logLine = 'WARNING: |passwordReset| Requesting user ' + emailReq + 'does not have permission to reset passwords!'
+            appendToLog(logLine)
+
+            response.msg = "no permission"
+            res.status(403);
+            writeResponse(res, response)
+            return
+          }
+        }
       }
-    }
-  )
+    )
+
+
+  }
+
 }
 
 //------------------------------------------------------------------------------
@@ -617,154 +558,112 @@ function deleteAccount(req, res) {
     'msg':       "error"
   }
 
-  // check if email is valid and password has been defined
-  if (emailReq == '' || passwordReq == '' || emailReq.includes('..') || emailReq.includes('/')) {
-    var logLine = 'WARNING: |deleteAccount| Requesting user ' + emailReq + 'includes cd command (../) or is empty or passsword is empty.'
-    appendToLog(logLine)
+  authenticate(emailReq, passwordReq, "Ausbilder", deleteAccountCB, res);
 
-    writeResponse(res, response)
-    return
-  }
+  function deleteAccountCB(type) {
+    // check if emailTar is valid
+    if (emailTar == '' || emailTar.includes('..') || emailTar.includes('/')) {
+      var logLine = 'WARNING: |deleteAccount| target user ' + emailTar + 'includes cd command (../) or is empty.'
+      appendToLog(logLine)
 
-  // check if emailNew is valid and passwordNew has been defined
-  if (emailTar == '' || emailTar.includes('..') || emailTar.includes('/')) {
-    var logLine = 'WARNING: |deleteAccount| target user ' + emailTar + 'includes cd command (../) or is empty.'
-    appendToLog(logLine)
+      writeResponse(res, response)
+      return
+    }
 
-    writeResponse(res, response)
-    return
-  }
+    // check type of target user
+    directory = './data/students/' + emailTar
+    filename  = directory + '/type'
 
-  // check if directory exists
-  directory = './data/students/' + emailReq
-  filename  = directory + '/password'
-  check = {
-    'validated': "no",
-    'type':      ""
-  }
+    fs.readFile(filename,
+      // callback function that is called when reading file is done
+      function(err, data) {
+        // error will reading type file
+        if (!err) {
+          tarType = data.toString('utf8').trim()
 
-  // read file password-file of requesting user
-  fs.readFile(filename,
-    // callback function that is called when reading file is done
-    function(err, data) {
-      // error will reading password file
-      if (!err) {
-        real_password = data.toString('utf8').trim()
-        check.validated = (passwordReq === real_password ? "yes" : "no")
+          // stop others from deleting an Admin account
+          if (tarType == "Administrator" && type == "Ausbilder") {
+            var logLine = 'WARNING: |deleteAccount| denied. Requesting user ' + emailReq + 'tried to delete admin account: ' + emailTar
+            appendToLog(logLine)
 
-        // read file type-file of requesting user
-        fs.readFile(directory + '/type',
-          // callback function that is called when reading file is done
-          function(err, data) {
-            // error will reading type file
-            if (!err) {
-              type = data.toString('utf8').trim()
-              check.type = type
+            response.msg = "no permission"
+            res.status(403);
+            writeResponse(res, response)
+            return
+          }
 
-              if (check.validated == "no") {
-                var logLine = 'WARNING: |deleteAccount| denied! Requesting user ' + emailReq + 'does not use correct password.'
+          // only allow deletion if permissions are granted
+          if (type == "Ausbilder" || type == "Administrator") {
+
+            // check if directory exists
+            directory = './data/students/' + emailTar
+
+            // check if directory exists
+            if (fs.existsSync(directory)) {
+
+              // delete directory recursively
+              (async () => {
+                try {
+                  await del(directory);
+
+                  console.log(`${directory} is deleted!`);
+
+                  response.msg = "success"
+                  response.email = ""
+                  response.password = ""
+
+//                  writeResponse(res, response)
+//                  return
+                }
+                catch (err) {
+                  console.error(`Error while deleting ${directory}.`);
+                  console.error({err: err.toString()});
+
+                  var logLine = 'ERROR: |deleteAccount| failed to remove user ' + emailTar + '. Requesting user: ' + emailReq + '. Err: ' + err.toString()
+                  appendToLog(logLine)
+
+                  response.msg = "failed"
+                  response.email = ""
+                  response.password = ""
+
+                  writeResponse(res, response)
+                  return
+                }
+                var logLine = 'INFO: |deleteAccount| removed user ' + emailTar + ' successfully. Requesting user: ' + emailReq
                 appendToLog(logLine)
 
-                response.msg = "don't mess with me!"
                 writeResponse(res, response)
                 return
-              }
+              })();
 
-              // maybe check if user exists first
+            }
+            // if account doesn't exist
+            else {
+              var logLine = 'ERROR: |deleteAccount| Requesting user ' + emailReq + 'tried to remove non existing account: ' + emailTar
+              appendToLog(logLine)
 
-              // check type of target user
-              directory = './data/students/' + emailTar
-              filename  = directory + '/type'
-
-              fs.readFile(filename,
-                // callback function that is called when reading file is done
-                function(err, data) {
-                  // error will reading type file
-                  if (!err) {
-                    tarType = data.toString('utf8').trim()
-
-                    // stop others from deleting an Admin account
-                    if (tarType == "Administrator" && check.type == "Ausbilder") {
-                      var logLine = 'WARNING: |deleteAccount| denied. Requesting user ' + emailReq + 'tried to delete admin account: ' + emailTar
-                      appendToLog(logLine)
-
-                      response.msg = "no permission"
-                      writeResponse(res, response)
-                      return
-                    }
-
-                    // only allow deletion if permissions are granted
-                    if (check.type == "Ausbilder" || check.type == "Administrator") {
-
-                      // check if directory exists
-                      directory = './data/students/' + emailTar
-
-                      // check if directory exists
-                      if (fs.existsSync(directory)) {
-
-                        // delete directory recursively
-                        (async () => {
-                          try {
-                            await del(directory);
-
-                            console.log(`${directory} is deleted!`);
-
-                            response.msg = "success"
-                            response.email = ""
-                            response.password = ""
-
-//                            writeResponse(res, response)
-//                            return
-                          }
-                          catch (err) {
-                            console.error(`Error while deleting ${directory}.`);
-                            console.error({err: err.toString()});
-
-                            var logLine = 'ERROR: |deleteAccount| failed to remove user ' + emailTar + '. Requesting user: ' + emailReq + '. Err: ' + err.toString()
-                            appendToLog(logLine)
-
-                            response.msg = "failed"
-                            response.email = ""
-                            response.password = ""
-
-                            writeResponse(res, response)
-                            return
-                          }
-                          var logLine = 'INFO: |deleteAccount| removed user ' + emailTar + ' successfully. Requesting user: ' + emailReq
-                          appendToLog(logLine)
-
-                          writeResponse(res, response)
-                          return
-                        })();
-
-                      }
-                      // if account doesn't exist
-                      else {
-                        var logLine = 'ERROR: |deleteAccount| Requesting user ' + emailReq + 'tried to remove non existing account: ' + emailTar
-                        appendToLog(logLine)
-
-                        response.msg = "error: Account not found!"
-                        writeResponse(res, response)
-                        return
-                      }
-                    }
-                    else {
-                      var logLine = 'WARNING: |deleteAccount| Requesting user ' + emailReq + 'does not have permission to delete accounts'
-                      appendToLog(logLine)
-
-                      response.msg = "no permission"
-                      writeResponse(res, response)
-                      return
-                    }
-                  }
-                }
-              )
+              response.msg = "error: Account not found!"
+              writeResponse(res, response)
+              return
             }
           }
-        )
+          else {
+            var logLine = 'WARNING: |deleteAccount| Requesting user ' + emailReq + 'does not have permission to delete accounts'
+            appendToLog(logLine)
+
+            response.msg = "no permission"
+            res.status(403);
+            writeResponse(res, response)
+            return
+          }
+        }
       }
-    }
-  )
+    )
+
+
+  }
+
+
 }
 
 //------------------------------------------------------------------------------
@@ -924,10 +823,6 @@ function createGroup(req, res) {
 
 //------------------------------------------------------------------------------
 
-
-
-//------------------------------------------------------------------------------
-
 function deleteGroup(req, res) {
   emailReq       = req.body.emailReq    ? req.body.emailReq    : ""
   passwordReq    = req.body.passwordReq ? req.body.passwordReq : ""
@@ -938,111 +833,71 @@ function deleteGroup(req, res) {
     'msg':       "error"
   }
 
-  // check if email is valid and password has been defined
-  if (emailReq == '' || passwordReq == '' || emailReq.includes('..') || emailReq.includes('/')) {
-    var logLine = 'WARNING: |deleteGroup| possible manipulation attempt detected. User ' + emailReq + ' contains cd command (../) or is empty and/or password is empty.'
-    appendToLog(logLine)
+  authenticate(emailReq, passwordReq, "Ausbilder", deleteGroupCB, res);
 
-    writeResponse(res, response)
-    return
-  }
+  function deleteGroupCB(type) {
+    // check if groupName is valid
+    if (groupName == '' || groupName.includes('..') || groupName.includes('/')) {
+      var logLine = 'WARNING: |deleteGroup| possible manipulation attempt detected. GroupName ' + groupName + ' contains cd command (../) or is empty.'
+      appendToLog(logLine)
 
-  // check if emailNew is valid and passwordNew has been defined
-  if (groupName == '' || groupName.includes('..') || groupName.includes('/')) {
-    var logLine = 'WARNING: |deleteGroup| possible manipulation attempt detected. GroupName ' + groupName + ' contains cd command (../) or is empty.'
-    appendToLog(logLine)
-
-    writeResponse(res, response)
-    return
-  }
-
-  // check if directory exists
-  directory = './data/students/' + emailReq
-  filename  = directory + '/password'
-  check = {
-    'validated': "no",
-    'type':      ""
-  }
-
-  // read file password-file of requesting user
-  fs.readFile(filename,
-    // callback function that is called when reading file is done
-    function(err, data) {
-      // error will reading password file
-      if (!err) {
-        real_password = data.toString('utf8').trim()
-        check.validated = (passwordReq === real_password ? "yes" : "no")
-
-        // read file type-file of requesting user
-        fs.readFile(directory + '/type',
-          // callback function that is called when reading file is done
-          function(err, data) {
-            // error will reading type file
-            if (!err) {
-              type = data.toString('utf8').trim()
-              check.type = type
-
-              if (check.validated == "no") {
-                var logLine = 'WARNING: |deleteGroup| possible manipulation attempt detected. User ' + emailReq + ' does not use correct password.'
-                appendToLog(logLine)
-
-                response.msg = "don't mess with me!"
-                writeResponse(res, response)
-                return
-              }
-
-              if (check.type == "Schüler/Azubi") {
-                var logLine = 'WARNING: |deleteGroup| possible manipulation attempt detected. User ' + emailReq + ' does not have permission to delete groups.'
-                appendToLog(logLine)
-
-                response.msg = "no permission"
-                writeResponse(res, response)
-                return
-              }
-
-              // check type of target user
-              directory = './data/groups/'
-              filename  = directory + groupName
-
-              // check if file exists
-              if (fs.existsSync(filename)) {
-                // remove group file
-                try {
-                  fs.unlinkSync(filename)
-
-//                  response.msg = "success"
-//                  writeResponse(res, response)
-//                  return
-                } catch(err) {
-                   var logLine = 'ERROR: |deleteGroup| failed to remove group ' + groupName + '. Requesting user: ' + emailReq + ' Err: ' + err.toString()
-                   appendToLog(logLine)
-
-                  console.error(err)
-                  writeResponse(res, {err: err.toString()})
-                  return
-                }
-                var logLine = 'INFO: |deleteGroup| removed group ' + groupName + ' successfully. Requesting user: ' + emailReq
-                appendToLog(logLine)
-
-                response.msg = "success"
-                writeResponse(res, response)
-                return
-              }
-              else {
-                var logLine = 'ERROR: |deleteGroup| group ' + groupName + ' does not exist. Requesting user: ' + emailReq
-                appendToLog(logLine)
-
-                response.msg = "error: groups doesn't exist"
-                writeResponse(res, response)
-                return
-              }
-            }
-          }
-        )
-      }
+      writeResponse(res, response)
+      return
     }
-  )
+
+    if (type == "Schüler/Azubi") {
+      var logLine = 'WARNING: |deleteGroup| possible manipulation attempt detected. User ' + emailReq + ' does not have permission to delete groups.'
+      appendToLog(logLine)
+
+      response.msg = "no permission"
+      res.status(403);
+      writeResponse(res, response)
+      return
+    }
+
+    directory = './data/groups/'
+    filename  = directory + groupName
+
+    // check if file exists
+    if (fs.existsSync(filename)) {
+      // remove group file
+      try {
+        fs.unlinkSync(filename)
+
+//        response.msg = "success"
+//        writeResponse(res, response)
+//        return
+      } catch(err) {
+         var logLine = 'ERROR: |deleteGroup| failed to remove group ' + groupName + '. Requesting user: ' + emailReq + ' Err: ' + err.toString()
+         appendToLog(logLine)
+
+        console.error(err)
+        writeResponse(res, {err: err.toString()})
+        return
+      }
+      var logLine = 'INFO: |deleteGroup| removed group ' + groupName + ' successfully. Requesting user: ' + emailReq
+      appendToLog(logLine)
+
+      response.msg = "success"
+      writeResponse(res, response)
+      return
+    }
+    else {
+      var logLine = 'ERROR: |deleteGroup| group ' + groupName + ' does not exist. Requesting user: ' + emailReq
+      appendToLog(logLine)
+
+      response.msg = "error: groups doesn't exist"
+      writeResponse(res, response)
+      return
+    }
+  }
+
+
 }
+
+//------------------------------------------------------------------------------
+
+
 
 //------------------------------------------------------------------------------
 
@@ -1704,19 +1559,19 @@ function authenticate(email, password, minType, callback, res) {
               }
 
               if (type == "Administrator") {
-                callback();
+                callback(type);
                 return true;
               }
               else if (type == "Ausbilder" && minType == "Ausbilder") {
-                callback();
+                callback(type);
                 return true;
               }
               else if (type == "Ausbilder" && minType == "Schüler/Azubi") {
-                callback();
+                callback(type);
                 return true;
               }
               else if (type == minType) {
-                callback();
+                callback(type);
                 return true;
               }
               else {
