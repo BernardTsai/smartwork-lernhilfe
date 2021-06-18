@@ -89,30 +89,21 @@ Vue.component( 'settings-usercontrol',
         this.users.select = index;
         // because of error when trying to access array from modal
         this.users.emailSel = this.users.user[index].email;
+        $("#pwResetNewPw").val("");
         $("#userOptions").modal();
       },
 
       selectUserSearch: function() {
         var user = document.getElementById('searchUser').value
-        var found = false
 
         for (var i = 0; i < this.users.user.length; ++i) {
           if (user === this.users.user[i].email) {
-            found = true
+
+            this.users.select = i
+            this.users.emailSel = user
+            $("#pwResetNewPw").val("");
+            $("#userOptions").modal()
           }
-        }
-        if (found) {
-          this.users.select = i
-          this.users.emailSel = user
-          $("#userOptions").modal()
-        }
-        else {
-// Doesn't work.......
-//          $("#searchUser").tooltip({trigger: 'manual'})
-//          $("#searchUser").tooltip({
-//            title: "This will show in absence of title attribute."
-//          });
-//          $("#searchUser").tooltip('toggle')
         }
       },
 
