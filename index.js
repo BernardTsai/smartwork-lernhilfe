@@ -900,10 +900,6 @@ function deleteGroup(req, res) {
 
 //------------------------------------------------------------------------------
 
-
-
-//------------------------------------------------------------------------------
-
 function editGroup(req, res) {
   email     = req.body.email     ? req.body.email     : ""
   password  = req.body.password  ? req.body.password  : ""
@@ -914,104 +910,59 @@ function editGroup(req, res) {
     'msg':     ""
   }
 
-  // check if email is valid and password has been defined
-  if (email == '' || password == '' || email.includes('..') || email.includes('/')) {
-    var logLine = 'WARNING: |editGroup| possible manipulation attempt detected. User ' + email + ' contains cd command (../) or is empty and/or password is empty.'
-    appendToLog(logLine, req)
+  authenticate(email, password, "Ausbilder", editGroupCB, res);
 
-    writeResponse(res, response)
-    return
-  }
+  function editGroupCB() {
+    // check if groupName is valid and has been defined
+    if (groupName == '' || groupName.includes('..') || groupName.includes('/')) {
+      var logLine = 'WARNING: |editGroup| possible manipulation attempt detected. Group ' + groupName + ' contains cd command (../) or is empty.'
+      appendToLog(logLine, req)
 
-  // check if groupName is valid and has been defined
-  if (groupName == '' || groupName.includes('..') || groupName.includes('/')) {
-    var logLine = 'WARNING: |editGroup| possible manipulation attempt detected. Group ' + groupName + ' contains cd command (../) or is empty.'
-    appendToLog(logLine, req)
+      writeResponse(res, response)
+      return
+    }
 
-    writeResponse(res, response)
-    return
-  }
+    directory = './data/groups/'
+    filename  = directory + groupName
 
-  directory = './data/students/' + email
-  filename  = directory + '/password'
+    // check if file exists
+    if (fs.existsSync(filename)) {
+      // read file group-file
+      fs.readFile(filename,
+        // callback function that is called when reading file is done
+        function(err, data) {
+          // error will reading group file
+          if (!err) {
+            group = data.toString('utf8')
+            group = yaml.safeLoad(group)
+//            console.log(group)
 
-  // read file password-file of requesting user
-  fs.readFile(filename,
-    // callback function that is called when reading file is done
-    function(err, data) {
-      // error will reading password file
-      if (!err) {
-        real_password = data.toString('utf8').trim()
-        validated = (password === real_password ? "yes" : "no")
-        if (validated == "no") {
-          response.msg = "don't mess with me!"
-          writeResponse(res, response)
-          return
-        }
+            group = groupNew
 
-        // read file type-file of requesting user
-        fs.readFile(directory + '/type',
-          // callback function that is called when reading file is done
-          function(err, data) {
-            // error will reading type file
-            if (!err) {
-              type = data.toString('utf8').trim()
+//            console.log(group)
+//            console.log("");
 
-              if (type == "Schüler/Azubi") {
-                var logLine = 'WARNING: |editGroup| possible manipulation attempt detected. User ' + email + ' does not have permission.'
-                appendToLog(logLine, req)
+            try {
+              fs.writeFileSync(filename, yaml.safeDump(group))
+              response.success = "yes"
+            }
+            catch (e) {
+              var logLine = 'ERROR: |editGroup| failed to save file for group ' + groupName + '. Requesting user: ' + email + 'Err: ' + e.toString()
+              appendToLog(logLine, req)
 
-                response.msg = "no permission"
-                writeResponse(res, response)
-                return
-              }
-
-              directory = './data/groups/'
-              filename  = directory + groupName
-
-              // check if file exists
-              if (fs.existsSync(filename)) {
-                // read file group-file
-                fs.readFile(filename,
-                  // callback function that is called when reading file is done
-                  function(err, data) {
-                    // error will reading group file
-                    if (!err) {
-                      group = data.toString('utf8')
-                      group = yaml.safeLoad(group)
-//                      console.log(group)
-
-                      group = groupNew
-
-//                      console.log(group)
-//                      console.log("");
-
-                      try {
-                        fs.writeFileSync(filename, yaml.safeDump(group))
-                        response.success = "yes"
-                      }
-                      catch (e) {
-                        var logLine = 'ERROR: |editGroup| failed to save file for group ' + groupName + '. Requesting user: ' + email + 'Err: ' + e.toString()
-                        appendToLog(logLine, req)
-
-                        writeResponse(res, {err: e.toString()})
-                        return
-                      }
-                    }
-                    var logLine = 'INFO: |editGroup| edited group ' + groupName + ' successfully. Requesting user: ' + email
-                    appendToLog(logLine, req)
-
-                    writeResponse(res, response)
-                  }
-                )
-              }
+              writeResponse(res, {err: e.toString()})
+              return
             }
           }
-        )
-      }
-    }
-  )
+          var logLine = 'INFO: |editGroup| edited group ' + groupName + ' successfully. Requesting user: ' + email
+          appendToLog(logLine, req)
 
+          writeResponse(res, response)
+        }
+      )
+    }
+
+  }
 }
 
 //------------------------------------------------------------------------------
@@ -1156,88 +1107,52 @@ function saveMaterials(req, res) {
     'msg':     ""
   }
 
+  authenticate(email, password, "Ausbilder", saveMaterialsCB, res);
 
-  // check if email and quiz have been defined
-  if (email == "" || password == "" || email.includes('..') || email.includes('/') || profession == "" || qualification == "") {
-    var logLine = 'WARNING: |saveMaterials| possible manipulation attempt detected. User ' + email + ' includes cd command (../) or is empty and/or password/professsion/qualification is empty.'
+  function saveMaterialsCB() {
+    if (profession == "" || qualification == "") {
+      var logLine = 'ERROR: |saveMaterials| profession and/or qualification not defined!'
+      appendToLog(logLine, req)
+
+      writeResponse(res, {err: 'missing parameters'})
+      return
+    }
+
+    // check if directory exists
+    directory = './data/materials/profession-' + profession + '/qualification-' + qualification
+    filename  = directory + '/questions.yaml'
+
+    // check if directory exists
+    if (!fs.existsSync(directory)) {
+      // create directory
+      fs.mkdirSync(directory)
+    }
+
+    // write question.yaml file
+    try {
+      fs.writeFileSync(filename, yaml.safeDump(materials))
+    }
+    catch (e) {
+      var logLine = 'ERROR: |saveMaterials| failed to write file ' + filename + '. Requesting user: ' + email + '. Err: ' + e.toString()
+      appendToLog(logLine, req)
+
+      writeResponse(res, {err: e.toString()})
+      return
+    }
+
+    var logLine = 'INFO: |saveMaterials| saved ' + filename + ' successfully. Requesting user: ' + email
     appendToLog(logLine, req)
 
-    writeResponse(res, {err: 'missing parameters'})
+    response.success = true
+    writeResponse(res, response)
     return
+
   }
-
-  directory = './data/students/' + email
-  filename  = directory + '/password'
-
-  //check if user has permission
-  fs.readFile(filename,
-    // callback function that is called when reading file is done
-    function(err, data) {
-      // error will reading password file
-      if (!err) {
-        real_password = data.toString('utf8').trim()
-        validated = (password === real_password ? "yes" : "no")
-
-        // read file type-file
-        fs.readFile(directory + '/type',
-          // callback function that is called when reading file is done
-          function(err, data) {
-            // error will reading password file
-            if (!err) {
-              type = data.toString('utf8').trim()
-
-              if (validated == "no") {
-                var logLine = 'WARNING: |saveMaterials| possible manipulation attempt detected. User ' + email + ' does not use correct password.'
-                appendToLog(logLine, req)
-
-                response.msg = "not validated"
-                writeResponse(res, response)
-                return
-              }
-
-              if (type == "Schüler/Azubi") {
-                var logLine = 'WARNING: |saveMaterials| possible manipulation attempt detected. User ' + email + ' does not have permission.'
-                appendToLog(logLine, req)
-
-                response.msg = "no permission"
-                writeResponse(res, response)
-                return
-              }
-
-              // check if directory exists
-              directory = './data/materials/profession-' + profession + '/qualification-' + qualification
-              filename  = directory + '/questions.yaml'
-
-              // check if directory exists
-              if (!fs.existsSync(directory)) {
-                // create directory
-                fs.mkdirSync(directory)
-              }
-
-              // write question.yaml file
-              try {
-                fs.writeFileSync(filename, yaml.safeDump(materials))
-              }
-              catch (e) {
-                var logLine = 'ERROR: |saveMaterials| failed to write file ' + filename + '. Requesting user: ' + email + '. Err: ' + e.toString()
-                appendToLog(logLine, req)
-
-                writeResponse(res, {err: e.toString()})
-                return
-              }
-              var logLine = 'INFO: |saveMaterials| saved ' + filename + ' successfully. Requesting user: ' + email
-              appendToLog(logLine, req)
-
-              response.success = true
-              writeResponse(res, response)
-              return
-            }
-          }
-        )
-      }
-    }
-  )
 }
+
+//------------------------------------------------------------------------------
+
+
 
 //------------------------------------------------------------------------------
 
@@ -1303,114 +1218,58 @@ function deleteImage(req, res) {
     'msg':       "error"
   }
 
-  // check if email is valid and password has been defined
-  if (emailReq == '' || passwordReq == '' || emailReq.includes('..') || emailReq.includes('/')) {
-    var logLine = 'WARNING: |deleteImage| possible manipulation attempt detected. User ' + emailReq + ' contains cd command (../) or is empty and/or password is empty.'
-    appendToLog(logLine, req)
+  authenticate(emailReq, passwordReq, "Ausbilder", deleteImageCB, res);
 
-    writeResponse(res, response)
-    return
-  }
+  function deleteImageCB() {
+    // check if imageName is valid and has been defined
+    if (imageName == '' || imageName.includes('..') || imageName.includes('/')) {
+      var logLine = 'WARNING: |deleteImage| possible manipulation attempt detected. ImageName ' + imageName + ' contains cd command (../) or is empty.'
+      appendToLog(logLine, req)
 
-  // check if emailNew is valid and passwordNew has been defined
-  if (imageName == '' || imageName.includes('..') || imageName.includes('/')) {
-    var logLine = 'WARNING: |deleteImage| possible manipulation attempt detected. ImageName ' + imageName + ' contains cd command (../) or is empty.'
-    appendToLog(logLine, req)
-
-    writeResponse(res, response)
-    return
-  }
-
-  // check if directory exists
-  directory = './data/students/' + emailReq
-  filename  = directory + '/password'
-  check = {
-    'validated': "no",
-    'type':      ""
-  }
-
-  // read file password-file of requesting user
-  fs.readFile(filename,
-    // callback function that is called when reading file is done
-    function(err, data) {
-      // error will reading password file
-      if (!err) {
-        real_password = data.toString('utf8').trim()
-        check.validated = (passwordReq === real_password ? "yes" : "no")
-
-        // read file type-file of requesting user
-        fs.readFile(directory + '/type',
-          // callback function that is called when reading file is done
-          function(err, data) {
-            // error will reading type file
-            if (!err) {
-              type = data.toString('utf8').trim()
-              check.type = type
-
-              if (check.validated == "no") {
-                var logLine = 'WARNING: |deleteImage| possible manipulation attempt detected. User ' + emailReq + ' does not use correct password.'
-                appendToLog(logLine, req)
-
-                response.msg = "don't mess with me!"
-                res.status(403)
-                writeResponse(res, response)
-                return
-              }
-
-              if (check.type == "Schüler/Azubi") {
-                var logLine = 'WARNING: |deleteImage| possible manipulation attempt detected. User ' + emailReq + ' does not have permission to delete files.'
-                appendToLog(logLine, req)
-
-                response.msg = "no permission"
-                res.status(403)
-                writeResponse(res, response)
-                return
-              }
-
-              // check type of target user
-              directory = './data/materials/profession-' + profession.toString() + '/qualification-' + qualification.toString() + '/'
-              filename  = directory + imageName
-
-              // check if file exists
-              if (fs.existsSync(filename)) {
-                // remove group file
-                try {
-                  fs.unlinkSync(filename)
-
-//                  response.msg = "success"
-//                  writeResponse(res, response)
-//                  return
-                } catch(err) {
-                  var logLine = 'ERROR: |deleteImage| failed to remove file ' + imageName + '. Requesting user: ' + emailReq + ' Err: ' + err.toString()
-                  appendToLog(logLine, req)
-
-                  console.error(err)
-                  writeResponse(res, {err: err.toString()})
-                  return
-                }
-                var logLine = 'INFO: |deleteImage| removed file ' + filename + ' successfully. Requesting user: ' + emailReq
-                appendToLog(logLine, req)
-
-                response.msg = "success"
-                writeResponse(res, response)
-                return
-              }
-              else {
-                var logLine = 'ERROR: |deleteImage| file ' + filename + ' does not exist. Requesting user: ' + emailReq
-                appendToLog(logLine, req)
-
-                response.msg = "error: file does not exist"
-                res.status(404)
-                writeResponse(res, response)
-                return
-              }
-            }
-          }
-        )
-      }
+      writeResponse(res, response)
+      return
     }
-  )
+
+    directory = './data/materials/profession-' + profession.toString() + '/qualification-' + qualification.toString() + '/'
+    filename  = directory + imageName
+
+    // check if file exists
+    if (fs.existsSync(filename)) {
+      // remove image file
+      try {
+        fs.unlinkSync(filename)
+
+//        response.msg = "success"
+//        writeResponse(res, response)
+//        return
+      } catch(err) {
+        var logLine = 'ERROR: |deleteImage| failed to remove file ' + imageName + '. Requesting user: ' + emailReq + ' Err: ' + err.toString()
+        appendToLog(logLine, req)
+
+        console.error(err)
+        writeResponse(res, {err: err.toString()})
+        return
+      }
+      var logLine = 'INFO: |deleteImage| removed file ' + filename + ' successfully. Requesting user: ' + emailReq
+      appendToLog(logLine, req)
+
+      response.msg = "success"
+      writeResponse(res, response)
+      return
+    }
+    else {
+      var logLine = 'ERROR: |deleteImage| file ' + filename + ' does not exist. Requesting user: ' + emailReq
+      appendToLog(logLine, req)
+
+      response.msg = "error: file does not exist"
+      res.status(404)
+      writeResponse(res, response)
+      return
+    }
+
+  }
 }
+
 //------------------------------------------------------------------------------
 
 var questionsFileLocked = false;
