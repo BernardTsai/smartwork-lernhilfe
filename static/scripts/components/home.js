@@ -12,6 +12,7 @@ Vue.component( 'home',
         this.groups.group = loadData('POST', '/getallgroups'/*, params*/);
         for (let group of this.groups.group) {
           group.members = jsyaml.safeLoad(group.members);
+          // TODO: maybe check if current object is last object and if true call checkMembership()
         }
         this.checkMembership()
 //        console.log(this.groups)
