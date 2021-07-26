@@ -1,7 +1,7 @@
-#profession li {
+#profession .list-group-item {
   cursor: pointer
 }
 
-#profession li:hover {
+#profession .list-group-item:hover {
   color:   red
 }
