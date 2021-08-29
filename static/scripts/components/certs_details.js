@@ -16,6 +16,14 @@ Vue.component( 'certs_details',
           if (this.model.certificates[i].certificate.profession == this.model.profession) certs.push(i);
         }
         this.model.tmp = certs;
+      },
+      certDate: function(ms) {
+        var certDateString = "";
+        var date = new Date(ms);
+
+        certDateString += date.getDate() + '.' + (date.getMonth()+1) + '.' + date.getFullYear()
+
+        return certDateString;
       }
     },
     beforeMount(){
@@ -27,7 +35,7 @@ Vue.component( 'certs_details',
     computed: {
       details: function() {
         return this.model.materials.professions
-      }
+      },
     },
     template: `
       <div id="certificates" class="container">
@@ -49,7 +57,7 @@ Vue.component( 'certs_details',
                   Finales Zertifikat
                 </h5>
                 <p class="card-text">
-                  Erhalten am: {{ this.model.certificates[this.model.tmp[index]].certificate.date }}
+                  Erhalten am: {{ certDate(this.model.certificates[this.model.tmp[index]].certificate.date) }}
                 </p>
               </div>
             </div>

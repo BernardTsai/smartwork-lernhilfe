@@ -60,8 +60,18 @@ Vue.component( 'certificate',
       certificate: function() {
         return this.model.certificates[this.model.certificate].certificate
       },
+
       details: function() {
         return this.model.materials.professions[this.model.certificates[this.model.certificate].certificate.profession]
+      },
+
+      certDate: function() {
+        var certDateString = "";
+        var date = new Date(this.certificate.date);
+
+        certDateString += date.getDate() + '.' + (date.getMonth()+1) + '.' + date.getFullYear()
+
+        return certDateString;
       }
     },
     template: `
@@ -71,7 +81,7 @@ Vue.component( 'certificate',
             <img src="images/logo.png" width="30" height="30" alt="">
             smart<span class="text-danger">work</span>
           </a>
-          <span class="ml-auto">{{certificate.date}}</span>
+          <span class="ml-auto">{{certDate}}</span>
         </div>
         <div class="bg-light px-3">
           <p class="h1">Zertifikat</p>
@@ -90,7 +100,7 @@ Vue.component( 'certificate',
         </div>
 
         <div class="px-3 text-success">
-          {{certificate.email}} hat das Zertifikat am {{certificate.date}} erhalten!
+          {{certificate.email}} hat das Zertifikat am {{certDate}} erhalten!
         </div>
 
         <div class="dropdown-menu dropdown-menu-sm" id="context-menu">

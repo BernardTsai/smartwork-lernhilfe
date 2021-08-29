@@ -180,7 +180,8 @@ Vue.component( 'questionnaire',
         this.model.quiz.qualification = this.model.qualification
         this.model.quiz.length        = this.model.questionnaire.length
         this.model.quiz.question      = 0
-        this.model.quiz.date          = date.getDate() + "." + (date.getMonth()+1) + "." + date.getFullYear()
+        this.model.quiz.date          = Date.now()
+        //this.model.quiz.date          = date.getDate() + "." + (date.getMonth()+1) + "." + date.getFullYear()
         this.model.quiz.status        = "new"
         this.model.quiz.mode          = "question"
         this.model.quiz.questions     = []

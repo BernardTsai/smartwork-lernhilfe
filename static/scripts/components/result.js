@@ -55,6 +55,14 @@ Vue.component( 'result',
       if (success == "yes") this.saveCertificate()
 
       return this.model.quiz.success
+    },
+    certDate: function() {
+      var certDateString = "";
+      var date = new Date(this.model.quiz.date);
+
+      certDateString += date.getDate() + '.' + (date.getMonth()+1) + '.' + date.getFullYear()
+
+      return certDateString;
     }
   },
   template: `
@@ -64,7 +72,7 @@ Vue.component( 'result',
           <img src="images/logo.png" width="30" height="30" alt="">
           smart<span class="text-danger">work</span>
         </a>
-        <span class="ml-auto">{{model.quiz.date}}</span>
+        <span class="ml-auto">{{certDate}}</span>
       </div>
       <div class="bg-light px-3">
         <p class="h1">Zertifikat</p>
