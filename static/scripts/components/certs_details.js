@@ -35,7 +35,7 @@ Vue.component( 'certs_details',
     computed: {
       details: function() {
         return this.model.materials.professions
-      },
+      }
     },
     template: `
       <div id="certificates" class="container">
