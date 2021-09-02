@@ -118,7 +118,7 @@ Vue.component( 'home',
     computed: {
       // returns latest Cert
       latestCert: function() {
-        var result = "ERROR";
+        var result = [];
         if (model.certificates.length > 0) {
           var latest = model.certificates[0];
 
@@ -175,11 +175,16 @@ Vue.component( 'home',
         <div class="row no-gutters">
           <div class="col-md">
             <div class="card bg-light px-1">
-              <h3>{{model.email}}</h3>
+              <h3 class="row"><a class="col-md-auto">{{model.email}}</a><a :class="{'col-md-auto':true,
+                                                                                   'ml-auto': true,
+                                                                                   'text-success': model.type == 'Schüler/Azubi',
+                                                                                   'text-info': model.type == 'Ausbilder',
+                                                                                   'text-danger': model.type == 'Administrator'}">{{model.type}}</a></h3>
               <hr class="mt-0">
-              <h5 v-if="model.certs_p.size != 0">
-                <p v-for="(profession, index) in model.materials.professions" v-if="model.certs_p.includes(index.toString())" class="my-1">{{profession.title}}</p>
+              <h5 v-if="model.certificates.length > 0" class="row">
+                <a class="col-md-auto">Lernfeld</a><a class="col-md-auto ml-auto"><p v-for="(profession, index) in model.materials.professions" v-if="model.certs_p.includes(index.toString())" class="my-1">{{profession.title}}</p></a>
               </h5>
+              <h5 v-if="model.certificates.length == 0">Noch kein Zertifikat in einem Lernfeld erhalten</h5>
             </div>
           </div>
         </div>
@@ -188,9 +193,10 @@ Vue.component( 'home',
 
         <div class="row no-gutters">
 
-          <div class="card bg-light my-3 mx-auto" style="max-width: 300px;" @click="model.mode = 'professions'">
+          <div class="card bg-light my-3 mx-auto" style="max-width: 300px;">
             <img class="card-img-top" src="../../images/qualifications.png" alt="Lernfeld">
-            <div class="card-body">
+
+            <div v-if="model.certificates.length > 0" class="card-body">
               <h5 class="card-title">Letztes Quiz</h5>
               <div class="card p-2 mx-auto">
                 <h7 class="card-title mb-0">{{latestProfession.profession}}</h7>
@@ -199,14 +205,32 @@ Vue.component( 'home',
                   <div class="card p-1 bg-light">{{latestProfession.qualifications[latestCert.certificate.qualification].qualification}}</div>
                 </h8>
                 <h8 class="card-subtitle mb-2 p-1 text-success" v-if="latestCert.certificate.qualification == -1">Erfolgreich abgeschlossen!</h8>
-                <div class="card-body pb-1">
-                  <button type="button" class="btn btn-primary" @click.stop="openNextQuiz()" :title="nextQuizBtnTitle"  :disabled="latestCert.certificate.qualification == -1">N&aumlchstes Quiz beginnen</button>
-                </div>
+                <!-- <div class="card-body pb-1">
+                  <button type="button" class="btn btn-primary" @click.stop="openNextQuiz()" :title="nextQuizBtnTitle" :disabled="latestCert.certificate.qualification == -1">N&aumlchstes Quiz beginnen</button>
+                </div> -->
+              </div>
+              <div class="text-center p-2">
+                <button type="button" class="btn btn-primary" @click.stop="openNextQuiz()" :title="nextQuizBtnTitle" :disabled="latestCert.certificate.qualification == -1">N&aumlchstes Quiz beginnen</button>
               </div>
               <p class="card-text text-muted text-center">
                 Fortschritt: {{this.getPercentage(this.latestCert.certificate.profession)}}%
               </p>
             </div>
+
+            <div v-if="model.certificates.length == 0" class="card-body">
+              <h5 class="card-title">Erstes Quiz</h5>
+              <div class="card p-2 mx-auto text-white bg-success" @click="model.mode = 'professions'" style="cursor: pointer;">
+                <h7 class="card-title mb-1">Jetzt hier ein Lernfeld ausw&aumlhlen</h7>
+                <h8 class="card-subtitle mb-1">und direkt das erste Quiz beginnen</h8>
+              </div>
+              <!-- <div class="text-center p-2">
+                <button type="button" class="btn btn-primary" @click.stop="model.mode = 'professions'" title="Lernfeld auswählen">Lernfeld ausw&aumlhlen</button>
+              </div> -->
+              <small class="card-text text-muted text-center">
+                Ist ein erstes Quiz erfolgreich abgeschlossen erhältst du dein erstes Zertifikat
+              </small>
+            </div>
+
           </div>
 
           <div class="card my-3 mx-auto" style="max-width: 540px;" @click="model.mode = 'certs_overview'">

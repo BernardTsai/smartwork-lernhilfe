@@ -32,7 +32,7 @@ function loadCerts(email) {
         return
       }
       // check if user has certificates at all
-      if (request.responseText.indexOf("no certificates found") > -1) {
+      if (request.responseText.indexOf("no such file or directory") > -1) {
         model.certificates = []
         return
       }
