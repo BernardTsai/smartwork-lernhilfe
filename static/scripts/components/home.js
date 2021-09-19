@@ -121,9 +121,13 @@ Vue.component( 'home',
         var result = [];
         if (model.certificates.length > 0) {
           var latest = model.certificates[0];
+          this.latestCertIndex = 0;
 
           for (var i = 0; i < model.certificates.length; i++) {
-            if (+model.certificates[i].certificate.date > +latest.certificate.date) latest = model.certificates[i];
+            if (+model.certificates[i].certificate.date > +latest.certificate.date) {
+              latest = model.certificates[i];
+              this.latestCertIndex = i;
+            }
           }
           result = latest;
         }
@@ -151,7 +155,8 @@ Vue.component( 'home',
           selGroup: [],
           select: -1,
           groupName: ''
-        }
+        },
+        latestCertIndex: -1
       }
     },
     beforeMount() {
@@ -180,10 +185,10 @@ Vue.component( 'home',
                                                                                    'text-success': model.type == 'Schüler/Azubi',
                                                                                    'text-info': model.type == 'Ausbilder',
                                                                                    'text-danger': model.type == 'Administrator'}">{{model.type}}</a></h3>
-              <hr class="mt-0">
-              <h5 v-if="model.certificates.length > 0" class="row">
+              <hr class="m-0">
+              <h6 v-if="model.certificates.length > 0" class="row mb-0">
                 <a class="col-md-auto">Lernfeld</a><a class="col-md-auto ml-auto"><p v-for="(profession, index) in model.materials.professions" v-if="model.certs_p.includes(index.toString())" class="my-1">{{profession.title}}</p></a>
-              </h5>
+              </h6>
               <h5 v-if="model.certificates.length == 0">Noch kein Zertifikat in einem Lernfeld erhalten</h5>
             </div>
           </div>
@@ -197,17 +202,14 @@ Vue.component( 'home',
             <img class="card-img-top" src="../../images/qualifications.png" alt="Lernfeld">
 
             <div v-if="model.certificates.length > 0" class="card-body">
-              <h5 class="card-title">Letztes Quiz</h5>
+              <h5 class="card-title">N&aumlchstes Quiz</h5>
               <div class="card p-2 mx-auto">
                 <h7 class="card-title mb-0">{{latestProfession.profession}}</h7>
                 <hr class="mt-0 mb-1">
                 <h8 class="card-subtitle mb-2 p-1 text-info" v-if="latestCert.certificate.qualification != -1">
-                  <div class="card p-1 bg-light">{{latestProfession.qualifications[latestCert.certificate.qualification].qualification}}</div>
+                  <div class="card p-1 bg-light">{{latestProfession.qualifications[latestCert.certificate.qualification + 1].qualification}}</div>
                 </h8>
                 <h8 class="card-subtitle mb-2 p-1 text-success" v-if="latestCert.certificate.qualification == -1">Erfolgreich abgeschlossen!</h8>
-                <!-- <div class="card-body pb-1">
-                  <button type="button" class="btn btn-primary" @click.stop="openNextQuiz()" :title="nextQuizBtnTitle" :disabled="latestCert.certificate.qualification == -1">N&aumlchstes Quiz beginnen</button>
-                </div> -->
               </div>
               <div class="text-center p-2">
                 <button type="button" class="btn btn-primary" @click.stop="openNextQuiz()" :title="nextQuizBtnTitle" :disabled="latestCert.certificate.qualification == -1">N&aumlchstes Quiz beginnen</button>
@@ -233,28 +235,53 @@ Vue.component( 'home',
 
           </div>
 
-          <div class="card my-3 mx-auto" style="max-width: 540px;" @click="model.mode = 'certs_overview'">
-            <div class="row no-gutters">
-              <div class="col-md-4 my-auto">
-                <img src="../../images/certificate.png" class="card-img" alt="Zertifikate">
+          <div class="card bg-light my-3 mx-auto" style="max-width: 300px;">
+            <img class="card-img-top" src="../../images/certificate.png" alt="Zertifikat">
+
+            <div v-if="model.certificates.length > 0" class="card-body">
+              <h5 class="card-title">Neustes Zertifikat</h5>
+              <div class="card p-2 mx-auto">
+                <h7 class="card-title mb-0">{{latestProfession.profession}}</h7>
+                <hr class="mt-0 mb-1">
+                <h8 class="card-subtitle mb-2 p-1 text-info" v-if="latestCert.certificate.qualification != -1">
+                  <div class="card p-1 bg-light">{{latestProfession.qualifications[latestCert.certificate.qualification].qualification}}</div>
+                </h8>
+                <h8 class="card-subtitle mb-2 p-1 text-success" v-if="latestCert.certificate.qualification == -1">Finales Zertifikat erhalten!</h8>
               </div>
-              <div class="col-md-8">
-                <div class="card-body">
-                  <h5 class="card-title">Zertifikate</h5>
-                  <p class="card-text">
-                    Hier finden Sie die von Ihnen bereits erworbenen Zertifikate
-                  </p>
-                </div>
+              <div class="text-center p-2">
+                <button type="button" class="btn btn-primary" @click.stop="model.certificate = latestCertIndex; model.profession = latestCert.certificate.profession; model.mode = 'certificate';">Zertifikat anzeigen</button>
               </div>
             </div>
+
+            <div v-if="model.certificates.length == 0" class="card-body">
+              <h5 class="card-title">Neustes Zertifikat</h5>
+              <div class="card p-2 mx-auto text-white bg-dark">
+                <h7 class="card-title mb-1">Noch kein Zertifikat erhalten.</h7>
+                <h8 class="card-subtitle mb-1">Schlie&szligen Sie ein Quiz erfolgreich ab um ein Zertifikat zu erhalten.</h8>
+              </div>
+              <small class="card-text text-muted text-center">
+                Ist ein erstes Quiz erfolgreich abgeschlossen erhältst du dein erstes Zertifikat
+              </small>
+            </div>
+
+          </div>
+
+          <div class="card bg-light my-3 mx-auto" style="max-width: 300px;">
+            <img class="card-img-top pt-2" src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/users.svg" alt="Gruppen" style="max-height: 133px;">
+
+            <div class="card-body">
+              <h5 class="card-title">Mitglied in diesen Gruppen</h5>
+
+              <!-- loop over all groups -->
+              <div v-for="(group, index) in this.groups.groupTmp" class="card p-1 mx-auto" style="max-width: 540px;" @click="selectGroup(index)" style="cursor: pointer;">
+                <h6 class="card-title mb-0">{{group.groupName}}</h6>
+              </div>
+
+            </div>
+
           </div>
 
         </div>
-
-        <br>
-        <hr style="max-width: 540px;">
-        <br>
-        <h3 class="text-center">Mitglied in diesen Gruppen</h3>
 
         <!-- Modal for group view -->
         <div class="modal fade" id="group" tabindex="-1" role="dialog" aria-labelledby="groupModalCenterTitle" aria-hidden="true">
@@ -297,23 +324,6 @@ Vue.component( 'home',
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-primary" data-dismiss="modal">Schlie&szligen</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- loop over all groups -->
-        <div v-for="(group, index) in this.groups.groupTmp" class="card my-3 mx-auto" style="max-width: 540px;" @click="selectGroup(index)">
-          <div class="row no-gutters">
-            <div class="col-md-2 my-auto d-none d-md-block">
-              <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user.svg" class="card-img p-3" alt="USER-LOGO">
-            </div>
-            <div class="col-md-10">
-              <div class="card-body">
-                <h5 class="card-title">{{group.groupName}}</h5>
-                <p class="card-text">
-                  {{group.groupName}}
-                </p>
               </div>
             </div>
           </div>

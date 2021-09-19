@@ -39,32 +39,20 @@ Vue.component( 'app',
                   Lernfelder
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" @click="model.mode='professions'">Übersicht</a>
+                  <a class="dropdown-item" @click="model.mode='professions'" style="cursor: pointer;">Übersicht</a>
                   <div class="dropdown-divider"></div>
-                  <a v-for="(profession, index) in model.materials.professions" class="dropdown-item" @click="select(index)">{{profession.profession}}</a>
+                  <a v-for="(profession, index) in model.materials.professions" class="dropdown-item" @click="select(index)" style="cursor: pointer;">{{profession.profession}}</a>
                 </div>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#" @click="model.mode='certs_overview'">Zertifikate</a>
+                <a class="nav-link" @click="model.mode='certs_overview'" style="cursor: pointer;">Zertifikate</a>
               </li>
-              <!-- li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Zertifikate
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" @click="model.mode='certs_overview'">Übersicht</a>
-                  <div class="dropdown-divider"></div>
-                  <a v-for="(profession, index) in model.certs_p" class="dropdown-item" @click="selectCerts(model.certs_p[index])">
-                    {{model.materials.professions[model.certs_p[index]].profession}}
-                  </a>
-                </div>
-              </li -->
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   Konto
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown2">
-                  <a class="dropdown-item" @click="model.mode='settings'; model.submode='settings-dashboard'">Einstellungen</a>
+                  <a class="dropdown-item" @click="model.mode='settings'; model.submode='settings-dashboard'" style="cursor: pointer;">Einstellungen</a>
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item" target="smartwork" href="https://www.smart-work-frankfurt.de/extra/datenschutz.html">Datenschutz</a>
                   <a class="dropdown-item" target="smartwork" href="https://www.smart-work-frankfurt.de/extra/impressum.html">Impressum</a>

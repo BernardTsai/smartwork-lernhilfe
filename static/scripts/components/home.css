@@ -2,3 +2,8 @@
     max-height: 350px;
     overflow-y: auto;
 }
+
+#home button:disabled {
+    cursor: not-allowed;
+    pointer-events: all !important;
+}
