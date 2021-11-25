@@ -43,16 +43,21 @@ Vue.component( 'result',
       return qualification
     },
     success: function() {
-      success = "yes"
+      if (this.model.quiz.success == "yes") this.saveCertificate();
 
-      for (var q of this.model.quiz.questions) {
-        if (q.success == "no") {
-          success = "no"
-        }
-      }
-      this.model.quiz.success = success
-
-      if (success == "yes") this.saveCertificate()
+// not needed anymore for new quiz evaluation with percent of total points
+//-------------------------------------------------------------------------
+//      success = "yes"
+//
+//      for (var q of this.model.quiz.questions) {
+//        if (q.success == "no") {
+//          success = "no"
+//        }
+//      }
+//      this.model.quiz.success = success
+//
+//      if (success == "yes") this.saveCertificate()
+//-------------------------------------------------------------------------
 
       return this.model.quiz.success
     },
@@ -82,15 +87,15 @@ Vue.component( 'result',
 
       <div v-for="(q,i) in model.quiz.questions" class="p-3 d-flex">
         {{i+1}}. {{question(i)}}
-        <span v-if="q.success=='yes'" class="far fa-check-circle text-success ml-auto text-success"></span>
-        <span v-if="q.success!='yes'" class="far fa-times-circle text-success ml-auto text-danger"></span>
+        <span v-if="q.success=='yes'" class="far fa-check-circle ml-auto text-success"></span>
+        <span v-if="q.success!='yes'" class="far fa-times-circle ml-auto text-danger"></span>
       </div>
 
       <div v-if="success == 'no'" class="px-3 text-danger">
-        Für ein Zertifikat müssen alle Fragen richtig beantwortet werden.
+        Für ein Zertifikat müssen {{this.model.questionnaire.settings.success * 100}}% der möglichen Punktzahl erreicht werden.
       </div>
       <div v-if="success == 'yes'" class="px-3 text-success">
-        Glückwunsch - die Fragen wurden alle richtig beantwortet.
+        Glückwunsch - du hast ein Zertifikat erhalten.
       </div>
 
     </div>`

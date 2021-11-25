@@ -124,9 +124,20 @@ function writeResponse(res, response) {
 function questionnaire(req, res) {
   profession    = req.params["profession"]
   qualification = req.params["qualification"]
+  file          = req.params["file"] ? req.params["file"] : "questions"
+
+  if(file != "settings" && file != "questions") {
+    var logLine = 'WARNING: |questionnaire| load file. Wrong file requested: ' + file
+    appendToLog(logLine, req)
+
+    response = "no permission"
+    res.status(403);
+    writeResponse(res, response)
+    return
+  }
 
   directory = './data/materials/profession-' + profession + "/qualification-" + qualification
-  filename  = directory + '/questions.yaml'
+  filename  = directory + '/' + file + '.yaml'
   response  = {}
 
   // read overview information
@@ -1461,6 +1472,7 @@ app.use( express.static('./static') )            // static files from root
 app.post('/login',                                                      login)
 app.get( '/overview',                                                   overview)
 app.get( '/questionnaire/:profession/:qualification',                   questionnaire)
+app.get( '/questionnaire/:profession/:qualification/:file',             questionnaire)
 app.post('/quiz',                                                       saveQuiz)
 app.post('/certificate',                                                saveCertificate)
 app.post('/loadcertificate',                                            loadCertificate)

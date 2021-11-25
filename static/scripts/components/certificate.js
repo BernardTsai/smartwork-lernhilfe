@@ -96,7 +96,13 @@ Vue.component( 'certificate',
 
         <div v-for="(q,i) in model.questionnaire" class="p-3 d-flex">
           {{i+1}}. {{q.title}}
-          <span class="far fa-check-circle text-success ml-auto text-success"></span>
+          <div v-if="this.model.certificates[this.model.certificate].certificate.qualification == -1" class="ml-auto">
+            <span class="far fa-check-circle text-success"></span>
+          </div>
+          <div v-else class="ml-auto">
+            <span v-if="this.model.certificates[this.model.certificate].certificate.questions[i].success=='yes'" class="far fa-check-circle text-success"></span>
+            <span v-if="this.model.certificates[this.model.certificate].certificate.questions[i].success!='yes'" class="far fa-times-circle text-danger"></span>
+          </div>
         </div>
 
         <div class="px-3 text-success">

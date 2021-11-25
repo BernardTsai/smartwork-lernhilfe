@@ -75,6 +75,12 @@ function loadCert(email) {
 function getProfessions() {
   var professions = [];
   var professionTmp;
+  if (this.model.certificates.includes('no certificates found')) {
+    this.model.certificates = []
+    this.model.certs_p = []
+    return;
+  }
+
   for (var i = 0; i < this.model.certificates.length; i++) {
     if (this.model.certificates[i].filename.includes('final-certificate-')) {
       professionTmp = this.model.certificates[i].filename[18];

@@ -1,7 +1,13 @@
 //TODO: display result compared to running average at the end
+
+import { questionnaireProgressInfo } from './questionnaireProgressInfo.js'
+
 Vue.component( 'questionnaire',
   {
     props:    ['model'],
+    components: {
+        'questionnaireProgressInfo': questionnaireProgressInfo
+    },
     methods: {
       updateStats: function(result) {
         var request = new XMLHttpRequest();
@@ -37,19 +43,19 @@ Vue.component( 'questionnaire',
       check: function() {
         if (this.question().answerType == 'Multiple Choice') {
           // check answers
-          status = "success"
+//          var status = "success"
 
-          options = []
-          answers = []
-          success = true
+          var options = []
+          var answers = []
+          var success = true
 
-          question = this.model.questionnaire[this.model.quiz.question]
+          var question = this.model.questionnaire[this.model.quiz.question]
 
           // loop over all answers and check each option
           for (var index in question.answers) {
-            option  = $("#option-" + index)[0].checked ? "yes" : "no"
-            answer  = question.answers[index]
-            correct = (option == answer)
+            var option  = $("#option-" + index)[0].checked ? "yes" : "no"
+            var answer  = question.answers[index]
+            var correct = (option == answer)
 
             options[index] = option
             answers[index] = correct ? "yes" : "no"
@@ -67,13 +73,13 @@ Vue.component( 'questionnaire',
           // get words from textInput
           var text = $('#textInput').val();
           // put words in array and trim words (no capital letters, no spaces, ..)
-          text = text.split('.').join("");
-          text = text.split(',').join("");
-          text = text.split(':').join("");
-          text = text.split(';').join("");
-          text = text.split('!').join("");
-          text = text.split('?').join("");
-          text = text.split('-').join("");
+          text = text.split('.').join(" ");
+          text = text.split(',').join(" ");
+          text = text.split(':').join(" ");
+          text = text.split(';').join(" ");
+          text = text.split('!').join(" ");
+          text = text.split('?').join(" ");
+          text = text.split('-').join(" ");
           
           var words = text.split(" ");
           // remove words that are double
@@ -101,7 +107,7 @@ Vue.component( 'questionnaire',
             }
           }
           // get maximum points possible if every word was correct
-          for (points of this.question().answers) maxPoints += +points;
+          for (let points of this.question().answers) maxPoints += +points;
 
           var percent = (finalPoints/maxPoints)*100
 
@@ -117,7 +123,7 @@ Vue.component( 'questionnaire',
       next: function() {
         this.model.quiz.question = this.model.quiz.question + 1
 
-        question = this.model.questionnaire[this.model.quiz.question]
+        var question = this.model.questionnaire[this.model.quiz.question]
 
         if (this.question().answerType == 'Multiple Choice') {
           // wait till entire view is rerendered to prevent js error
@@ -134,14 +140,19 @@ Vue.component( 'questionnaire',
       result: function() {
 //        this.model.mode = "result"
 
-        // TODO: display result in modal
         var finalResult = 0
-        for (var question of this.model.quiz.questions) finalResult += (question.success == "yes") ? 1 : 0;
-        finalResult /= this.model.quiz.length;
+        for (var index in this.model.quiz.questions) finalResult += (this.model.quiz.questions[index].success == "yes") ? +this.questionnaire[index].points : 0;
+        finalResult /= this.totalPoints;
+//        var finalResult = 0
+//        for (var question of this.model.quiz.questions) finalResult += (question.success == "yes") ? 1 : 0;
+//        finalResult /= this.model.quiz.length;
 
-        var average = 0
-        for (var question of this.model.questionnaire) average += question.stats;
-        average /= this.model.questionnaire.length
+        var average = 0.0
+        for (var index = 0; index < this.model.questionnaire.length; index++) average += +this.model.questionnaire[index].stats * +this.questionnaire[index].points;
+        average /= +this.model.questionnaire.length * +this.totalPoints;
+//        var average = 0
+//        for (var question of this.model.questionnaire) average += question.stats;
+//        average /= this.model.questionnaire.length
 
         // calculate result compared to running average in percent
         var resultCompared = Math.round(((finalResult - average)*100 + Number.EPSILON) * 100) / 100
@@ -150,6 +161,9 @@ Vue.component( 'questionnaire',
 
         this.results.result = Math.round((finalResult*100 + Number.EPSILON) * 100) / 100
         this.results.resultCompared = resultCompared
+
+        if (this.results.result - this.questionnaireSettings.settings.success*100 < 0) this.model.quiz.success = 'no';
+        else this.model.quiz.success = 'yes';
 
         $("#resultModal").modal()
       },
@@ -160,19 +174,19 @@ Vue.component( 'questionnaire',
         return this.quiz.questions[this.model.quiz.question]
       },
       correct: function(index) {
-        c = this.model.quiz.questions[this.model.quiz.question].answers[index]
+        var c = this.model.quiz.questions[this.model.quiz.question].answers[index]
 
         return (c == "yes")
       },
       success: function() {
-        s = this.model.quiz.questions[this.model.quiz.question].success
+        var s = this.model.quiz.questions[this.model.quiz.question].success
 
         return (s == "yes")
       }
     },
     computed: {
       questionnaire: function() {
-        date = new Date()
+//        var date = new Date()
 
         this.model.questionnaire = loadData( "GET", "/questionnaire/" + this.model.profession + "/" + this.model.qualification)
 
@@ -187,9 +201,9 @@ Vue.component( 'questionnaire',
         this.model.quiz.questions     = []
 
         for (var q of this.model.questionnaire) {
-          options = []
-          answers = []
-          success = ""
+          var options = []
+          var answers = []
+          var success = ""
 
           for (var answer of q.answers) {
             options.push("")
@@ -201,11 +215,16 @@ Vue.component( 'questionnaire',
 
         return this.model.questionnaire
       },
+      questionnaireSettings: function() {
+        this.model.questionnaire.settings = loadData( "GET", "/questionnaire/" + this.model.profession + "/" + this.model.qualification + "/settings")
+        return this.model.questionnaire
+      },
       count: function() {
         return this.questionnaire.length
       },
+      // still need for bugfix -> when first quiz is finished and next is begun, in the first question -> index isn't updated yet so it still shows index from last quiz
       index: function() {
-        return this.model.quiz.question + 1
+        return this.model.quiz.question <= 0 ? 1 : this.model.quiz.question + 1
       },
       quiz: function() {
         return this.model.quiz
@@ -215,6 +234,17 @@ Vue.component( 'questionnaire',
       },
       questionMode: function() {
         return this.model.quiz.mode == "question"
+      },
+      points: function() {
+        return this.questionnaire[this.index -1].points
+      },
+      totalPoints: function() {
+        var totalPointsCounter = 0
+        for(var question of this.questionnaire) totalPointsCounter += +question.points;
+        return totalPointsCounter
+      },
+      progressInfoData: function() {
+        return {index: this.index, count: this.count, points: this.points}
       }
     },
     data() {
@@ -228,63 +258,71 @@ Vue.component( 'questionnaire',
     template: `
       <div id="questionnaire" class="container">
         <form>
-          <div class="form-group d-flex">
-            <div class="title mr-auto">{{question().title}}</div><div class="my-auto">{{index}}/{{count}}</div>
-          </div>
-          <div class="form-group">
-            {{question().description}}
-          </div>
-          <div class="form-group">
-            <b>Frage:</b> {{question().question}}
-          </div>
-          <div v-if="question().answerType == 'Multiple Choice'">
-            <div class="row">
-              <div v-if="question().imageName != ''" class="form-group col-auto">
-                <img style="max-width: 350px;" :src="'/getimage/' + model.profession.toString() + '/' + model.qualification.toString() + '/' + question().imageName" />
+          <div class="row">
+            <div class="col-xs py-5 mr-3" @click="console.log(questionnaireSettings)">
+              <questionnaireProgressInfo v-bind:data="this.progressInfoData"></questionnaireProgressInfo>
+            </div>
+            <div class="col">
+              <div class="form-group d-flex">
+                <div class="title mr-auto">{{question().title}}</div> <!-- <questionnaireProgressInfo v-bind:data="this.progressInfoData"></questionnaireProgressInfo>  <div class="my-auto">{{index}}/{{count}}</div> -->
               </div>
-              <div class="form-group col">
-                <div v-for="(option,index) in question().options" class="custom-control custom-radio d-flex">
+              <div class="form-group">
+                {{question().description}}
+              </div>
 
-                  <input type="checkbox" :id="'option-' + index" name="customCheck" class="custom-control-input" :disabled="answerMode">
-                  <label class="custom-control-label" :for="'option-'+ index">{{option}}</label>
+              <div class="form-group">
+                <b>Frage:</b> {{question().question}}
+              </div>
+              <div v-if="question().answerType == 'Multiple Choice'">
+                <div class="row">
+                  <div v-if="question().imageName != ''" class="form-group col-auto">
+                    <img style="max-width: 350px;" :src="'/getimage/' + model.profession.toString() + '/' + model.qualification.toString() + '/' + question().imageName" />
+                  </div>
+                  <div class="form-group col">
+                    <div v-for="(option,index) in question().options" class="custom-control custom-radio d-flex">
 
-                  <span v-if="answerMode && correct(index)"  class="far fa-check-circle text-success ml-auto text-success"></span>
-                  <span v-if="answerMode && !correct(index)" class="far fa-times-circle text-success ml-auto text-danger"></span>
+                      <input type="checkbox" :id="'option-' + index" name="customCheck" class="custom-control-input" :disabled="answerMode">
+                      <label class="custom-control-label" :for="'option-'+ index">{{option}}</label>
+
+                      <span v-if="answerMode && correct(index)"  class="far fa-check-circle text-success ml-auto text-success"></span>
+                      <span v-if="answerMode && !correct(index)" class="far fa-times-circle text-success ml-auto text-danger"></span>
+                    </div>
+                  </div>
+                </div>
+                <div v-if="answerMode" class="form-group">
+                  <b v-if="success()"  class="text-success">Richtig:</b>
+                  <b v-if="!success()" class="text-danger">Leider falsch:</b></br/>
+                  {{question().explanation}}
                 </div>
               </div>
-            </div>
-            <div v-if="answerMode" class="form-group">
-              <b v-if="success()"  class="text-success">Richtig:</b>
-              <b v-if="!success()" class="text-danger">Leider falsch:</b></br/>
-              {{question().explanation}}
-            </div>
-          </div>
-          <div v-if="question().answerType == 'Keywords'">
-            <div class="row">
-              <div v-if="question().imageName != ''" class="form-group col-auto">
-                <img style="max-width: 350px;" :src="'/getimage/' + model.profession.toString() + '/' + model.qualification.toString() + '/' + question().imageName" />
-              </div>
-              <div class="form-group col">
+              <div v-if="question().answerType == 'Keywords'">
+                <div class="row">
+                  <div v-if="question().imageName != ''" class="form-group col-auto">
+                    <img style="max-width: 350px;" :src="'/getimage/' + model.profession.toString() + '/' + model.qualification.toString() + '/' + question().imageName" />
+                  </div>
+                  <div class="form-group col">
 
-                <textarea class="form-control" id="textInput" rows="3"></textarea>
-                <small class="form-text text-muted">Geben Sie hier Ihre Antwort ein.</small>
+                    <textarea class="form-control" id="textInput" rows="3"></textarea>
+                    <small class="form-text text-muted">Geben Sie hier Ihre Antwort ein.</small>
 
+                  </div>
+                </div>
+                <div v-if="answerMode" class="form-group">
+                  <b v-if="success()"  class="text-success">Richtig:</b>
+                  <b v-if="!success()" class="text-danger">Leider falsch:</b></br/>
+                  {{question().explanation}}
+                </div>
+              </div>
+              <div v-if="model.quiz.mode != 'answer' " class="form-group">
+                &nbsp;<br/>
+                &nbsp;
+              </div>
+              <div class="form-group d-flex ">
+                <button v-if="questionMode" type="button" class="btn btn-sm mr-auto btn-primary"   @click="check()">Prüfen</button>
+                <button v-if="answerMode && index!=count"   type="button" class="btn btn-sm mr-auto btn-secondary" @click="next()">Nächste Frage</button>
+                <button v-if="answerMode && index==count"   type="button" class="btn btn-sm mr-auto btn-secondary" @click="result()">Ergebnis</button>
               </div>
             </div>
-            <div v-if="answerMode" class="form-group">
-              <b v-if="success()"  class="text-success">Richtig:</b>
-              <b v-if="!success()" class="text-danger">Leider falsch:</b></br/>
-              {{question().explanation}}
-            </div>
-          </div>
-          <div v-if="model.quiz.mode != 'answer' " class="form-group">
-            &nbsp;<br/>
-            &nbsp;
-          </div>
-          <div class="form-group d-flex ">
-            <button v-if="questionMode" type="button" class="btn btn-sm mr-auto btn-primary"   @click="check()">Prüfen</button>
-            <button v-if="answerMode && index!=count"   type="button" class="btn btn-sm mr-auto btn-secondary" @click="next()">Nächste Frage</button>
-            <button v-if="answerMode && index==count"   type="button" class="btn btn-sm mr-auto btn-secondary" @click="result()">Ergebnis</button>
           </div>
         </form>
 
@@ -311,6 +349,9 @@ Vue.component( 'questionnaire',
                         <h5 class="card-title">Herzlichen Gl&uumlckwunsch! Du hast {{this.results.result}}% erreicht!</h5>
                         <p v-if="this.results.resultCompared > 0" class="card-text">
                           Du bist {{this.results.resultCompared}}% besser als der Durchschnitt (gleitender Mittelwert)
+                          <p v-if="this.results.result - this.questionnaireSettings.settings.success*100 < 0" class="text-warning">
+                            Dir fehlen noch {{(this.results.result - this.questionnaireSettings.settings.success*100)*(-1)}}% für ein Zertifikat.
+                          </p>
                         </p>
                       </div>
                     </div>
@@ -324,10 +365,10 @@ Vue.component( 'questionnaire',
                     </div>
                     <div class="col-md-10">
                       <div class="card-body">
-                        <h5 class="card-title">Du hast leider {{this.results.result}}% erreicht!</h5>
-                       <!-- <p class="card-text">
-                          Du bist {{this.results.resultCompared}}% besser als der Durchschnitt (gleitender Mittelwert)
-                        </p> -->
+                        <h5 class="card-title">Du hast {{this.results.result}}% erreicht!</h5>
+                        <p class="card-text">
+                          Um ein Zertifikat zu erhalten müssen mindestens {{this.questionnaireSettings.settings.success * 100}}% erreicht werden.
+                        </p>
                       </div>
                     </div>
                   </div>
