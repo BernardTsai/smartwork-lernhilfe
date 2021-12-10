@@ -47,7 +47,7 @@ function loadLogs(req, res) {
   var email    = req.body.email    ? req.body.email    : ""
   var password = req.body.password ? req.body.password : ""
 
-  authenticate(email, password, "Administrator", loadLogsCB, res);
+  authenticate(email, password, "Administrator", loadLogsCB, res, req);
 
   function loadLogsCB() {
 
@@ -254,7 +254,7 @@ function createAccount(req, res) {
   }
 
   var requiredType = (typeNew == "Schüler/Azubi") ? "Ausbilder" : "Administrator"
-  authenticate(email, password, requiredType, createAccountCB, res);
+  authenticate(email, password, requiredType, createAccountCB, res, req);
 
   function createAccountCB() {
     // check if emailNew is valid and passwordNew has been defined
@@ -415,7 +415,7 @@ function changePassword(req, res) {
     'success':   "no"
   }
 
-  authenticate(email, password, "Schüler/Azubi", changePasswordCB, res);
+  authenticate(email, password, "Schüler/Azubi", changePasswordCB, res, req);
 
   function changePasswordCB() {
     if (newPassword == '') {
@@ -478,7 +478,7 @@ function passwordReset(req, res) {
     'msg':       "error"
   }
 
-  authenticate(emailReq, passwordReq, "Ausbilder", passwordResetCB, res);
+  authenticate(emailReq, passwordReq, "Ausbilder", passwordResetCB, res, req);
 
   function passwordResetCB(type) {
     // check if emailNew is valid and passwordNew has been defined
@@ -572,7 +572,7 @@ function deleteAccount(req, res) {
     'msg':       "error"
   }
 
-  authenticate(emailReq, passwordReq, "Ausbilder", deleteAccountCB, res);
+  authenticate(emailReq, passwordReq, "Ausbilder", deleteAccountCB, res, req);
 
   function deleteAccountCB(type) {
     // check if emailTar is valid
@@ -783,7 +783,7 @@ function createGroup(req, res) {
     'msg':       "error"
   }
 
-  authenticate(email, password, "Ausbilder", createGroupCB, res);
+  authenticate(email, password, "Ausbilder", createGroupCB, res, req);
 
   function createGroupCB() {
     // check if groupName is valid has been defined
@@ -847,7 +847,7 @@ function deleteGroup(req, res) {
     'msg':       "error"
   }
 
-  authenticate(emailReq, passwordReq, "Ausbilder", deleteGroupCB, res);
+  authenticate(emailReq, passwordReq, "Ausbilder", deleteGroupCB, res, req);
 
   function deleteGroupCB(type) {
     // check if groupName is valid
@@ -921,7 +921,7 @@ function editGroup(req, res) {
     'msg':     ""
   }
 
-  authenticate(email, password, "Ausbilder", editGroupCB, res);
+  authenticate(email, password, "Ausbilder", editGroupCB, res, req);
 
   function editGroupCB() {
     // check if groupName is valid and has been defined
@@ -1113,12 +1113,13 @@ function saveMaterials(req, res) {
   var profession    = req.body.profession    ? req.body.profession    : ""
   var qualification = req.body.qualification ? req.body.qualification : ""
   var materials     = req.body.materials     ? req.body.materials     : ""
+  var quizSettings  = req.body.settings      ? req.body.settings      : ""
   response = {
     'success': false,
     'msg':     ""
   }
 
-  authenticate(email, password, "Ausbilder", saveMaterialsCB, res);
+  authenticate(email, password, "Ausbilder", saveMaterialsCB, res, req);
 
   function saveMaterialsCB() {
     if (profession == "" || qualification == "") {
@@ -1139,9 +1140,31 @@ function saveMaterials(req, res) {
       fs.mkdirSync(directory)
     }
 
-    // write question.yaml file
+    // write questions.yaml file
     try {
       fs.writeFileSync(filename, yaml.safeDump(materials))
+    }
+    catch (e) {
+      var logLine = 'ERROR: |saveMaterials| failed to write file ' + filename + '. Requesting user: ' + email + '. Err: ' + e.toString()
+      appendToLog(logLine, req)
+
+      writeResponse(res, {err: e.toString()})
+      return
+    }
+
+
+    // save quiz settings
+    filename = directory + '/settings.yaml'
+
+    // check if directory exists
+    if (!fs.existsSync(directory)) {
+      // create directory
+      fs.mkdirSync(directory)
+    }
+
+    // write settings.yaml file
+    try {
+      fs.writeFileSync(filename, yaml.safeDump(quizSettings))
     }
     catch (e) {
       var logLine = 'ERROR: |saveMaterials| failed to write file ' + filename + '. Requesting user: ' + email + '. Err: ' + e.toString()
@@ -1229,7 +1252,7 @@ function deleteImage(req, res) {
     'msg':       "error"
   }
 
-  authenticate(emailReq, passwordReq, "Ausbilder", deleteImageCB, res);
+  authenticate(emailReq, passwordReq, "Ausbilder", deleteImageCB, res, req);
 
   function deleteImageCB() {
     // check if imageName is valid and has been defined
@@ -1364,7 +1387,7 @@ function updateStat(req, res) {
 //------------------------------------------------------------------------------
 
 // to authenticate before performing an action
-function authenticate(email, password, minType, callback, res) {
+function authenticate(email, password, minType, callback, res, req) {
 //  var validated = "";
 
   // check if email is valid and password has been defined
@@ -1381,8 +1404,8 @@ function authenticate(email, password, minType, callback, res) {
   }
 
   // check if directory exists
-  directory = './data/students/' + email
-  filename  = directory + '/password'
+  var directory = './data/students/' + email
+  var filename  = directory + '/password'
 
   // check if directory exists
   if (!fs.existsSync(directory)) {

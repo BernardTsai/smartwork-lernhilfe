@@ -97,7 +97,7 @@ Vue.component( 'settings-editquiz',
           }
         }
 
-        var params  = JSON.stringify( {email: this.model.email, password: this.model.password, profession: this.selected.professionIndex.toString(), qualification: this.selected.qualificationIndex.toString(), materials: this.model.questionnaire} )
+        var params  = JSON.stringify( {email: this.model.email, password: this.model.password, profession: this.selected.professionIndex.toString(), qualification: this.selected.qualificationIndex.toString(), materials: this.model.questionnaire, settings: {success: $("#inputPercentage").val() / 100} } )
         request.onreadystatechange = saveMaterialsCB
         request.open('POST', '/savematerials', true);  // asynchronous request
         request.setRequestHeader('Content-type', 'application/json');
@@ -502,6 +502,10 @@ Vue.component( 'settings-editquiz',
       $(document).on("click", "#uploadAbortBtn", this.uploadImageAbort);
     },
     computed: {
+      questionnaireSettings: function() {
+        this.model.questionnaire.settings = loadData( "GET", "/questionnaire/" + this.selected.professionIndex + "/" + this.selected.qualificationIndex + "/settings")
+        return this.model.questionnaire
+      },
     },
     template: `
       <div id="settings-editquiz" class="container">
@@ -629,6 +633,19 @@ Vue.component( 'settings-editquiz',
                   <div class="col-md-10">
                     <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#questionCreation" @click="addQuestion()">Frage hinzuf&uumlgen</button>
                     <small class="form-text text-muted">Hier kann eine neue Frage zum Quiz hinzugef&uumlgt werden.</small>
+                  </div>
+                </div>
+
+                <hr>
+
+                <label for="percentForSuccess"><u>Prozent für Erfolg:</u></label>
+                <div id="percentForSuccess" class="row">
+                  <div class="col-md-10">
+                    <input id="inputPercentage" type="number" min="0" max="100" step="1" class="form-control" :value="questionnaireSettings.settings.success*100">
+                    <small class="form-text text-muted">Geben Sie ein, wie viel Prozent erreicht werden müssen, damit das Quiz als erfolgreich abgeschlossen gewertet wird!</small>
+                  </div>
+                  <div class="col-md-auto p-0">
+                    <font size="6">%</font>
                   </div>
                 </div>
 

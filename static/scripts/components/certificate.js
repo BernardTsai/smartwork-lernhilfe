@@ -99,7 +99,7 @@ Vue.component( 'certificate',
           <div v-if="this.model.certificates[this.model.certificate].certificate.qualification == -1" class="ml-auto">
             <span class="far fa-check-circle text-success"></span>
           </div>
-          <div v-else-if="this.model.certificates[this.model.certificate].certificate.questions[i]" class="ml-auto" @click="console.log(i)">
+          <div v-else-if="this.model.certificates[this.model.certificate].certificate.questions[i]" class="ml-auto">
             <span v-if="this.model.certificates[this.model.certificate].certificate.questions[i].success=='yes'" class="far fa-check-circle text-success"></span>
             <span v-if="this.model.certificates[this.model.certificate].certificate.questions[i].success!='yes'" class="far fa-times-circle text-danger"></span>
           </div>
