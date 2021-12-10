@@ -2,11 +2,11 @@ Vue.component( 'certificate',
   {
     props:    ['model'],
     methods: {
-      select: function(index) {
-        model.qualification = index
-        model.question      = -1
-        model.mode          = "questionnaire"
-      },
+//      select: function(index) {
+//        model.qualification = index
+//        model.question      = -1
+//        model.mode          = "questionnaire"
+//      },
 
       printCert: function() {
         alert("Ohne Funktion")
@@ -94,12 +94,12 @@ Vue.component( 'certificate',
           </p>
         </div>
 
-        <div v-for="(q,i) in model.questionnaire" class="p-3 d-flex">
+        <div v-for="(q, i) in model.questionnaire" class="px-3 py-2 d-flex">
           {{i+1}}. {{q.title}}
           <div v-if="this.model.certificates[this.model.certificate].certificate.qualification == -1" class="ml-auto">
             <span class="far fa-check-circle text-success"></span>
           </div>
-          <div v-else class="ml-auto">
+          <div v-else-if="this.model.certificates[this.model.certificate].certificate.questions[i]" class="ml-auto" @click="console.log(i)">
             <span v-if="this.model.certificates[this.model.certificate].certificate.questions[i].success=='yes'" class="far fa-check-circle text-success"></span>
             <span v-if="this.model.certificates[this.model.certificate].certificate.questions[i].success!='yes'" class="far fa-times-circle text-danger"></span>
           </div>
