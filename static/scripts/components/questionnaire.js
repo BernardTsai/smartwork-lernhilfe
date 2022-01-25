@@ -166,6 +166,7 @@ Vue.component( 'questionnaire',
         else this.model.quiz.success = 'yes';
 
         $("#resultModal").modal()
+        $('#resultModal').css('background-color', 'rgba(64, 64, 64, 0.7)');
       },
       question: function() {
         return this.questionnaire[this.model.quiz.question]
@@ -257,7 +258,7 @@ Vue.component( 'questionnaire',
     },
     template: `
       <div id="questionnaire" class="container">
-        <form>
+        <form id="questionnaireForm">
           <div class="row">
             <div class="col-xs py-5 mr-3" @click="console.log(questionnaireSettings)">
               <questionnaireProgressInfo v-bind:data="this.progressInfoData"></questionnaireProgressInfo>
@@ -317,6 +318,9 @@ Vue.component( 'questionnaire',
                 &nbsp;<br/>
                 &nbsp;
               </div>
+
+              <hr>
+
               <div class="form-group d-flex ">
                 <button v-if="questionMode" type="button" class="btn btn-sm mr-auto btn-primary"   @click="check()">Prüfen</button>
                 <button v-if="answerMode && index!=count"   type="button" class="btn btn-sm mr-auto btn-secondary" @click="next()">Nächste Frage</button>
@@ -328,7 +332,7 @@ Vue.component( 'questionnaire',
 
 
         <!-- Modal for result displaying -->
-        <div class="modal fade" id="resultModal" data-backdrop="static" data-keyboard="false"  tabindex="-1" role="dialog" aria-labelledby="resultModalCenterTitle" aria-hidden="true">
+        <div class="modal fade" id="resultModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="resultModalCenterTitle" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content border-success">
               <div class="modal-header">
