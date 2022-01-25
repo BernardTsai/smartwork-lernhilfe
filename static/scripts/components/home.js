@@ -8,11 +8,21 @@ Vue.component( 'home',
       },
 
       // request list of all groups from backend
-      getGroups: function() {
-        this.groups.group = loadData('POST', '/getallgroups'/*, params*/);
+    //  getGroups: function() {
+    //    this.groups.group = loadData('POST', '/getallgroups'/*, params*/);
+    //    for (let group of this.groups.group) {
+    //      group.members = jsyaml.safeLoad(group.members);
+          // TODO: maybe check if current object is last object and if true call checkMembership()
+    //    }
+    //    this.checkMembership()
+//        console.log(this.groups)
+    //  },
+
+      // request list of all groups from backend
+      async getGroups() {
+        this.groups.group = await loadData('POST', '/getallgroups'/*, params*/);
         for (let group of this.groups.group) {
           group.members = jsyaml.safeLoad(group.members);
-          // TODO: maybe check if current object is last object and if true call checkMembership()
         }
         this.checkMembership()
 //        console.log(this.groups)
@@ -179,7 +189,7 @@ Vue.component( 'home',
         <br>
         <div class="row no-gutters">
           <div class="col-md">
-            <div class="card bg-light px-1">
+            <div class="card bg-light p-2">
               <h3 class="row"><a class="col-md-auto">{{model.email}}</a><a :class="{'col-md-auto':true,
                                                                                    'ml-auto': true,
                                                                                    'text-success': model.type == 'Schüler/Azubi',
