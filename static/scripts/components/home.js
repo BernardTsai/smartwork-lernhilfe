@@ -24,8 +24,8 @@ Vue.component( 'home',
         for (let group of this.groups.group) {
           group.members = jsyaml.safeLoad(group.members);
         }
-        this.checkMembership()
 //        console.log(this.groups)
+        this.checkMembership()
       },
 
       selectGroup: function(index) {
@@ -41,6 +41,7 @@ Vue.component( 'home',
         var arrIndex = -1
         var found = false
         for (let i in this.groups.group) {
+          console.log(this.groups.group[i])
           for (let j in this.groups.group[i].members) {
             if (this.groups.group[i].members[j].email == this.model.email) {
               found = true
@@ -49,8 +50,8 @@ Vue.component( 'home',
           }
           if (found) {
             if (arrIndex > -1) {
-//              console.log("Mitglied in:")
-//              console.log(this.groups.group[arrIndex].groupName)
+              console.log("Mitglied in:")
+              console.log(this.groups.group[arrIndex].groupName)
               this.groups.groupTmp.push(this.groups.group[arrIndex])
             }
             found = false
