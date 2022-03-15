@@ -755,12 +755,16 @@ function getAllGroups(req, res) {
             function (err, data) {
               // error will reading group file
               if (!err) {
+                // TODO: create new var instead of response that contains "files" and fill response from it
                 response[index] = {
                   'groupName': file,
                   'members':  data.toString('utf8')
                 }
                 // wait with writeResponse until response is filled
-                if (index == response.length-1) writeResponse(res, response);
+                if (index == response.length-1) {
+                  console.log(response)
+                  writeResponse(res, response);
+                }
               }
             }
           )

@@ -12,7 +12,8 @@ Vue.component( 'settings',
 //      }
     },
     beforeMount() {
-      this.model.submode="settings-dashboard";
+      if (model.submode[0] == '!') this.model.submode = this.model.submode.split("!")[1];
+      else this.model.submode="settings-dashboard";
     },
     template: `
       <div id="settings" class="container">
