@@ -750,25 +750,13 @@ function getAllGroups(req, res) {
         response = files
         files.forEach(function (file, index) {
           // read group files
-          fs.readFile(directory + file,
-            // callback function that is called when reading file is done
-            function (err, data) {
-              // error will reading group file
-              if (!err) {
-                // TODO: create new var instead of response that contains "files" and fill response from it
-                response[index] = {
-                  'groupName': file,
-                  'members':  data.toString('utf8')
-                }
-                // wait with writeResponse until response is filled
-                if (index == response.length-1) {
-                  console.log(response)
-                  writeResponse(res, response);
-                }
-              }
-            }
-          )
+          var data = fs.readFileSync(directory + file, 'utf8');
+          response[index] = {
+            'groupName': file,
+            'members':   data.toString('utf8')
+          }
         })
+        writeResponse(res, response);
       }
     }
   )

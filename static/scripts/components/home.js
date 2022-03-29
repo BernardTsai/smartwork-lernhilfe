@@ -31,7 +31,6 @@ Vue.component( 'home',
         var arrIndex = -1
         var found = false
         for (let i in this.groups.group) {
-          console.log(this.groups.group[i])
           for (let j in this.groups.group[i].members) {
             if (this.groups.group[i].members[j].email == this.model.email) {
               found = true
@@ -40,8 +39,6 @@ Vue.component( 'home',
           }
           if (found) {
             if (arrIndex > -1) {
-              console.log("Mitglied in:")
-              console.log(this.groups.group[arrIndex].groupName)
               this.groups.groupTmp.push(this.groups.group[arrIndex])
             }
             found = false
@@ -215,12 +212,12 @@ Vue.component( 'home',
             <div v-if="model.certificates.length > 0" class="card-body">
               <h5 class="card-title">N&aumlchstes Quiz</h5>
               <div class="card p-2 mx-auto">
-                <h7 class="card-title mb-0">{{latestProfession.profession}}</h7>
+                <h6 class="card-title mb-0">{{latestProfession.profession}}</h6>
                 <hr class="mt-0 mb-1">
-                <h8 class="card-subtitle mb-2 p-1 text-info" v-if="latestCert.certificate.qualification != -1">
+                <h6 class="card-subtitle mb-2 p-1 text-info" v-if="latestCert.certificate.qualification != -1">
                   <div class="card p-1 bg-light">{{latestProfession.qualifications[latestCert.certificate.qualification + 1].qualification}}</div>
-                </h8>
-                <h8 class="card-subtitle mb-2 p-1 text-success" v-if="latestCert.certificate.qualification == -1">Erfolgreich abgeschlossen!</h8>
+                </h6>
+                <h6 class="card-subtitle mb-2 p-1 text-success" v-if="latestCert.certificate.qualification == -1">Erfolgreich abgeschlossen!</h6>
               </div>
               <div class="text-center p-2">
                 <button type="button" class="btn btn-primary" @click.stop="openNextQuiz()" :title="nextQuizBtnTitle" :disabled="latestCert.certificate.qualification == -1">N&aumlchstes Quiz beginnen</button>
@@ -233,8 +230,8 @@ Vue.component( 'home',
             <div v-if="model.certificates.length == 0" class="card-body">
               <h5 class="card-title">Erstes Quiz</h5>
               <div class="card p-2 mx-auto text-white bg-success" @click="model.mode = 'professions'" style="cursor: pointer;">
-                <h7 class="card-title mb-1">Jetzt hier ein Lernfeld ausw&aumlhlen</h7>
-                <h8 class="card-subtitle mb-1">und direkt das erste Quiz beginnen</h8>
+                <h6 class="card-title mb-1">Jetzt hier ein Lernfeld ausw&aumlhlen</h6>
+                <h6 class="card-subtitle mb-1">und direkt das erste Quiz beginnen</h6>
               </div>
               <!-- <div class="text-center p-2">
                 <button type="button" class="btn btn-primary" @click.stop="model.mode = 'professions'" title="Lernfeld auswählen">Lernfeld ausw&aumlhlen</button>
@@ -252,12 +249,12 @@ Vue.component( 'home',
             <div v-if="model.certificates.length > 0" class="card-body">
               <h5 class="card-title">Neustes Zertifikat</h5>
               <div class="card p-2 mx-auto">
-                <h7 class="card-title mb-0">{{latestProfession.profession}}</h7>
+                <h6 class="card-title mb-0">{{latestProfession.profession}}</h6>
                 <hr class="mt-0 mb-1">
-                <h8 class="card-subtitle mb-2 p-1 text-info" v-if="latestCert.certificate.qualification != -1">
+                <h6 class="card-subtitle mb-2 p-1 text-info" v-if="latestCert.certificate.qualification != -1">
                   <div class="card p-1 bg-light">{{latestProfession.qualifications[latestCert.certificate.qualification].qualification}}</div>
-                </h8>
-                <h8 class="card-subtitle mb-2 p-1 text-success" v-if="latestCert.certificate.qualification == -1">Finales Zertifikat erhalten!</h8>
+                </h6>
+                <h6 class="card-subtitle mb-2 p-1 text-success" v-if="latestCert.certificate.qualification == -1">Finales Zertifikat erhalten!</h6>
               </div>
               <div class="text-center p-2">
                 <button type="button" class="btn btn-primary" @click.stop="model.certificate = latestCertIndex; model.profession = latestCert.certificate.profession; model.mode = 'certificate';">Zertifikat anzeigen</button>
@@ -267,8 +264,8 @@ Vue.component( 'home',
             <div v-if="model.certificates.length == 0" class="card-body">
               <h5 class="card-title">Neustes Zertifikat</h5>
               <div class="card p-2 mx-auto text-white bg-dark">
-                <h7 class="card-title mb-1">Noch kein Zertifikat erhalten.</h7>
-                <h8 class="card-subtitle mb-1">Schlie&szligen Sie ein Quiz erfolgreich ab um ein Zertifikat zu erhalten.</h8>
+                <h6 class="card-title mb-1">Noch kein Zertifikat erhalten.</h6>
+                <h6 class="card-subtitle mb-1">Schlie&szligen Sie ein Quiz erfolgreich ab um ein Zertifikat zu erhalten.</h6>
               </div>
               <small class="card-text text-muted text-center">
                 Ist ein erstes Quiz erfolgreich abgeschlossen erhältst du dein erstes Zertifikat
@@ -284,7 +281,7 @@ Vue.component( 'home',
               <h5 class="card-title">Mitglied in diesen Gruppen</h5>
 
               <!-- loop over all groups -->
-              <div v-for="(group, index) in this.groups.groupTmp" class="card p-1 mx-auto" style="max-width: 540px;" @click="selectGroup(index)" style="cursor: pointer;">
+              <div v-for="(group, index) in this.groups.groupTmp" class="card p-1 mx-auto" style="max-width: 540px; cursor: pointer;" @click="selectGroup(index)">
                 <h6 class="card-title mb-0">{{group.groupName}}</h6>
               </div>
 
