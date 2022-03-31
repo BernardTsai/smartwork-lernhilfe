@@ -4,6 +4,7 @@ const parser  = require('body-parser')
 const fs      = require('fs')
 const del     = require('del')
 const multer  = require('multer')
+const https   = require('https')
 const app     = express()
 const port    = 8080
 
@@ -1507,5 +1508,17 @@ app.get( '/getimage/:profession/:qualification/:filename',              getImage
 app.post('/deleteimage',                                                deleteImage)
 app.post('/updatestat',                                                 updateStat)
 
-server = app.listen(port, () => console.log(`Server listening on port ${port}!`))
-server.timeout = 5000
+
+const privateKey = fs.readFileSync('/root/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('/root/cert.pem', 'utf8');
+const ca = fs.readFileSync('/root/chain.pem', 'utf8');
+
+const credentials = {
+  key: privateKey,
+  cert: certificate,
+  ca: ca
+};
+
+https.createServer(credentials, app).listen(443, () => console.log('Server is running at port 443'))
+//server = app.listen(port, () => console.log(`Server listening on port ${port}!`))
+//server.timeout = 5000
