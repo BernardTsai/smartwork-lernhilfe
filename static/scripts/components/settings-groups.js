@@ -461,7 +461,7 @@ Vue.component( 'settings-groups',
 
                 <div class="px-3 text-danger">
                   <p class="font-weight-bold">ACHTUNG:</p>
-                  <p> Der gesamte Gruppe wird vollst&aumlndig gel&oumlscht. Diese Aktion kann nicht r&uumlckg&aumlngig gemacht werden!</p>
+                  <p> Die gesamte Gruppe wird vollst&aumlndig gel&oumlscht. Diese Aktion kann nicht r&uumlckg&aumlngig gemacht werden!</p>
                 </div>
 
               </div>
