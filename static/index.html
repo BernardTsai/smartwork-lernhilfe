@@ -1,6 +1,13 @@
 <!doctype html>
 <html lang="de" translate="no">
   <head>
+    <script>
+      <!-- redirect to https from http -->
+      if(window.location.href.substr(0,5) !== 'https'){
+        window.location.href = window.location.href.replace('http', 'https');
+      }
+    </script>
+
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">

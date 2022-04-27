@@ -4,6 +4,7 @@ const parser  = require('body-parser')
 const fs      = require('fs')
 const del     = require('del')
 const multer  = require('multer')
+const http    = require('http')
 const https   = require('https')
 const app     = express()
 const port    = 8080
@@ -1485,6 +1486,20 @@ app.use( parser.json() )                         // support json encoded bodies
 app.use( parser.urlencoded({ extended: true }) ) // support encoded bodies
 app.use( express.static('./static') )            // static files from root
 
+// Add headers
+app.use(function (req, res, next) {
+  // Website you wish to allow to connect
+  res.setHeader('Access-Control-Allow-Origin', '*');
+
+  // Pass to next layer of middleware
+  next();
+})
+
+// redirect http to https
+app.use((req, res, next) => {
+  req.secure ? next() : res.redirect('https://' + req.headers.host + req.url)
+})
+
 app.post('/login',                                                      login)
 app.get( '/overview',                                                   overview)
 app.get( '/questionnaire/:profession/:qualification',                   questionnaire)
@@ -1519,6 +1534,7 @@ const credentials = {
   ca: ca
 };
 
-https.createServer(credentials, app).listen(443, () => console.log('Server is running at port 443'))
+http.createServer(app).listen(80, () => console.log('http server is running at port 80'))
+https.createServer(credentials, app).listen(443, () => console.log('https server is running at port 443'))
 //server = app.listen(port, () => console.log(`Server listening on port ${port}!`))
 //server.timeout = 5000
