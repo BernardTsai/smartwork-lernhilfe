@@ -223,7 +223,6 @@ Vue.component( 'questionnaire',
       count: function() {
         return this.questionnaire.length
       },
-      // still need for bugfix -> when first quiz is finished and next is begun, in the first question -> index isn't updated yet so it still shows index from last quiz
       index: function() {
         return this.model.quiz.question <= 0 ? 1 : this.model.quiz.question + 1
       },
@@ -260,7 +259,7 @@ Vue.component( 'questionnaire',
       <div id="questionnaire" class="container">
         <form id="questionnaireForm">
           <div class="row">
-            <div class="col-xs py-5 mr-3" @click="console.log(questionnaireSettings)">
+            <div class="col-xs py-5 mr-3" @click="this.console.log(questionnaireSettings)">
               <questionnaireProgressInfo v-bind:data="this.progressInfoData"></questionnaireProgressInfo>
             </div>
             <div class="col">

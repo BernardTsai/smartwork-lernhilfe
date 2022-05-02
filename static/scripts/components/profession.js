@@ -10,6 +10,21 @@ Vue.component( 'profession',
         $("#questionnaireModal").modal();
       }
     },
+    beforeMount(){
+      // reset variables to fix index of quizProgressInfo in questionnaire when next quiz is begun
+      this.model.qualification = -1
+      this.model.questionnaire = []
+      this.model.quiz = {
+        profession:     -1,
+        qualification:  -1,
+        date:           "",
+        length:         -1,
+        question:       -1,
+        questions:      [],
+        success:        "",
+        mode:           ""
+      }
+    },
     computed: {
       profession: function() {
         return this.model.materials.professions[this.model.profession]
