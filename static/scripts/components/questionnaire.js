@@ -40,6 +40,17 @@ Vue.component( 'questionnaire',
         request.setRequestHeader('Content-type', 'application/json');
         request.send(params);
       },
+      selectOption: function (index) {
+        if (this.model.quiz.mode != "answer") {
+          var options = this.model.quiz.questions[this.model.quiz.question].options
+          options[index] = options[index] == "yes" ? "" : "yes"
+          // just for reactivity of selected options
+          Vue.set(this.selectedOptions, index, options[index]);
+
+          this.model.quiz.questions[this.model.quiz.question].options = options
+//          console.log(this.model.quiz.questions[this.model.quiz.question]);
+        }
+      },
       check: function() {
         if (this.question().answerType == 'Multiple Choice') {
           // check answers
@@ -53,9 +64,11 @@ Vue.component( 'questionnaire',
 
           // loop over all answers and check each option
           for (var index in question.answers) {
-            var option  = $("#option-" + index)[0].checked ? "yes" : "no"
+//            var option  = $("#option-" + index)[0].checked ? "yes" : "no"
+            var option  = this.model.quiz.questions[this.model.quiz.question].options[index] // == "yes" ? "yes" : "no"
             var answer  = question.answers[index]
-            var correct = (option == answer)
+            var correct = (option == answer) || (option != "yes" && answer == "no")
+//            var correct = (option == answer)
 
             options[index] = option
             answers[index] = correct ? "yes" : "no"
@@ -64,6 +77,8 @@ Vue.component( 'questionnaire',
           }
 
           this.model.quiz.questions[this.model.quiz.question] = {options: options, answers: answers, success: success ? "yes" : "no"}
+
+          //TODO:  colorize options -> green = correct checked, red = false checked, neutral = not checked
 
           this.model.quiz.mode = "answer"
         }
@@ -126,11 +141,12 @@ Vue.component( 'questionnaire',
         var question = this.model.questionnaire[this.model.quiz.question]
 
         if (this.question().answerType == 'Multiple Choice') {
-          // wait till entire view is rerendered to prevent js error
+          // wait until entire view is rerendered to prevent js error
           this.$nextTick(function () {
             // loop over all answers and check each option
             for (var index in question.answers) {
-              $("#option-" + index)[0].checked = false
+//              $("#option-" + index)[0].checked = false
+              this.selectedOptions = []
             }
           })
         }
@@ -245,10 +261,17 @@ Vue.component( 'questionnaire',
       },
       progressInfoData: function() {
         return {index: this.index, count: this.count, points: this.points}
+      },
+    },
+    filters: {
+      charIndex: function (i) {
+        return String.fromCharCode(97 + i);
       }
     },
     data() {
       return {
+        // just for reactivity so the selected option is visuably updated
+        selectedOptions: [],
         results: {
           result:         -1,
           resultCompared: -1
@@ -279,14 +302,30 @@ Vue.component( 'questionnaire',
                     <img style="max-width: 350px;" :src="'/getimage/' + model.profession.toString() + '/' + model.qualification.toString() + '/' + question().imageName" />
                   </div>
                   <div class="form-group col">
-                    <div v-for="(option,index) in question().options" class="custom-control custom-radio d-flex">
+
+                    <div class="optionContainer">
+                      <div v-for="(response, index) in question().options" @click="selectOption(index)" :class="{
+                                                                                                          'row': true,
+                                                                                                          'option': true,
+                                                                                                          'is-selected': selectedOptions[index] == 'yes' && this.model.quiz.mode != 'answer',
+                                                                                                          'bg-success': (selectedOptions[index] == 'yes' && this.model.questionnaire[this.model.quiz.question].answers[index] == 'yes') && this.model.quiz.mode == 'answer',
+                                                                                                          'bg-danger':  (selectedOptions[index] == 'yes' && this.model.questionnaire[this.model.quiz.question].answers[index] != 'yes') && this.model.quiz.mode == 'answer'
+                                                                                                        }" :key="index">
+                        {{ index | charIndex }}. {{ response }}
+                        <span v-if="answerMode && correct(index)"  class="far fa-check-circle text-success ml-auto text-success"></span>
+                        <span v-if="answerMode && !correct(index)" class="far fa-times-circle text-success ml-auto text-danger"></span>
+                      </div>
+                    </div>
+
+                    <!-- <div v-for="(option,index) in question().options" class="custom-control custom-radio d-flex">
 
                       <input type="checkbox" :id="'option-' + index" name="customCheck" class="custom-control-input" :disabled="answerMode">
                       <label class="custom-control-label" :for="'option-'+ index">{{option}}</label>
 
                       <span v-if="answerMode && correct(index)"  class="far fa-check-circle text-success ml-auto text-success"></span>
                       <span v-if="answerMode && !correct(index)" class="far fa-times-circle text-success ml-auto text-danger"></span>
-                    </div>
+                    </div> -->
+
                   </div>
                 </div>
                 <div v-if="answerMode" class="form-group">

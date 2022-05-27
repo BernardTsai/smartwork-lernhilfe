@@ -1,0 +1,23 @@
+ 
+#questionnaire .option {
+  border-radius: 290486px;
+  padding: 9px 18px;
+  margin: 0 18px;
+  margin-right: 3%;
+  margin-bottom: 12px;
+  transition: 0.3s;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.05);
+  color: rgba(0, 0, 0, 0.85);
+  border: transparent 1px solid;
+}
+#questionnaire .option.is-selected {
+  border-color: rgba(0, 123, 255, 1);
+  background-color: rgba(0, 123, 255, 0.25);
+}
+#questionnaire .option:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+#questionnaire .optionContainer .option:active {
+  transform: scaleX(0.98);
+}

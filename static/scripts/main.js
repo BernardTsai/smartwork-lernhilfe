@@ -50,7 +50,11 @@ function main() {
 
   app = new Vue({
     el:   '#app',
-    data: {model: model},
+    data() {
+      return {
+        model: model
+      }
+    },
     template: `<app v-bind:model="model"></app>`
   })
 }
