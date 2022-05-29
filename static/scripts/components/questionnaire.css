@@ -15,8 +15,11 @@
   border-color: rgba(0, 123, 255, 1);
   background-color: rgba(0, 123, 255, 0.25);
 }
-#questionnaire .option:hover {
+#questionnaire .optionContainer .option:hover:not(.is-selected) {
   background-color: rgba(0, 0, 0, 0.1);
+}
+#questionnaire .optionContainer .option.is-selected:hover {
+  background-color: rgba(0, 123, 255, 0.35);
 }
 #questionnaire .optionContainer .option:active {
   transform: scaleX(0.98);

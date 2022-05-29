@@ -67,6 +67,7 @@ Vue.component( 'questionnaire',
 //            var option  = $("#option-" + index)[0].checked ? "yes" : "no"
             var option  = this.model.quiz.questions[this.model.quiz.question].options[index] // == "yes" ? "yes" : "no"
             var answer  = question.answers[index]
+
             var correct = (option == answer) || (option != "yes" && answer == "no")
 //            var correct = (option == answer)
 
@@ -307,13 +308,14 @@ Vue.component( 'questionnaire',
                       <div v-for="(response, index) in question().options" @click="selectOption(index)" :class="{
                                                                                                           'row': true,
                                                                                                           'option': true,
-                                                                                                          'is-selected': selectedOptions[index] == 'yes' && this.model.quiz.mode != 'answer',
-                                                                                                          'bg-success': (selectedOptions[index] == 'yes' && this.model.questionnaire[this.model.quiz.question].answers[index] == 'yes') && this.model.quiz.mode == 'answer',
-                                                                                                          'bg-danger':  (selectedOptions[index] == 'yes' && this.model.questionnaire[this.model.quiz.question].answers[index] != 'yes') && this.model.quiz.mode == 'answer'
+                                                                                                          'is-selected': selectedOptions[index] == 'yes' && !answerMode,
+                                                                                                          'bg-success': (selectedOptions[index] == 'yes' && this.model.questionnaire[this.model.quiz.question].answers[index] == 'yes') && answerMode,
+                                                                                                          'bg-danger':  (selectedOptions[index] == 'yes' && this.model.questionnaire[this.model.quiz.question].answers[index] != 'yes') && answerMode
                                                                                                         }" :key="index">
                         {{ index | charIndex }}. {{ response }}
-                        <span v-if="answerMode && correct(index)"  class="far fa-check-circle text-success ml-auto text-success"></span>
-                        <span v-if="answerMode && !correct(index)" class="far fa-times-circle text-success ml-auto text-danger"></span>
+                        <span v-if="answerMode && this.model.questionnaire[this.model.quiz.question].answers[index] == 'yes'"  class="far fa-check-circle text-success ml-auto text-success"></span>
+                        <!-- <span v-if="answerMode && correct(index)"  class="far fa-check-circle text-success ml-auto text-success"></span>
+                        <span v-if="answerMode && !correct(index)" class="far fa-times-circle text-success ml-auto text-danger"></span> -->
                       </div>
                     </div>
 
