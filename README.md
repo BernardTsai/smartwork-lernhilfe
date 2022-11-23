@@ -12,7 +12,7 @@ Testen mit Docker
 - Docker installiert
 
 **Schritte:**
-** copy ssl certificate files (cert.pem, chain.pem, privkey.pem) from (in this case) /root/certificate to docker container /root/**
+- **copy ssl certificate files (cert.pem, chain.pem, privkey.pem) from (in this case) /root/certificate to docker container /root/**:
   > sudo docker cp /root/certificate/. container_name:/root/
 
 - **Docker Container mit folgendem Befehl starten**:
