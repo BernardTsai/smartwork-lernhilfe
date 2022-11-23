@@ -12,10 +12,8 @@ Vue.component( 'home',
         this.groups.group = loadData('POST', '/getallgroups'/*, params*/);
         for (let group of this.groups.group) {
           group.members = jsyaml.safeLoad(group.members);
-          // TODO: maybe check if current object is last object and if true call checkMembership()
         }
         this.checkMembership()
-//        console.log(this.groups)
       },
 
       selectGroup: function(index) {
@@ -43,10 +41,6 @@ Vue.component( 'home',
             }
             found = false
           }
-//          else {
-//            console.log("Kein Mitglied in:")
-//            console.log(this.groups.group[i].groupName)
-//          }
         }
       },
 
@@ -164,12 +158,6 @@ Vue.component( 'home',
       loadCerts();
       loadCert();
       getProfessions();
-
-//      window.history.pushState("object or string", "Home", "/home")
-
-//      let uri = window.location.search.substring(1);
-//      let params1 = new URLSearchParams(uri);
-//      console.log(params1.get("test"));
     },
     template: `
       <div id="home" class="container">
@@ -233,9 +221,6 @@ Vue.component( 'home',
                 <h6 class="card-title mb-1">Jetzt hier ein Lernfeld ausw&aumlhlen</h6>
                 <h6 class="card-subtitle mb-1">und direkt das erste Quiz beginnen</h6>
               </div>
-              <!-- <div class="text-center p-2">
-                <button type="button" class="btn btn-primary" @click.stop="model.mode = 'professions'" title="Lernfeld auswählen">Lernfeld ausw&aumlhlen</button>
-              </div> -->
               <small class="card-text text-muted text-center">
                 Ist ein erstes Quiz erfolgreich abgeschlossen erhältst du dein erstes Zertifikat
               </small>

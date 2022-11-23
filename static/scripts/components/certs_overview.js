@@ -1,5 +1,3 @@
-// TODO: If the user has 100% show the final certificate if he clicks on it and make it possible to view the individual certificates
-// TODO: If the user has less than 100% show all awarded certificates for the profession if he clicks on it
 Vue.component( 'certs_overview',
   {
     props:    ['model'],
@@ -13,7 +11,6 @@ Vue.component( 'certs_overview',
       openFinalCert: function(profession) {
         for (var i = 0; i < this.model.certificates.length; i++) {
           if (this.model.certificates[i].filename == "final-certificate-" + profession) {
-//            console.log("final-certificate-" + profession + " -> " + i);
             model.certificate = i;
           }
         }
@@ -60,7 +57,7 @@ Vue.component( 'certs_overview',
           request.send(params);
         }
 
-        //correct percentage if necessary
+        // correct percentage if necessary
         if (percent > 100) percent = ((counter-1)/total)*100
 
         return Math.round((percent + Number.EPSILON) * 100) / 100
@@ -77,7 +74,6 @@ Vue.component( 'certs_overview',
       }
     },
     beforeMount(){
-      // TODO: check if this.model.certificates is already populated and skip if it is
       loadCerts();
       getProfessions();
     },
@@ -100,23 +96,6 @@ Vue.component( 'certs_overview',
               <button type="button" class="btn btn-primary" @click.stop="openFinalCert(profession)" :title="finalCertBtnTitle(this.model.certs_p[index])" :disabled="finalCertAvailable(this.model.certs_p[index])">Finales Zertifikat</button>
             </div>
           </div>
-
-          <!-- loop over all professions
-          <div v-for="(profession, index) in model.certs_p" class="card my-3 mx-auto" style="max-width: 540px;" @click="select(this.model.certs_p[index])">
-            <div class="row no-gutters">
-              <div class="col-md-2 my-auto">
-                <img :src="'../../images/' + details[profession].image" class="card-img p-1" :alt="details[profession].profession">
-              </div>
-              <div class="col-md-10">
-                <div class="card-body">
-                  <h5 class="card-title">{{this.model.materials.professions[this.model.certs_p[index]].profession}}</h5>
-                  <p class="card-text">
-                    Fortschritt: {{getPercentage(this.model.certs_p[index])}}%
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div> -->
 
         </div>
 

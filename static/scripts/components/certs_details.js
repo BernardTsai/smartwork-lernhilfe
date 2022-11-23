@@ -1,5 +1,3 @@
-// TODO: If the user has 100% show the final certificate if he clicks on it and make it possible to view the individual certificates
-// TODO: If the user has less than 100% show all awarded certificates for the profession if he clicks on it
 Vue.component( 'certs_details',
   {
     props:    ['model'],
@@ -27,7 +25,6 @@ Vue.component( 'certs_details',
       }
     },
     beforeMount(){
-      // TODO: check if this.model.certificates is already populated and skip if it is
       loadCerts()
       loadCert();
       this.getCerts();

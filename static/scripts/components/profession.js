@@ -5,7 +5,6 @@ Vue.component( 'profession',
       select: function(index) {
         model.qualification = index
         model.question      = -1
-//        model.mode          = "questionnaire"
 
         $("#questionnaireModal").modal();
       }
@@ -44,11 +43,6 @@ Vue.component( 'profession',
             <p>
               <b>Qualifikationsbausteine:</b>
             </p>
-            <!-- <ol start="1" >
-              <li v-for="(qualification, index) in profession.qualifications">
-                <a @click="select(index)">{{qualification.qualification}}</a>
-              </li>
-            </ol> -->
 
             <div class="list-group">
               <a @click="select(index)" v-for="(qualification, index) in profession.qualifications" class="list-group-item list-group-item-action">{{index+1}}. {{qualification.qualification}}</a>
@@ -63,9 +57,6 @@ Vue.component( 'profession',
             <div class="modal-content" v-if="this.model.qualification != -1">
               <div class="modal-header">
                 <h5 class="modal-title" id="questionnaireLongTitle">Quiz - {{this.profession.qualifications[this.model.qualification].qualification}}</h5>
-                <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button> -->
               </div>
               <div class="modal-body">
                 <div class="container-fluid">
@@ -76,9 +67,6 @@ Vue.component( 'profession',
                   </div>
                 </div>
               </div>
-              <!-- <div class="modal-footer">
-                <button type="button" class="btn btn-primary" data-dismiss="modal">Schlie&szligen</button>
-              </div> -->
             </div>
           </div>
         </div>

@@ -2,14 +2,8 @@ Vue.component( 'certificate',
   {
     props:    ['model'],
     methods: {
-//      select: function(index) {
-//        model.qualification = index
-//        model.question      = -1
-//        model.mode          = "questionnaire"
-//      },
-
       printCert: function() {
-        alert("Ohne Funktion")
+        alert("Error")
 //        var printContents = document.getElementById('certificate').innerHTML;
 //        var originalContents = document.body.innerHTML;
 
@@ -111,7 +105,7 @@ Vue.component( 'certificate',
 
         <div class="dropdown-menu dropdown-menu-sm" id="context-menu">
           <a class="dropdown-item" href="#" @click="model.mode='home'">Zur Startseite</a>
-          <a class="dropdown-item" href="#" @click="printCert()">Zertifikat drucken</a>
+          <!-- <a class="dropdown-item" href="#" @click="printCert()">Zertifikat drucken</a> -->
         </div>
 
       </div>`

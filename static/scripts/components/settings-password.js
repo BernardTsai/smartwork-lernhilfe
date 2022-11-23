@@ -1,4 +1,3 @@
-// TODO: implement an encrytion for passwords to only save the password hash
 Vue.component( 'settings-password',
   {
     props:    ['model'],

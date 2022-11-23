@@ -4,8 +4,6 @@ Vue.component( 'settings-usercontrol',
     methods: {
       // request list of all registered users from backend
       getUsers: function() {
-//        needed for authentication (not working yet)
-//        var params  = JSON.stringify( { email: model.email, password: model.password } )
         this.users.user = loadData('POST', '/getallusers'/*, params*/);
         //refresh autocomplete (only when mounted to prevent errors while component is loading)
         if (this.mountedCheck) this.autocomplete(document.getElementById("searchUser"), this.users.user);

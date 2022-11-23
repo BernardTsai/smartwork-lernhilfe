@@ -26,7 +26,6 @@ Vue.component( 'settings-userstatus',
 
       getUsers: function() {
         // needed for authentication (not working yet)
-//        var params  = JSON.stringify( { email: model.email, password: model.password } )
         this.users.user = loadData('POST', '/getallusers'/*, params*/);
         // copy userlist to filterd user list
         this.users.userFiltered = JSON.parse(JSON.stringify(this.users.user));

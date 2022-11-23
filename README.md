@@ -12,8 +12,11 @@ Testen mit Docker
 - Docker installiert
 
 **Schritte:**
+** copy ssl certificate files (cert.pem, chain.pem, privkey.pem) from (in this case) /root/certificate to docker container /root/**
+  > sudo docker cp /root/certificate/. container_name:/root/
+
 - **Docker Container mit folgendem Befehl starten**:
-  > sudo docker run -itd -p 8080:8080 -e github='https://github.com/BernardTsai/smartwork-lernhilfe.git' jljlg/git-node-test
+  > sudo docker run -itd -p 80:80 -p 443:443 -e github='https://github.com/BernardTsai/smartwork-lernhilfe.git' jljlg/git-node-test
 
 - **Program nutzen**:
 
@@ -28,6 +31,7 @@ Installation
 - bash installiert
 - git installiert
 - node installiert
+- SSL Zertifikat Dateien in /root/
 
 **Schritte:**
 - **Program klonen**:   
@@ -56,4 +60,4 @@ Installation
 
 - **Program nutzen**:
 
-  im Browser die URL "http://localhost:8080/index.html" öffnen
+  im Browser die URL "http://localhost/" öffnen

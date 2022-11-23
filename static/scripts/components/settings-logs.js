@@ -12,14 +12,6 @@ Vue.component( 'settings-logs',
           alert("You do not have permission for this action! This incident is logged!")
         }
 
-        // get log date from filename
-//        for (var i = 0; i < this.logs.length; i++) {
-//          var year = parseInt(this.logs[i].substr(4, 4), 10);
-//          var month = parseInt(this.logs[i].substr(this.logs[i].indexOf('-') + 1, this.logs[i].lastIndexOf('-') - this.logs[i].indexOf('-') - 1), 10);
-//          var day = parseInt(this.logs[i].substr(this.logs[i].lastIndexOf('-') + 1), 10);
-//          console.log(year + ' ' + month + ' ' + day);
-//        }
-
         // sort logs - latest on top
         this.logs.sort(function(a, b){
           var year_a = parseInt(a.substr(4, 4), 10);

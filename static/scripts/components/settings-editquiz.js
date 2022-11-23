@@ -212,10 +212,8 @@ Vue.component( 'settings-editquiz',
           document.getElementById("prevBtn").style.display = "inline";
         }
         if (n == (x.length - 1)) {
-//          document.getElementById("nextBtn").style.display = "none"
           document.getElementById("nextBtn").innerHTML = "Abschließen";
         } else {
-//          document.getElementById("nextBtn").style.display = "inline"
           document.getElementById("nextBtn").innerHTML = "Weiter";
         }
         // ... and run a function that displays the correct step indicator:
@@ -236,16 +234,12 @@ Vue.component( 'settings-editquiz',
         // if you have reached the end of the form... :
         if (this.currentTab >= x.length) {
           //...the form gets submitted:
-//          document.getElementById("regForm").submit();
 
           $("#questionCreation").modal("hide");
-//          $("#quizEditModal").modal();
           // save here already because if created question is edited before saving and then editing is canceled - question is removed because of reload..
           this.saveMaterials();
           if (document.getElementById("dropdownMenu4").firstChild.data == 'Bildfrage') {
             //upload picture
-//            let user = { email: model.user, password: model.password };
-
             this.uploadImage();
 
           } else { $("#quizEditModal").modal(); }
@@ -380,7 +374,6 @@ Vue.component( 'settings-editquiz',
             result = jsyaml.safeLoad(request.responseText)
 
             if (result.msg == 'success') {
-              
             }
             else {
               alert("Error!");
@@ -510,28 +503,6 @@ Vue.component( 'settings-editquiz',
     template: `
       <div id="settings-editquiz" class="container">
 
-        <!-- <h3 class="text-center">Quizverwaltung</h3> -->
-
-        <!-- trigger modal quiz creation-->
-        <!-- <div class="card my-3 mx-auto" style="max-width: 540px;" data-toggle="modal" data-target="#quizAddModal" @click="alert('function not implemented yet')">
-          <div class="row no-gutters">
-            <div class="col-md-2 my-auto">
-              <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/plus-circle.svg" class="card-img p-3" alt="LOGO">
-            </div>
-            <div class="col-md-10">
-              <div class="card-body">
-                <h5 class="card-title">Neuen Qualifikationsbaustein erstellen</h5>
-                <p class="card-text">
-                  Erstellen eines neuen Berufs und/oder Qualifikationsbausteins
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <br>
-        <hr style="max-width: 540px;">
-        <br> -->
         <h3 class="text-center">Quiz bearbeiten</h3>
 
         <!-- dropdown profession selection -->
@@ -656,7 +627,6 @@ Vue.component( 'settings-editquiz',
                   Lade Backup<input type="file" id="inputBackup" accept=".yaml" hidden>
                 </label>
 
-                <!-- TODO: REPLACE FULL RELOAD ON CANCEL WITH ADDITIONAL VAR -->
                 <button type="button" class="btn btn-secondary col-auto" data-dismiss="modal" @click="selectQualification(selected.qualificationIndex)">Abbrechen</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal" @click="saveMaterials()">Speichern</button>
               </div>
@@ -670,7 +640,6 @@ Vue.component( 'settings-editquiz',
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="questionEditModalLongTitle">Optionen f&uumlr {{this.model.questionnaire[this.model.quiz.question].title}}</h5>
-                <!-- TODO: REPLACE FULL RELOAD ON CANCEL WITH ADDITIONAL VAR -->
                 <button type="button" class="close" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal" @click="selectQualification(selected.qualificationIndex)" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -722,7 +691,6 @@ Vue.component( 'settings-editquiz',
 
               </div>
               <div class="modal-footer">
-                <!-- TODO: REPLACE FULL RELOAD ON CANCEL WITH ADDITIONAL VAR -->
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal" @click="selectQualification(selected.qualificationIndex)">Abbrechen</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal" @click="applyChanges()">Best&aumltigen</button>
               </div>
@@ -740,7 +708,6 @@ Vue.component( 'settings-editquiz',
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="questionCreationLongTitle">Dialog f&uumlr {{this.selected.profession.qualifications[this.selected.qualificationIndex].qualification}}</h5>
-                <!-- TODO: REPLACE FULL RELOAD ON CANCEL WITH ADDITIONAL VAR -->
                 <button type="button" class="close" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal" @click="selectQualification(selected.qualificationIndex)" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -909,7 +876,6 @@ Vue.component( 'settings-editquiz',
 
               </div>
               <div class="modal-footer">
-                <!-- TODO: REPLACE FULL RELOAD ON CANCEL WITH ADDITIONAL VAR -->
                 <button type="button" class="btn btn-secondary col-auto mr-auto" data-dismiss="modal" data-toggle="modal" data-target="#quizEditModal" @click="selectQualification(selected.qualificationIndex)">Abbrechen</button>
 
                 <button type="button" class="btn btn-dark btn-sm" id="prevBtn" @click="nextPrev(-1)">Zur&uumlck</button>
@@ -982,13 +948,6 @@ Vue.component( 'settings-editquiz',
             </div>
           </div>
         </div>
-
-
-
-
-
-
-
 
       </div>`
   }

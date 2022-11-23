@@ -4,15 +4,11 @@ Vue.component( 'settings-groups',
     methods: {
       // request list of all registered users from backend
       getUsers: function() {
-//        needed for authentication (not working yet)
-//        var params  = JSON.stringify( { email: model.email, password: model.password } )
         this.users.user = loadData('POST', '/getallusers'/*, params*/);
       },
 
       // request list of all groups from backend
       getGroups: function() {
-//        needed for authentication (not working yet)
-//        var params  = JSON.stringify( { email: model.email, password: model.password } )
         this.groups.group = loadData('POST', '/getallgroups'/*, params*/);
         for (let group of this.groups.group) {
           group.members = jsyaml.safeLoad(group.members);
@@ -168,7 +164,6 @@ Vue.component( 'settings-groups',
             if (arrIndex > -1) this.groups.user.push(this.users.user[arrIndex]);
           }
           else {
-//            console.log('User ' + this.groups.groupTmp.members[i].email + ' does not exist!')
           }
           found = false
         }
@@ -247,23 +242,6 @@ Vue.component( 'settings-groups',
       this.getUsers();
       this.getGroups();
     },
-//    mounted() {
-//      self = this;
-//      $("#groupAddModalCenter").on('show.bs.modal', function () {
-        // before group creation modal is shown reset groupselection
-        // otherwise not all users are displayed in userselect
-//        self.groups.groupTmp = [];
-//        self.groups.select = -1;
-//      });
-//      $("#userSelect").on('show.bs.modal', function () {
-        // for test purposes
-//        console.log(self.usersShow());
-//        self.groups.groupTmp = self.usersShow();
-//        console.log(self.groups);
-//      });
-      // Hack to enable multiple modals by making sure the .modal-open class
-      // is set to the <body> when there is at least one modal open left
-//    },
     computed: {
       user: function() {
         return this.users.emailSel

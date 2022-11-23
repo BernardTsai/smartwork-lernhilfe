@@ -45,20 +45,6 @@ Vue.component( 'result',
     success: function() {
       if (this.model.quiz.success == "yes") this.saveCertificate();
 
-// not needed anymore for new quiz evaluation with percent of total points
-//-------------------------------------------------------------------------
-//      success = "yes"
-//
-//      for (var q of this.model.quiz.questions) {
-//        if (q.success == "no") {
-//          success = "no"
-//        }
-//      }
-//      this.model.quiz.success = success
-//
-//      if (success == "yes") this.saveCertificate()
-//-------------------------------------------------------------------------
-
       return this.model.quiz.success
     },
     certDate: function() {

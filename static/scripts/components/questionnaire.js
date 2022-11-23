@@ -1,5 +1,3 @@
-//TODO: display result compared to running average at the end
-
 import { questionnaireProgressInfo } from './questionnaireProgressInfo.js'
 
 Vue.component( 'questionnaire',
@@ -21,10 +19,8 @@ Vue.component( 'questionnaire',
               return
             }
             result = jsyaml.safeLoad(request.responseText)
-//            console.log(result);
 
             if (result) {
-              //TODO: updateStat on frontend
             }
             else {
               alert("Error updating Stats!");
@@ -34,7 +30,6 @@ Vue.component( 'questionnaire',
         }
 
         var params  = JSON.stringify( {profession: this.model.quiz.profession.toString(), qualification: this.model.quiz.qualification.toString(), questionIndex: this.model.quiz.question.toString(), result: result} )
-//        console.log(params);
         request.onreadystatechange = updateStatsCB
         request.open('POST', '/updatestat', true);  // asynchronous request
         request.setRequestHeader('Content-type', 'application/json');
@@ -44,17 +39,15 @@ Vue.component( 'questionnaire',
         if (this.model.quiz.mode != "answer") {
           var options = this.model.quiz.questions[this.model.quiz.question].options
           options[index] = options[index] == "yes" ? "" : "yes"
-          // just for reactivity of selected options
+          // for reactivity of selected options
           Vue.set(this.selectedOptions, index, options[index]);
 
           this.model.quiz.questions[this.model.quiz.question].options = options
-//          console.log(this.model.quiz.questions[this.model.quiz.question]);
         }
       },
       check: function() {
         if (this.question().answerType == 'Multiple Choice') {
           // check answers
-//          var status = "success"
 
           var options = []
           var answers = []
@@ -64,12 +57,10 @@ Vue.component( 'questionnaire',
 
           // loop over all answers and check each option
           for (var index in question.answers) {
-//            var option  = $("#option-" + index)[0].checked ? "yes" : "no"
-            var option  = this.model.quiz.questions[this.model.quiz.question].options[index] // == "yes" ? "yes" : "no"
+            var option  = this.model.quiz.questions[this.model.quiz.question].options[index]
             var answer  = question.answers[index]
 
             var correct = (option == answer) || (option != "yes" && answer == "no")
-//            var correct = (option == answer)
 
             options[index] = option
             answers[index] = correct ? "yes" : "no"
@@ -78,8 +69,6 @@ Vue.component( 'questionnaire',
           }
 
           this.model.quiz.questions[this.model.quiz.question] = {options: options, answers: answers, success: success ? "yes" : "no"}
-
-          //TODO:  colorize options -> green = correct checked, red = false checked, neutral = not checked
 
           this.model.quiz.mode = "answer"
         }
@@ -96,7 +85,7 @@ Vue.component( 'questionnaire',
           text = text.split('!').join(" ");
           text = text.split('?').join(" ");
           text = text.split('-').join(" ");
-          
+
           var words = text.split(" ");
           // remove words that are double
           for (var index in words) {
@@ -146,7 +135,6 @@ Vue.component( 'questionnaire',
           this.$nextTick(function () {
             // loop over all answers and check each option
             for (var index in question.answers) {
-//              $("#option-" + index)[0].checked = false
               this.selectedOptions = []
             }
           })
@@ -155,26 +143,17 @@ Vue.component( 'questionnaire',
         this.model.quiz.mode = "question"
       },
       result: function() {
-//        this.model.mode = "result"
 
         var finalResult = 0
         for (var index in this.model.quiz.questions) finalResult += (this.model.quiz.questions[index].success == "yes") ? +this.questionnaire[index].points : 0;
         finalResult /= this.totalPoints;
-//        var finalResult = 0
-//        for (var question of this.model.quiz.questions) finalResult += (question.success == "yes") ? 1 : 0;
-//        finalResult /= this.model.quiz.length;
 
         var average = 0.0
         for (var index = 0; index < this.model.questionnaire.length; index++) average += +this.model.questionnaire[index].stats * +this.questionnaire[index].points;
         average /= +this.model.questionnaire.length * +this.totalPoints;
-//        var average = 0
-//        for (var question of this.model.questionnaire) average += question.stats;
-//        average /= this.model.questionnaire.length
 
         // calculate result compared to running average in percent
         var resultCompared = Math.round(((finalResult - average)*100 + Number.EPSILON) * 100) / 100
-//        if (resultCompared > 0) alert("Herzlichen Glückwunsch! Du bist " + resultCompared + "% besser als der Durchschnitt (gleitender Mittelwert)");
-//        else alert ("Du hast " + finalResult*100 + "% erreicht");
 
         this.results.result = Math.round((finalResult*100 + Number.EPSILON) * 100) / 100
         this.results.resultCompared = resultCompared
@@ -204,7 +183,6 @@ Vue.component( 'questionnaire',
     },
     computed: {
       questionnaire: function() {
-//        var date = new Date()
 
         this.model.questionnaire = loadData( "GET", "/questionnaire/" + this.model.profession + "/" + this.model.qualification)
 
@@ -213,7 +191,6 @@ Vue.component( 'questionnaire',
         this.model.quiz.length        = this.model.questionnaire.length
         this.model.quiz.question      = 0
         this.model.quiz.date          = Date.now()
-        //this.model.quiz.date          = date.getDate() + "." + (date.getMonth()+1) + "." + date.getFullYear()
         this.model.quiz.status        = "new"
         this.model.quiz.mode          = "question"
         this.model.quiz.questions     = []
@@ -271,7 +248,7 @@ Vue.component( 'questionnaire',
     },
     data() {
       return {
-        // just for reactivity so the selected option is visuably updated
+        // for reactivity so the selected option is visuably updated
         selectedOptions: [],
         results: {
           result:         -1,
@@ -318,15 +295,6 @@ Vue.component( 'questionnaire',
                         <span v-if="answerMode && !correct(index)" class="far fa-times-circle text-success ml-auto text-danger"></span> -->
                       </div>
                     </div>
-
-                    <!-- <div v-for="(option,index) in question().options" class="custom-control custom-radio d-flex">
-
-                      <input type="checkbox" :id="'option-' + index" name="customCheck" class="custom-control-input" :disabled="answerMode">
-                      <label class="custom-control-label" :for="'option-'+ index">{{option}}</label>
-
-                      <span v-if="answerMode && correct(index)"  class="far fa-check-circle text-success ml-auto text-success"></span>
-                      <span v-if="answerMode && !correct(index)" class="far fa-times-circle text-success ml-auto text-danger"></span>
-                    </div> -->
 
                   </div>
                 </div>
