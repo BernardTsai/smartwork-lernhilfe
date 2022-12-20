@@ -5,6 +5,8 @@ function loadData(method, url, params) {
   var request = new XMLHttpRequest();
 
   request.open(method, url, false)  // synchronous request
+  const token = sessionStorage.getItem("token");
+  request.setRequestHeader('Authorization', `Bearer ${token}`)
   if (method == "POST") request.setRequestHeader('Content-type', 'application/json');
   request.send(params)
 
@@ -52,6 +54,8 @@ function loadCerts(email) {
 
   request.onreadystatechange = loadCertCB
   request.open('POST', '/loadcertificate', false);  // synchronous request
+  const token = sessionStorage.getItem("token");
+  request.setRequestHeader('Authorization', `Bearer ${token}`)
   request.setRequestHeader('Content-type', 'application/json');
   request.send(params);
 }

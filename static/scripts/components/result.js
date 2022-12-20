@@ -26,6 +26,8 @@ Vue.component( 'result',
 
       request.onreadystatechange = saveCertificateCB
       request.open('POST', '/quiz', true);  // asynchronous request
+      const token = sessionStorage.getItem("token");
+      request.setRequestHeader('Authorization', `Bearer ${token}`);
       request.setRequestHeader('Content-type', 'application/json');
       request.send(params);
     }

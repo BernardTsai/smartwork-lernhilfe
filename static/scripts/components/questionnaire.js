@@ -32,6 +32,8 @@ Vue.component( 'questionnaire',
         var params  = JSON.stringify( {profession: this.model.quiz.profession.toString(), qualification: this.model.quiz.qualification.toString(), questionIndex: this.model.quiz.question.toString(), result: result} )
         request.onreadystatechange = updateStatsCB
         request.open('POST', '/updatestat', true);  // asynchronous request
+        const token = sessionStorage.getItem("token");
+        request.setRequestHeader('Authorization', `Bearer ${token}`);
         request.setRequestHeader('Content-type', 'application/json');
         request.send(params);
       },

@@ -53,6 +53,8 @@ Vue.component( 'certs_overview',
 
           request.onreadystatechange = saveCertificateCB
           request.open('POST', '/certificate', true);  // asynchronous request
+          const token = sessionStorage.getItem("token");
+          request.setRequestHeader('Authorization', `Bearer ${token}`);
           request.setRequestHeader('Content-type', 'application/json');
           request.send(params);
         }

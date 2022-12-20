@@ -9,13 +9,20 @@ Vue.component( 'login',
         function loginCB() {
           if (this.readyState == 4) {
             // check status
-            if (this.status != 200) {
+            if (this.status == 401) {
+              model.validated = 'no';
+              return;
+            }
+            else if (this.status != 200) {
               return
             }
 
             result = jsyaml.safeLoad(request.responseText)
 
             model.validated = result.validated
+
+            sessionStorage.setItem("token", result.token);
+
 
             if (model.validated == 'yes') {
               model.mode = 'home'
@@ -46,6 +53,8 @@ Vue.component( 'login',
           document.getElementById("submitBtn").click();
         }
       });
+
+
     },
     template: `
       <div id="login" class="wrapper">

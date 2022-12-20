@@ -3,8 +3,6 @@ Vue.component( 'settings-logs',
     props:    ['model'],
     methods: {
       getLogs: function () {
-        var request = new XMLHttpRequest();
-
         var params  = JSON.stringify( { email: this.model.email, password: this.model.password } )
         this.logs = loadData('POST', '/loadlogs', params);
         if (this.logs.includes("no permission")) {
@@ -31,8 +29,6 @@ Vue.component( 'settings-logs',
       },
       selectLog: function(index) {
         this.indexLog = index
-
-        var request = new XMLHttpRequest();
 
         var params  = JSON.stringify( { log: this.logs[index], email: this.model.email, password: this.model.password } )
         this.log = loadData('POST', '/loadlogs', params);

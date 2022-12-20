@@ -100,6 +100,8 @@ Vue.component( 'settings-editquiz',
         var params  = JSON.stringify( {email: this.model.email, password: this.model.password, profession: this.selected.professionIndex.toString(), qualification: this.selected.qualificationIndex.toString(), materials: this.model.questionnaire, settings: {success: $("#inputPercentage").val() / 100} } )
         request.onreadystatechange = saveMaterialsCB
         request.open('POST', '/savematerials', true);  // asynchronous request
+        const token = sessionStorage.getItem("token");
+        request.setRequestHeader('Authorization', `Bearer ${token}`)
         request.setRequestHeader('Content-type', 'application/json');
         request.send(params);
 
@@ -139,6 +141,8 @@ Vue.component( 'settings-editquiz',
       downloadQuiz: function () {
         var request = new XMLHttpRequest();
         request.open("GET", "/questionnaire/" + this.selected.professionIndex + "/" + this.selected.qualificationIndex, false)  // synchronous request
+        const token = sessionStorage.getItem("token");
+        request.setRequestHeader('Authorization', `Bearer ${token}`);
         request.send()
         var filename = "questions-" + this.selected.professionIndex + "-" + this.selected.qualificationIndex + ".yaml"
         var text = request.responseText
@@ -342,6 +346,8 @@ Vue.component( 'settings-editquiz',
           }
 
           this.req.open("POST", '/upload', true);
+          const token = sessionStorage.getItem("token");
+          this.req.setRequestHeader('Authorization', `Bearer ${token}`)
           this.req.send(formData);
 
           this.selected.questionType = -1;
@@ -385,6 +391,8 @@ Vue.component( 'settings-editquiz',
         var params  = JSON.stringify( {emailReq: this.model.email, passwordReq: this.model.password, profession: this.selected.professionIndex.toString(), qualification: this.selected.qualificationIndex.toString(), imageName: imageFile} )
         request.onreadystatechange = rmImageReqCB
         request.open('POST', '/deleteimage', true);  // asynchronous request
+        const token = sessionStorage.getItem("token");
+        request.setRequestHeader('Authorization', `Bearer ${token}`);
         request.setRequestHeader('Content-type', 'application/json');
         request.send(params);
         this.rmImage = '';

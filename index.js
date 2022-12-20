@@ -6,8 +6,19 @@ const del     = require('del')
 const multer  = require('multer')
 const http    = require('http')
 const https   = require('https')
+const bcrypt  = require('bcrypt')
+const jwt     = require('jsonwebtoken')
 const app     = express()
-const port    = 8080
+
+//------------------------------------------------------------------------------
+
+//read config.json
+const config = JSON.parse(fs.readFileSync('config.json'));
+
+const JWT_SECRET = process.env.JWT_SECRET || config.jwtSecret;
+const HTTP_PORT  = process.env.HTTP_PORT  || config.httpPort;
+const HTTPS_PORT = process.env.HTTPS_PORT || config.httpsPort;
+const USERS_PATH = process.env.USERS_PATH || config.usersPath;
 
 //------------------------------------------------------------------------------
 
@@ -46,12 +57,9 @@ function appendToLog(line, req) {
 
 function loadLogs(req, res) {
   var log      = req.body.log      ? req.body.log      : ""
-  var email    = req.body.email    ? req.body.email    : ""
-  var password = req.body.password ? req.body.password : ""
+  const { email, type } = req.decoded
 
-  authenticate(email, password, "Administrator", loadLogsCB, res, req);
-
-  function loadLogsCB() {
+  if (type == "Administrator") {
 
     directory = './logs/'
 
@@ -110,6 +118,13 @@ function loadLogs(req, res) {
       )
     }
 
+  } else {
+    var logLine = 'WARNING: |loadLogs| user ' + req.decoded.email + ' tried to access logs without permission!'
+    appendToLog(logLine, req)
+
+    res.status(403);
+    writeResponse(res, "no permission!");
+    return false;
   }
 }
 
@@ -243,22 +258,28 @@ function saveQuiz(req, res) {
 
 //------------------------------------------------------------------------------
 
+// Create a route to handle user registration
 function createAccount(req, res) {
-  emailNew    = req.body.emailNew    ? req.body.emailNew    : ""
-  passwordNew = req.body.passwordNew ? req.body.passwordNew : ""
-  typeNew     = req.body.typeNew     ? req.body.typeNew     : ""
-  email       = req.body.email       ? req.body.email       : ""
-  password    = req.body.password    ? req.body.password    : ""
+  // Extract the username and password from the request body
+  const { emailNew, passwordNew, typeNew } = req.body;
+  const { email, type } = req.decoded;
   response = {
-    'email':     email,
-    'password':  password,
+    'email':     "email",
+    'password':  "password",
     'msg':       "error"
   }
 
-  var requiredType = (typeNew == "Schüler/Azubi") ? "Ausbilder" : "Administrator"
-  authenticate(email, password, requiredType, createAccountCB, res, req);
+  if (typeNew == "Administrator" && type != "Administrator") {
+    var logLine = 'WARNING: |createAccount| Requesting user ' + email + ' does not have permission to create Administrator accounts'
+    appendToLog(logLine, req)
 
-  function createAccountCB() {
+    response.msg = "no permission"
+    res.status(403);
+    writeResponse(res, response)
+    return
+  }
+
+  else if (type == "Ausbilder" || type == "Administrator") {
     // check if emailNew is valid and passwordNew has been defined
     if (emailNew == '' || passwordNew == '' || typeNew == ''  || emailNew.includes('..') || emailNew.includes('/')) {
       var logLine = 'WARNING: |createAccount| Possible manipulation attempt detected: User to create includes cd command (../) or is empty. Requesting user: ' + email + ' tried to create ' + emailNew
@@ -268,425 +289,346 @@ function createAccount(req, res) {
       return
     }
 
-    // check if directory exists
-    directory = './data/students/' + emailNew
-    filename  = directory + '/password'
+    // Check if the user already exists
+    const directory = `${USERS_PATH}/${emailNew}`
+    const filePath = directory + `/user.json`;
+    if (fs.existsSync(directory)) {
+      var logLine = 'WARNING: |createAccount| Account creation denied: ' + emailNew + ' already exists. Requesting user: ' + req.decoded.email
+      appendToLog(logLine, req)
+      return res.status(400).json({ message: "User already taken" });
+    }
 
-    // check if directory exists
-    if (!fs.existsSync(directory)) {
-      // create directory
-      fs.mkdirSync(directory)
+    // Hash the password
+    bcrypt.hash(passwordNew, 10, (err, hash) => {
+      if (err) {
+        // If there was an error hashing the password, send a 500 status code with the error message
+        res.status(500).send({ message: err.message });
+        return;
+      }
+
+      // Create the user's directory
+      fs.mkdirSync(directory);
       fs.mkdirSync(directory + '/certificates')
 
-      // write password file
-      var writeStream = fs.createWriteStream(filename)
-      writeStream.write(passwordNew)
-      writeStream.end()
+      // Create new user Object
+      const user = {
+        email: emailNew,
+        password: hash,
+        type: typeNew,
+      };
 
-      // write permission file
-      writeStream = fs.createWriteStream(directory + '/type')
-      writeStream.write(typeNew)
-      writeStream.end()
+      // write the user object to the file
+      fs.writeFileSync(filePath, JSON.stringify(user));
 
-      var logLine = 'INFO: |createAccount| new account created ' + emailNew + '. Requesting user: ' + email
+      var logLine = 'INFO: |createAccount| new account created ' + emailNew + '. Requesting user: ' //+ email
       appendToLog(logLine, req)
 
+      // Respond with a success message
       response.msg = "account created"
       response.email = emailNew
       response.password = passwordNew
       writeResponse(res, response)
-      return
-    }
-    // if account already exists
-    else {
-      var logLine = 'WARNING: |createAccount| Account created denied: ' + emailNew + ' already exists. Requesting user: ' + email
-      appendToLog(logLine, req)
+    });
+  } else {
+    var logLine = 'WARNING: |createAccount| Requesting user ' + email + ' does not have permission to create accounts'
+    appendToLog(logLine, req)
 
-      response.msg = "account already exists"
-      writeResponse(res, response)
-      return
-    }
-
+    response.msg = "no permission"
+    res.status(403);
+    writeResponse(res, response)
+    return
   }
-
 }
 
 //------------------------------------------------------------------------------
 
 function login(req, res) {
-  email    = req.body.email    ? req.body.email    : ""
+  // Extract the username and password from the request body
+  username = req.body.email    ? req.body.email    : ""
   password = req.body.password ? req.body.password : ""
+
   response = {
-    'email':     email,
+    'email':     username,
     'password':  password,
     'type':      "",
-    'validated': "no"
+    'validated': "no",
+    'token':     ""
   }
 
-//---------
-  //do like here to authenticate - don't use for login - only for demo purposes here
-//  authenticate(email, password, loginCB);
-
-//  function loginCB() {
-//---------
-
   // check if email is valid and password has been defined
-  if (email == '' || password == '' || email.includes('..') || email.includes('/')) {
-//    var logLine = 'WARNING: |login| possible manipulation attempt detected! ' + email + ' includes cd command (../) or is empty.'
+  if (username == '' || password == '' || username.includes('..') || username.includes('/')) {
     var logLine = "";
-    if (email == '') logLine = 'INFO: |login| email is empty.';
-    else if (password == '') logLine = 'INFO: |login| password is empty.';
-    else logLine = 'WARNING: |login| possible manipulation attempt detected! Email: ' + email + ' includes cd command (../).';
+    if (username == '') logLine = 'INFO: |login| email is empty.';
+    else if (password == '') logLine = 'INFO: |login| password for user ' + username + ' was empty.';
+    else logLine = 'WARNING: |login| possible manipulation attempt detected! Email: ' + username + ' includes cd command (../).';
     appendToLog(logLine, req)
 
     writeResponse(res, response)
     return
   }
 
-  // check if directory exists
-  directory = './data/students/' + email
-  filename  = directory + '/password'
+  // Wir suchen die Benutzerdatei mit dem eingegebenen Benutzernamen
+  const directory = `${USERS_PATH}/${username}`
+  const filePath = directory + `/user.json`;
+  const userData = fs.readFileSync(filePath);
+  const user = JSON.parse(userData);
 
-  // check if directory exists
-  if (!fs.existsSync(directory)) {
-    // account not found
-    response.validated = "no"
-    writeResponse(res, response)
-    return
+  // Wenn der Benutzer nicht gefunden wurde, senden wir eine Fehlermeldung zurück
+  if (!user) {
+    return res.status(401).json({ message: "Invalid credentials" });
   }
 
-  // read file password file
-  fs.readFile(filename,
-    // callback function that is called when reading file is done
-    function(err, data) {
-      // error will reading password file
-      if (!err) {
-        real_password = data.toString('utf8').trim()
-        response.validated = (password === real_password ? "yes" : "no")
-
-        if (response.validated != "yes") {
-          var logLine = 'INFO: |login| Login attempt failed: wrong password for user ' + email
-          appendToLog(logLine, req)
-        }
-
-        // read type-file
-        fs.readFile(directory + '/type',
-          // callback function that is called when reading file is done
-          function(err, data) {
-            if (err) {
-              var logLine = 'WARNING: |login| failed to read type file for user ' + email
-              appendToLog(logLine, req)
-
-              console.log(err)
-              writeResponse(res, {err: err.toString()})
-              return
-            }
-
-            if (data) {
-              response.type = data.toString('utf8').trim()
-            }
-
-//            console.log(email + " wurde eingeloggt!");
-//            console.log(response);
-
-            writeResponse(res, response)
-          }
-        )
-
-      }
-      //writeResponse(res, response)
+  // Compare the provided password to the stored hash
+  bcrypt.compare(password, user.password, (err, result) => {
+    if (err) {
+      // If there was an error comparing the passwords, send a 500 status code with the error message
+      res.status(500).send({ message: err.message });
+      return;
     }
-  )
 
-//--------
-//  }
-//--------
+    if (!result) {
+      // If the passwords do not match, send a 401 status code with an error message
+      var logLine = 'INFO: |login| Login attempt failed: wrong password for user ' + username
+      appendToLog(logLine, req)
+      res.status(401).send({ message: 'Incorrect username or password' });
+      return;
+    }
 
+    // If the passwords match, create a JSON Web Token
+    const token = jwt.sign({ email: username, type: user.type }, JWT_SECRET);
+
+    response.type = user.type;
+    response.validated = "yes";
+    response.token = token;
+
+    // Send the token back to the client
+    writeResponse(res, response)
+
+  });
 }
 
 //------------------------------------------------------------------------------
 
 function changePassword(req, res) {
-  email    = req.body.email    ? req.body.email    : ""
-  oldPassword = req.body.oldpassword ? req.body.oldpassword : ""
+  email = req.decoded.email ? req.decoded.email : ""
   newPassword = req.body.newpassword ? req.body.newpassword : ""
   response = {
     'email':     email,
-    'password':  oldPassword,
+    'password':  "",
     'validated': "no",
     'success':   "no"
   }
 
-  authenticate(email, password, "Schüler/Azubi", changePasswordCB, res, req);
+  if (newPassword == '') {
+    var logLine = 'INFO: |changePassword| ' + email + ' -> new password is empty.'
+    appendToLog(logLine, req)
 
-  function changePasswordCB() {
-    if (newPassword == '') {
-      var logLine = 'INFO: |changePassword| ' + email + ' -> new password is empty.'
-      appendToLog(logLine, req)
+    writeResponse(res, response)
+    return
+  }
 
-      writeResponse(res, response)
-      return
+  // Wir suchen die Benutzerdatei mit dem eingegebenen Benutzernamen
+  const directory = `${USERS_PATH}/${email}`
+  const filePath = directory + `/user.json`;
+  const userData = fs.readFileSync(filePath);
+  const user = JSON.parse(userData);
+
+  // Hash the new password
+  bcrypt.hash(newPassword, 10, (err, hash) => {
+    if (err) {
+      // If there was an error hashing the password, send a 500 status code with the error message
+      res.status(500).send({ message: err.message });
+      return;
     }
 
-    // check if directory exists
-    directory = './data/students/' + email
-    filename  = directory + '/password'
+    // replace password hash
+    user.password = hash;
 
-    // check if directory exists
-    if (!fs.existsSync(directory)) {
-      // maybe some messing around because this shouldn't happen -> deauth
-      var logLine = 'WARNING: |changePassword| Possible manipulation attempt detected: user ' + email + ' does not exist'
-      appendToLog(logLine, req)
+    // write the user object to the file
+    fs.writeFileSync(filePath, JSON.stringify(user));
 
-      //console.log(`Directory (i.e. user) doesn't exist!`)
-      response.validated = "no"
-      response.success = "no"
-      writeResponse(res, response)
-      return
-    }
+    var logLine = 'INFO: |changePassword| Password changed! Requesting user: ' + email
+    appendToLog(logLine, req)
 
-    // write new password
-    try {
-      fs.writeFileSync(filename, newPassword)
-    }
-    catch (e) {
-      var logLine = 'ERROR: |changePassword| unable to write file. Requesting user: ' + email
-      appendToLog(logLine, req)
-
-      writeResponse(res, {err: e.toString()})
-      return
-    }
-
+    // Respond with a success message
     response.password = newPassword
     response.validated = "yes"
     response.success = "yes"
     writeResponse(res, response)
-
-  }
-
+  });
 
 }
 
 //------------------------------------------------------------------------------
 
 function passwordReset(req, res) {
-  emailReq       = req.body.emailReq    ? req.body.emailReq    : ""
-  passwordReq    = req.body.passwordReq ? req.body.passwordReq : ""
-  emailTar       = req.body.emailTar    ? req.body.emailTar    : ""
-  passwordTar    = req.body.passwordTar ? req.body.passwordTar : ""
+  email       = req.decoded.email ? req.decoded.email : ""
+  type        = req.decoded.type  ? req.decoded.type  : ""
+  emailTar    = req.body.emailTar    ? req.body.emailTar    : ""
+  passwordTar = req.body.passwordTar ? req.body.passwordTar : ""
   response = {
-    'email':     emailReq,
-    'password':  passwordReq,
-    'msg':       "error"
+    'email':     email,
+    'password':  "",
+    'msg':   "error"
   }
 
-  authenticate(emailReq, passwordReq, "Ausbilder", passwordResetCB, res, req);
+  // check if emailNew is valid and passwordNew has been defined
+  if (emailTar == '' || passwordTar == '' || emailTar.includes('..') || emailTar.includes('/')) {
+    var logLine = 'WARNING: |passwordReset| Target user ' + emailTar + ' includes cd command (../) or is empty or passsword is empty. Requesting user: ' + email
+    appendToLog(logLine, req)
 
-  function passwordResetCB(type) {
-    // check if emailNew is valid and passwordNew has been defined
-    if (emailTar == '' || passwordTar == '' || emailTar.includes('..') || emailTar.includes('/')) {
-      var logLine = 'WARNING: |passwordReset| Target user ' + emailTar + ' includes cd command (../) or is empty or passsword is empty. Requesting user: ' + emailReq
+    writeResponse(res, response)
+    return
+  }
+
+  // check if user exists and load user data
+  const directory = `${USERS_PATH}/${emailTar}`
+  if (!fs.existsSync(directory)) {
+    var logLine = 'WARNING: |passwordReset| Password reset denied: ' + emailTar + ' does not exist. Requesting user: ' + email
+    appendToLog(logLine, req)
+    return res.status(400).json({ message: "User not found" });
+  }
+  const filePath = directory + `/user.json`;
+  const userData = fs.readFileSync(filePath);
+  const userTar = JSON.parse(userData);
+
+  // stop others from resetting Admin passwords
+  if (userTar.type == "Administrator" && type == "Ausbilder") {
+    var logLine = 'WARNING: |passwordReset| reset denied. Requesting user ' + email + ' with type Ausbilder tried to reset admin password of ' + emailTar
+    appendToLog(logLine, req)
+
+    response.msg = "no permission"
+    res.status(403);
+    writeResponse(res, response)
+    return
+  }
+
+  // only Admin and instructors have permission to reset pw
+  if (type == "Ausbilder" || type == "Administrator") {
+    // Hash the new password
+    bcrypt.hash(passwordTar, 10, (err, hash) => {
+      if (err) {
+        // If there was an error hashing the password, send a 500 status code with the error message
+        res.status(500).send({ message: err.message });
+        return;
+      }
+
+      // replace password hash
+      userTar.password = hash;
+
+      // write the user object to the file
+      fs.writeFileSync(filePath, JSON.stringify(userTar));
+
+      var logLine = 'INFO: |changePassword| Password of user: ' + userTar.email  + 'changed! Requesting user: ' + email
       appendToLog(logLine, req)
 
+      // Respond with a success message
+      response.msg = "success"
+      response.email = userTar.email
+      response.password = passwordTar
       writeResponse(res, response)
       return
-    }
+    });
+  }else {
+    var logLine = 'WARNING: |passwordReset| Requesting user ' + email + ' does not have permission to reset passwords!'
+    appendToLog(logLine, req)
 
-    // check type of target user
-    directory = './data/students/' + emailTar
-    filename  = directory + '/type'
-
-    fs.readFile(filename,
-      // callback function that is called when reading file is done
-      function(err, data) {
-        // error will reading type file
-        if (!err) {
-          tarType = data.toString('utf8').trim()
-
-          // stop others from resetting Admin passwords
-          if (tarType == "Administrator" && type == "Ausbilder") {
-            var logLine = 'WARNING: |passwordReset| reset denied. Requesting user ' + emailReq + ' with type Ausbilder tried to reset admin password of ' + emailTar
-            appendToLog(logLine, req)
-
-            response.msg = "no permission"
-            res.status(403);
-            writeResponse(res, response)
-            return
-          }
-
-          // only Admin and instructors have permission to reset pw
-          if (type == "Ausbilder" || type == "Administrator") {
-
-            // check if directory exists
-            directory = './data/students/' + emailTar
-            filename  = directory + '/password'
-
-            // check if directory exists
-            if (fs.existsSync(directory)) {
-              // write password file
-              var writeStream = fs.createWriteStream(filename)
-              writeStream.write(passwordTar)
-              writeStream.end()
-
-              response.msg = "success"
-              response.email = emailTar
-              response.password = passwordTar
-              writeResponse(res, response)
-              return
-            }
-            // if account doesn't exist
-            else {
-              var logLine = 'ERROR: |passwordReset| failed. Requesting user ' + emailReq + ' tried to reset password of non existing account ' + emailTar
-              appendToLog(logLine, req)
-
-              response.msg = "error: Account not found!"
-              writeResponse(res, response)
-              return
-            }
-          }
-          else {
-            var logLine = 'WARNING: |passwordReset| Requesting user ' + emailReq + ' does not have permission to reset passwords!'
-            appendToLog(logLine, req)
-
-            response.msg = "no permission"
-            res.status(403);
-            writeResponse(res, response)
-            return
-          }
-        }
-      }
-    )
-
-
+    response.msg = "no permission"
+    res.status(403);
+    writeResponse(res, response)
+    return
   }
-
 }
 
 //------------------------------------------------------------------------------
 
 function deleteAccount(req, res) {
-  emailReq       = req.body.emailReq    ? req.body.emailReq    : ""
-  passwordReq    = req.body.passwordReq ? req.body.passwordReq : ""
-  emailTar       = req.body.emailTar    ? req.body.emailTar    : ""
+  emailReq    = req.decoded.email
+  typeReq     = req.decoded.type
+  emailTar    = req.body.emailTar    ? req.body.emailTar    : ""
   response = {
     'email':     emailReq,
-    'password':  passwordReq,
     'msg':       "error"
   }
 
-  authenticate(emailReq, passwordReq, "Ausbilder", deleteAccountCB, res, req);
+  // check if emailTar is valid
+  if (emailTar == '' || emailTar.includes('..') || emailTar.includes('/')) {
+    var logLine = 'WARNING: |deleteAccount| target user ' + emailTar + ' includes cd command (../) or is empty. Requesting user: ' + emailReq
+    appendToLog(logLine, req)
 
-  function deleteAccountCB(type) {
-    // check if emailTar is valid
-    if (emailTar == '' || emailTar.includes('..') || emailTar.includes('/')) {
-      var logLine = 'WARNING: |deleteAccount| target user ' + emailTar + ' includes cd command (../) or is empty.'
+    writeResponse(res, response)
+    return
+  }
+
+  // check if user exists and load user data
+  const directory = `${USERS_PATH}/${emailTar}`
+  if (!fs.existsSync(directory)) {
+    var logLine = 'WARNING: |deleteAccount| User: ' + emailTar + ' does not exist. Requesting user: ' + email
+    appendToLog(logLine, req)
+    return res.status(400).json({ message: "User not found" });
+  }
+  const filePath = directory + `/user.json`;
+  const userData = fs.readFileSync(filePath);
+  const userTar = JSON.parse(userData);
+
+  // stop others from deleting an Admin account
+  if (userTar.type == "Administrator" && typeReq == "Ausbilder") {
+    var logLine = 'WARNING: |deleteAccount| denied. Requesting user ' + emailReq + ' tried to delete admin account: ' + emailTar
+    appendToLog(logLine, req)
+
+    response.msg = "no permission"
+    res.status(403);
+    writeResponse(res, response)
+    return
+  }
+
+  // only allow deletion if permissions are granted
+  if (typeReq == "Ausbilder" || typeReq == "Administrator") {
+    // delete directory recursively
+    (async () => {
+      try {
+        await del(directory);
+
+        console.log(`${directory} is deleted!`);
+
+        response.msg = "success"
+        response.email = ""
+        response.password = ""
+
+      } catch (err) {
+        console.error(`Error while deleting ${directory}.`);
+        console.error({err: err.toString()});
+
+        var logLine = 'ERROR: |deleteAccount| failed to remove user ' + emailTar + '. Requesting user: ' + emailReq + '. Err: ' + err.toString()
+        appendToLog(logLine, req)
+
+        response.msg = "failed"
+        response.email = ""
+        response.password = ""
+
+        writeResponse(res, response)
+        return
+      }
+      var logLine = 'INFO: |deleteAccount| removed user ' + emailTar + ' successfully. Requesting user: ' + emailReq
       appendToLog(logLine, req)
 
       writeResponse(res, response)
       return
-    }
+    })();
+  } else {
+    var logLine = 'WARNING: |deleteAccount| Requesting user ' + emailReq + ' does not have permission to delete accounts'
+    appendToLog(logLine, req)
 
-    // check type of target user
-    directory = './data/students/' + emailTar
-    filename  = directory + '/type'
-
-    fs.readFile(filename,
-      // callback function that is called when reading file is done
-      function(err, data) {
-        // error will reading type file
-        if (!err) {
-          tarType = data.toString('utf8').trim()
-
-          // stop others from deleting an Admin account
-          if (tarType == "Administrator" && type == "Ausbilder") {
-            var logLine = 'WARNING: |deleteAccount| denied. Requesting user ' + emailReq + ' tried to delete admin account: ' + emailTar
-            appendToLog(logLine, req)
-
-            response.msg = "no permission"
-            res.status(403);
-            writeResponse(res, response)
-            return
-          }
-
-          // only allow deletion if permissions are granted
-          if (type == "Ausbilder" || type == "Administrator") {
-
-            // check if directory exists
-            directory = './data/students/' + emailTar
-
-            // check if directory exists
-            if (fs.existsSync(directory)) {
-
-              // delete directory recursively
-              (async () => {
-                try {
-                  await del(directory);
-
-                  console.log(`${directory} is deleted!`);
-
-                  response.msg = "success"
-                  response.email = ""
-                  response.password = ""
-
-//                  writeResponse(res, response)
-//                  return
-                }
-                catch (err) {
-                  console.error(`Error while deleting ${directory}.`);
-                  console.error({err: err.toString()});
-
-                  var logLine = 'ERROR: |deleteAccount| failed to remove user ' + emailTar + '. Requesting user: ' + emailReq + '. Err: ' + err.toString()
-                  appendToLog(logLine, req)
-
-                  response.msg = "failed"
-                  response.email = ""
-                  response.password = ""
-
-                  writeResponse(res, response)
-                  return
-                }
-                var logLine = 'INFO: |deleteAccount| removed user ' + emailTar + ' successfully. Requesting user: ' + emailReq
-                appendToLog(logLine, req)
-
-                writeResponse(res, response)
-                return
-              })();
-
-            }
-            // if account doesn't exist
-            else {
-              var logLine = 'ERROR: |deleteAccount| Requesting user ' + emailReq + ' tried to remove non existing account: ' + emailTar
-              appendToLog(logLine, req)
-
-              response.msg = "error: Account not found!"
-              writeResponse(res, response)
-              return
-            }
-          }
-          else {
-            var logLine = 'WARNING: |deleteAccount| Requesting user ' + emailReq + ' does not have permission to delete accounts'
-            appendToLog(logLine, req)
-
-            response.msg = "no permission"
-            res.status(403);
-            writeResponse(res, response)
-            return
-          }
-        }
-      }
-    )
-
-
+    response.msg = "no permission"
+    res.status(403);
+    writeResponse(res, response)
+    return
   }
-
-
 }
 
 //------------------------------------------------------------------------------
 
 function getAllUsers(req, res) {
-  // TODO: validate requesting user first
-
   response = {}
 
   directory = './data/students/'
@@ -705,15 +647,16 @@ function getAllUsers(req, res) {
         //listing all files using forEach
         response = files
         files.forEach(function (file, index) {
+
           // read type file of user
-          fs.readFile(directory + file + '/type',
+          fs.readFile(directory + file + '/user.json',
             // callback function that is called when reading file is done
             function (err, data) {
               // error will reading type files
               if (!err) {
                 response[index] = {
                   'email': file,
-                  'type':  data.toString('utf8').trim()
+                  'type': JSON.parse(data).type
                 }
                 // wait with writeResponse until response is filled
                 if (index == response.length-1) writeResponse(res, response);
@@ -724,15 +667,11 @@ function getAllUsers(req, res) {
       }
     }
   )
-
-
 }
 
 //------------------------------------------------------------------------------
 
 function getAllGroups(req, res) {
-  // TODO: validate requesting user first
-
   response = {}
 
   directory = './data/groups/'
@@ -769,17 +708,14 @@ function getAllGroups(req, res) {
 function createGroup(req, res) {
   members   = req.body.members   ? req.body.members   : ""
   groupName = req.body.groupName ? req.body.groupName : ""
-  email     = req.body.email     ? req.body.email     : ""
-  password  = req.body.password  ? req.body.password  : ""
+  const { email, type } = req.decoded
   response = {
     'groupName': groupName,
     'members':   members,
     'msg':       "error"
   }
 
-  authenticate(email, password, "Ausbilder", createGroupCB, res, req);
-
-  function createGroupCB() {
+  if (type == "Ausbilder" || type == "Administrator") {
     // check if groupName is valid has been defined
     if (members == '' || groupName == ''  || groupName.includes('..') || groupName.includes('/')) {
       var logLine = 'ERROR: |createGroup| no groupName and/or members defined and/or groupName includes cd command (../)'
@@ -825,6 +761,13 @@ function createGroup(req, res) {
       writeResponse(res, response)
       return
     }
+  } else {
+    var logLine = 'WARNING: |createGroup| user ' + email + ' tried to create a group without permission!'
+    appendToLog(logLine, req)
+
+    res.status(403);
+    writeResponse(res, "no permission!");
+    return false;
   }
 
 }
@@ -832,18 +775,14 @@ function createGroup(req, res) {
 //------------------------------------------------------------------------------
 
 function deleteGroup(req, res) {
-  emailReq       = req.body.emailReq    ? req.body.emailReq    : ""
-  passwordReq    = req.body.passwordReq ? req.body.passwordReq : ""
   groupName      = req.body.groupName   ? req.body.groupName   : ""
+  const { email, type } = req.decoded;
   response = {
-    'email':     emailReq,
-    'password':  passwordReq,
+    'email':     email,
     'msg':       "error"
   }
 
-  authenticate(emailReq, passwordReq, "Ausbilder", deleteGroupCB, res, req);
-
-  function deleteGroupCB(type) {
+  if (type == "Ausbilder" || type == "Administrator") {
     // check if groupName is valid
     if (groupName == '' || groupName.includes('..') || groupName.includes('/')) {
       var logLine = 'WARNING: |deleteGroup| possible manipulation attempt detected. GroupName ' + groupName + ' contains cd command (../) or is empty.'
@@ -854,7 +793,7 @@ function deleteGroup(req, res) {
     }
 
     if (type == "Schüler/Azubi") {
-      var logLine = 'WARNING: |deleteGroup| possible manipulation attempt detected. User ' + emailReq + ' does not have permission to delete groups.'
+      var logLine = 'WARNING: |deleteGroup| possible manipulation attempt detected. User ' + email + ' does not have permission to delete groups.'
       appendToLog(logLine, req)
 
       response.msg = "no permission"
@@ -872,18 +811,15 @@ function deleteGroup(req, res) {
       try {
         fs.unlinkSync(filename)
 
-//        response.msg = "success"
-//        writeResponse(res, response)
-//        return
       } catch(err) {
-         var logLine = 'ERROR: |deleteGroup| failed to remove group ' + groupName + '. Requesting user: ' + emailReq + ' Err: ' + err.toString()
+         var logLine = 'ERROR: |deleteGroup| failed to remove group ' + groupName + '. Requesting user: ' + email + ' Err: ' + err.toString()
          appendToLog(logLine, req)
 
         console.error(err)
         writeResponse(res, {err: err.toString()})
         return
       }
-      var logLine = 'INFO: |deleteGroup| removed group ' + groupName + ' successfully. Requesting user: ' + emailReq
+      var logLine = 'INFO: |deleteGroup| removed group ' + groupName + ' successfully. Requesting user: ' + email
       appendToLog(logLine, req)
 
       response.msg = "success"
@@ -891,33 +827,35 @@ function deleteGroup(req, res) {
       return
     }
     else {
-      var logLine = 'ERROR: |deleteGroup| group ' + groupName + ' does not exist. Requesting user: ' + emailReq
+      var logLine = 'ERROR: |deleteGroup| group ' + groupName + ' does not exist. Requesting user: ' + email
       appendToLog(logLine, req)
 
       response.msg = "error: groups doesn't exist"
       writeResponse(res, response)
       return
     }
+  } else {
+    var logLine = 'WARNING: |deleteGroup| user ' + email + ' tried to delete the group ' + groupName + ' without permission!'
+    appendToLog(logLine, req)
+
+    res.status(403);
+    writeResponse(res, "no permission!");
+    return false;
   }
-
-
 }
 
 //------------------------------------------------------------------------------
 
 function editGroup(req, res) {
-  email     = req.body.email     ? req.body.email     : ""
-  password  = req.body.password  ? req.body.password  : ""
   groupName = req.body.groupName ? req.body.groupName : ""
   groupNew  = req.body.data      ? req.body.data      : ""
+  const { email, type } = req.decoded
   response = {
     'success': "no",
     'msg':     ""
   }
 
-  authenticate(email, password, "Ausbilder", editGroupCB, res, req);
-
-  function editGroupCB() {
+  if (type == "Ausbilder" || type == "Administrator") {
     // check if groupName is valid and has been defined
     if (groupName == '' || groupName.includes('..') || groupName.includes('/')) {
       var logLine = 'WARNING: |editGroup| possible manipulation attempt detected. Group ' + groupName + ' contains cd command (../) or is empty.'
@@ -940,12 +878,8 @@ function editGroup(req, res) {
           if (!err) {
             group = data.toString('utf8')
             group = yaml.safeLoad(group)
-//            console.log(group)
 
             group = groupNew
-
-//            console.log(group)
-//            console.log("");
 
             try {
               fs.writeFileSync(filename, yaml.safeDump(group))
@@ -966,7 +900,13 @@ function editGroup(req, res) {
         }
       )
     }
+  } else {
+    var logLine = 'WARNING: |editGroup| user ' + email + ' tried to edit the group ' + groupName + ' without permission!'
+    appendToLog(logLine, req)
 
+    res.status(403);
+    writeResponse(res, "no permission!");
+    return false;
   }
 }
 
@@ -1102,8 +1042,7 @@ function loadCertificate(req, res) {
 //------------------------------------------------------------------------------
 
 function saveMaterials(req, res) {
-  var email         = req.body.email         ? req.body.email         : ""
-  var password      = req.body.password      ? req.body.password      : ""
+  const { email, type } = req.decoded
   var profession    = req.body.profession    ? req.body.profession    : ""
   var qualification = req.body.qualification ? req.body.qualification : ""
   var materials     = req.body.materials     ? req.body.materials     : ""
@@ -1113,9 +1052,7 @@ function saveMaterials(req, res) {
     'msg':     ""
   }
 
-  authenticate(email, password, "Ausbilder", saveMaterialsCB, res, req);
-
-  function saveMaterialsCB() {
+  if (type == "Ausbilder" || type == "Administrator") {
     if (profession == "" || qualification == "") {
       var logLine = 'ERROR: |saveMaterials| profession and/or qualification not defined!'
       appendToLog(logLine, req)
@@ -1175,6 +1112,13 @@ function saveMaterials(req, res) {
     writeResponse(res, response)
     return
 
+  } else {
+    var logLine = 'WARNING: |saveMaterials| user ' + email + ' tried to edit material without permission!'
+    appendToLog(logLine, req)
+
+    res.status(403);
+    writeResponse(res, "no permission!");
+    return false;
   }
 }
 
@@ -1187,10 +1131,6 @@ function saveMaterials(req, res) {
 function saveUpload(req, res, next) {
   var user = yaml.safeLoad(req.body.user);
   var quiz = yaml.safeLoad(req.body.quiz);
-//  console.log(user);
-//  console.log(quiz);
-
-  //TODO: authentication before continuing
 
 //  console.log(req.file)
 
@@ -1235,20 +1175,16 @@ function getImage(req, res) {
 //------------------------------------------------------------------------------
 
 function deleteImage(req, res) {
-  emailReq       = req.body.emailReq      ? req.body.emailReq      : ""
-  passwordReq    = req.body.passwordReq   ? req.body.passwordReq   : ""
+  const { email, type } = req.decoded
   profession     = req.body.profession    ? req.body.profession    : ""
   qualification  = req.body.qualification ? req.body.qualification : ""
   imageName      = req.body.imageName     ? req.body.imageName     : ""
   response = {
-    'email':     emailReq,
-    'password':  passwordReq,
+    'email':     email,
     'msg':       "error"
   }
 
-  authenticate(emailReq, passwordReq, "Ausbilder", deleteImageCB, res, req);
-
-  function deleteImageCB() {
+  if (type == "Ausbilder" || type == "Administrator") {
     // check if imageName is valid and has been defined
     if (imageName == '' || imageName.includes('..') || imageName.includes('/')) {
       var logLine = 'WARNING: |deleteImage| possible manipulation attempt detected. ImageName ' + imageName + ' contains cd command (../) or is empty.'
@@ -1267,18 +1203,15 @@ function deleteImage(req, res) {
       try {
         fs.unlinkSync(filename)
 
-//        response.msg = "success"
-//        writeResponse(res, response)
-//        return
       } catch(err) {
-        var logLine = 'ERROR: |deleteImage| failed to remove file ' + imageName + '. Requesting user: ' + emailReq + ' Err: ' + err.toString()
+        var logLine = 'ERROR: |deleteImage| failed to remove file ' + imageName + '. Requesting user: ' + email + ' Err: ' + err.toString()
         appendToLog(logLine, req)
 
         console.error(err)
         writeResponse(res, {err: err.toString()})
         return
       }
-      var logLine = 'INFO: |deleteImage| removed file ' + filename + ' successfully. Requesting user: ' + emailReq
+      var logLine = 'INFO: |deleteImage| removed file ' + filename + ' successfully. Requesting user: ' + email
       appendToLog(logLine, req)
 
       response.msg = "success"
@@ -1286,7 +1219,7 @@ function deleteImage(req, res) {
       return
     }
     else {
-      var logLine = 'ERROR: |deleteImage| file ' + filename + ' does not exist. Requesting user: ' + emailReq
+      var logLine = 'ERROR: |deleteImage| file ' + filename + ' does not exist. Requesting user: ' + email
       appendToLog(logLine, req)
 
       response.msg = "error: file does not exist"
@@ -1294,7 +1227,13 @@ function deleteImage(req, res) {
       writeResponse(res, response)
       return
     }
+  } else {
+    var logLine = 'WARNING: |deleteImage| user ' + email + ' tried to delete an image without permission!'
+    appendToLog(logLine, req)
 
+    res.status(403);
+    writeResponse(res, "no permission!");
+    return false;
   }
 }
 
@@ -1380,108 +1319,6 @@ function updateStat(req, res) {
 
 //------------------------------------------------------------------------------
 
-// to authenticate before performing an action
-function authenticate(email, password, minType, callback, res, req) {
-//  var validated = "";
-
-  // check if email is valid and password has been defined
-  if (email == '' || password == '' || email.includes('..') || email.includes('/')) {
-    var logLine = "";
-    if (email == '') logLine = 'INFO: |authenticate| email is empty.';
-    else if (password == '') logLine = 'INFO: |authenticate| password is empty.';
-    else logLine = 'WARNING: |authenticate| possible manipulation attempt detected! Email: ' + email + ' includes cd command (../).';
-    appendToLog(logLine, req)
-
-    res.status(401);
-    writeResponse(res, "not authenticated");
-    return false;
-  }
-
-  // check if directory exists
-  var directory = './data/students/' + email
-  var filename  = directory + '/password'
-
-  // check if directory exists
-  if (!fs.existsSync(directory)) {
-    var logLine = "";
-    logLine = 'INFO: |authenticate| account: ' + email + ' does not exist.';
-    appendToLog(logLine, req);
-
-    res.status(401);
-    writeResponse(res, "not authenticated");
-    return false;
-  }
-
-  // read file password file
-  fs.readFile(filename,
-    // callback function that is called when reading file is done
-    function(err, data) {
-      // error will reading password file
-      if (!err) {
-        real_password = data.toString('utf8').trim()
-        validated = (password === real_password ? "yes" : "no")
-
-        if (validated != "yes") {
-          var logLine = 'INFO: |authenticate| Login attempt failed: wrong password for user ' + email
-          appendToLog(logLine, req)
-
-          res.status(401);
-          writeResponse(res, "not authenticated");
-          return false;
-        }
-        else if (validated === "yes") {
-
-          // check user type
-          fs.readFile(directory + '/type',
-            // callback function that is called when reading file is done
-            function(err, data) {
-              if (err) {
-                var logLine = 'WARNING: |authenticate| failed to read type file for user ' + email
-                appendToLog(logLine, req)
-
-                console.log(err)
-                writeResponse(res, {err: err.toString()})
-                return false
-              }
-              var type = "";
-              if (data) {
-                type = data.toString('utf8').trim()
-              }
-
-              if (type == "Administrator") {
-                callback(type);
-                return true;
-              }
-              else if (type == "Ausbilder" && minType == "Ausbilder") {
-                callback(type);
-                return true;
-              }
-              else if (type == "Ausbilder" && minType == "Schüler/Azubi") {
-                callback(type);
-                return true;
-              }
-              else if (type == minType) {
-                callback(type);
-                return true;
-              }
-              else {
-                var logLine = 'WARNING: |authenticate| user ' + email + ' tried to access ' + callback.toString().split(' ')[1] + ' without permission!'
-                appendToLog(logLine, req)
-
-                res.status(403);
-                writeResponse(res, "no permission!");
-                return false;
-              }
-            }
-          )
-        }
-      }
-    }
-  )
-}
-
-//------------------------------------------------------------------------------
-
 app.use( parser.json() )                         // support json encoded bodies
 app.use( parser.urlencoded({ extended: true }) ) // support encoded bodies
 app.use( express.static('./static') )            // static files from root
@@ -1500,8 +1337,41 @@ app.use((req, res, next) => {
   req.secure ? next() : res.redirect('https://' + req.headers.host + req.url)
 })
 
+
+// exclude /login from jwt  validation
 app.post('/login',                                                      login)
 app.get( '/overview',                                                   overview)
+app.get( '/getimage/:profession/:qualification/:filename',              getImage)
+
+// Create a route to validate JSON web tokens
+app.use((req, res, next) => {
+//  console.log(`${req.method} ${req.url}`);
+  // Extract the token from the request header
+  const token = req.headers.authorization;
+  if (!token) {
+    console.log("validate: no token provided");
+    console.log(`${req.method} ${req.url}`);
+    // If no token was provided, send a 401 status code with an error message
+    res.status(401).send({ message: 'No token provided' });
+    return;
+  }
+
+  // Verify the token using the secret
+  jwt.verify(token.split(" ")[1], JWT_SECRET, (err, decoded) => {
+    if (err) {
+      // If the token is invalid, send a 401 status code with an error message
+      res.status(401).send({ message: 'Token is invalid' });
+      return;
+    }
+
+    // If the token is valid, attach the decoded token to the request object
+    req.decoded = decoded;
+
+    // Call the next middleware function
+    next();
+  });
+});
+
 app.get( '/questionnaire/:profession/:qualification',                   questionnaire)
 app.get( '/questionnaire/:profession/:qualification/:file',             questionnaire)
 app.post('/quiz',                                                       saveQuiz)
@@ -1519,10 +1389,8 @@ app.post('/editGroup',                                                  editGrou
 app.post('/savematerials',                                              saveMaterials)
 app.post('/loadlogs',                                                   loadLogs)
 app.post('/upload', multer({ dest: './tmp/uploaded' }).single('image'), saveUpload)
-app.get( '/getimage/:profession/:qualification/:filename',              getImage)
 app.post('/deleteimage',                                                deleteImage)
 app.post('/updatestat',                                                 updateStat)
-
 
 const privateKey = fs.readFileSync('/root/privkey.pem', 'utf8');
 const certificate = fs.readFileSync('/root/cert.pem', 'utf8');
@@ -1534,7 +1402,7 @@ const credentials = {
   ca: ca
 };
 
-http.createServer(app).listen(80, () => console.log('http server is running at port 80'))
-https.createServer(credentials, app).listen(443, () => console.log('https server is running at port 443'))
+http.createServer(app).listen(HTTP_PORT, () => console.log(`http server is running on port ${HTTP_PORT}`))
+https.createServer(credentials, app).listen(HTTPS_PORT, () => console.log(`https server is running at port ${HTTPS_PORT}`))
 //server = app.listen(port, () => console.log(`Server listening on port ${port}!`))
 //server.timeout = 5000

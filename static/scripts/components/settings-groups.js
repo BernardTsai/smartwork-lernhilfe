@@ -57,6 +57,8 @@ Vue.component( 'settings-groups',
         var params  = JSON.stringify( {groupName: this.groups.groupName, members: this.groups.user, email: this.model.email, password: this.model.password} )
         request.onreadystatechange = createGroupCB
         request.open('POST', '/creategroup', true);  // asynchronous request
+        const token = sessionStorage.getItem("token");
+        request.setRequestHeader('Authorization', `Bearer ${token}`);
         request.setRequestHeader('Content-type', 'application/json');
         request.send(params);
       },
@@ -90,6 +92,8 @@ Vue.component( 'settings-groups',
         var params  = JSON.stringify( {emailReq: this.model.email, passwordReq: this.model.password, groupName: this.groups.groupTmp.groupName} )
         request.onreadystatechange = rmGroupCB
         request.open('POST', '/deletegroup', true);  // asynchronous request
+        const token = sessionStorage.getItem("token");
+        request.setRequestHeader('Authorization', `Bearer ${token}`);
         request.setRequestHeader('Content-type', 'application/json');
         request.send(params);
       },
@@ -144,6 +148,8 @@ Vue.component( 'settings-groups',
         var params  = JSON.stringify( {email: this.model.email, password: this.model.password, groupName: this.groups.groupTmp.groupName, data: this.groups.user} )
         request.onreadystatechange = saveChangesCB
         request.open('POST', '/editgroup', true);  // asynchronous request
+        const token = sessionStorage.getItem("token");
+        request.setRequestHeader('Authorization', `Bearer ${token}`);
         request.setRequestHeader('Content-type', 'application/json');
         request.send(params);
       },

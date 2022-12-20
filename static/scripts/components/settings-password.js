@@ -47,6 +47,8 @@ Vue.component( 'settings-password',
           var params  = JSON.stringify( {email: model.email, oldpassword: this.form.oldPw, newpassword: this.form.newPw1} )
           request.onreadystatechange = saveCertificateCB
           request.open('POST', '/changepassword', true);  // asynchronous request
+          const token = sessionStorage.getItem("token");
+          request.setRequestHeader('Authorization', `Bearer ${token}`);
           request.setRequestHeader('Content-type', 'application/json');
           request.send(params);
         }

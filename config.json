@@ -1,0 +1,6 @@
+{
+  "jwtSecret": "your_secret_key",
+  "httpPort": 80,
+  "httpsPort": 443,
+  "usersPath": "./data/students"
+}

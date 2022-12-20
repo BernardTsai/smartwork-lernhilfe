@@ -47,6 +47,8 @@ Vue.component( 'settings-usercontrol',
         var params  = JSON.stringify( {emailReq: this.model.email, passwordReq: this.model.password, emailTar: this.users.user[this.users.select].email, passwordTar: password} )
         request.onreadystatechange = pwResetCB
         request.open('POST', '/passwordReset', true);  // asynchronous request
+        const token = sessionStorage.getItem("token");
+        request.setRequestHeader('Authorization', `Bearer ${token}`);
         request.setRequestHeader('Content-type', 'application/json');
         request.send(params);
       },
@@ -78,6 +80,8 @@ Vue.component( 'settings-usercontrol',
         var params  = JSON.stringify( {emailReq: this.model.email, passwordReq: this.model.password, emailTar: this.users.user[this.users.select].email} )
         request.onreadystatechange = rmAccountCB
         request.open('POST', '/deleteaccount', true);  // asynchronous request
+        const token = sessionStorage.getItem("token");
+        request.setRequestHeader('Authorization', `Bearer ${token}`);
         request.setRequestHeader('Content-type', 'application/json');
         request.send(params);
       },
@@ -139,6 +143,8 @@ Vue.component( 'settings-usercontrol',
         var params  = JSON.stringify( {emailNew: this.form.email, passwordNew: this.form.password, typeNew: this.form.type, email: model.email, password: model.password} )
         request.onreadystatechange = createAccountCB
         request.open('POST', '/createAccount', true);  // asynchronous request
+        const token = sessionStorage.getItem("token");
+        request.setRequestHeader('Authorization', `Bearer ${token}`);
         request.setRequestHeader('Content-type', 'application/json');
         request.send(params);
       },
