@@ -262,7 +262,7 @@ Vue.component( 'home',
           </div>
 
           <div class="card bg-light my-3 mx-auto" style="max-width: 300px;">
-            <img class="card-img-top pt-2" src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/users.svg" alt="Gruppen" style="max-height: 133px;">
+            <img class="card-img-top pt-2" src="./vendor/fontawesome-free-5.12.1-web/svgs/solid/users.svg" alt="Gruppen" style="max-height: 133px;">
 
             <div class="card-body">
               <h5 class="card-title">Mitglied in diesen Gruppen</h5>
@@ -302,7 +302,7 @@ Vue.component( 'home',
                                                                                  }" style="max-width: 540px; border: 2px solid;" :id="'selUserG_'+index" @click="openStatus(index)">
                       <div class="row no-gutters">
                         <div class="col-md-2 my-auto d-none d-md-block">
-                          <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user.svg" class="card-img p-3" alt="USER-LOGO">
+                          <img src="./vendor/fontawesome-free-5.12.1-web/svgs/solid/user.svg" class="card-img p-3" alt="USER-LOGO">
                         </div>
                         <div class="col-md-10">
                           <div class="card-body">

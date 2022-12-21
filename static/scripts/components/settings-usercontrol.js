@@ -283,7 +283,7 @@ Vue.component( 'settings-usercontrol',
         <div class="card my-3 mx-auto" style="max-width: 540px;" data-toggle="modal" data-target="#userAddModalCenter">
           <div class="row no-gutters">
             <div class="col-md-2 my-auto d-none d-md-block">
-              <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user-plus.svg" class="card-img p-3" alt="LOGO">
+              <img src="./vendor/fontawesome-free-5.12.1-web/svgs/solid/user-plus.svg" class="card-img p-3" alt="LOGO">
             </div>
             <div class="col-md-10">
               <div class="card-body">
@@ -464,7 +464,7 @@ Vue.component( 'settings-usercontrol',
                                                       }" style="max-width: 540px; border: 2px solid;" @click="selectUser(index)">
           <div class="row no-gutters">
             <div class="col-md-2 my-auto d-none d-md-block">
-              <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/user.svg" class="card-img p-3" alt="USER-LOGO">
+              <img src="./vendor/fontawesome-free-5.12.1-web/svgs/solid/user.svg" class="card-img p-3" alt="USER-LOGO">
             </div>
             <div class="col-md-10">
               <div class="card-body">

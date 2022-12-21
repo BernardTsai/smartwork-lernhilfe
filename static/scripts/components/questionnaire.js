@@ -356,7 +356,7 @@ Vue.component( 'questionnaire',
                 <div v-if="this.results.result > 0" class="card text-white bg-success my-3 mx-auto" style="max-width: 540px;">
                   <div class="row no-gutters">
                     <div class="col-md-2 my-auto d-none d-md-block">
-                      <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/thumbs-up.svg" class="card-img p-1" alt="thumbs up">
+                      <img src="./vendor/fontawesome-free-5.12.1-web/svgs/solid/thumbs-up.svg" class="card-img p-1" alt="thumbs up">
                     </div>
                     <div class="col-md-10">
                       <div class="card-body">
@@ -375,7 +375,7 @@ Vue.component( 'questionnaire',
                 <div v-if="this.results.result <= 0" class="card text-white bg-info my-3 mx-auto" style="max-width: 540px;">
                   <div class="row no-gutters">
                     <div class="col-md-2 my-auto d-none d-md-block">
-                      <img src="https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/svgs/solid/times.svg" class="card-img p-1" alt="thumbs up">
+                      <img src="./vendor/fontawesome-free-5.12.1-web/svgs/solid/times.svg" class="card-img p-1" alt="thumbs up">
                     </div>
                     <div class="col-md-10">
                       <div class="card-body">
