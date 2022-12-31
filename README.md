@@ -20,7 +20,7 @@ Testen mit Docker
 
 - **Program nutzen**:
 
-  im Browser die URL "http://localhost:8080/index.html" öffnen
+  im Browser die URL "http://localhost/index.html" öffnen
 
 
 Installation
